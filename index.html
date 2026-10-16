@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>到站時間</title>
-  <!-- iOS Safari PWA 全螢幕及主畫面圖示設定 -->
+  <!-- iOS Safari PWA 全螢幕及主畫面圖示設定 (使用 black 狀態列避免 iOS 頂部模糊遮罩覆蓋頂欄) -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <meta name="apple-mobile-web-app-title" content="到站時間" />
   <meta name="theme-color" content="#0F0F0F" />
   <link rel="apple-touch-icon" href="data:image/png;base64,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" />
@@ -40,43 +40,62 @@
       margin: 0;
       padding: 0;
       width: 100%;
-      height: 100%;
+      height: 100vh;
+      height: 100dvh;
+      min-height: -webkit-fill-available;
       background-color: var(--bg-root);
       color: var(--text-white);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro TC", "PingFang HK", "Helvetica Neue", Arial, sans-serif;
       overflow: hidden;
       user-select: none;
       -webkit-user-select: none;
+      -webkit-font-smoothing: antialiased;
     }
 
     #appRoot {
       display: flex;
       flex-direction: column;
       width: 100%;
-      height: 100%;
-      padding-top: max(6px, env(safe-area-inset-top));
-      padding-bottom: max(6px, env(safe-area-inset-bottom));
+      height: 100vh;
+      height: 100dvh;
+      /* 避開 iPhone 動態島 / 頂部模糊區，同時貼合底部安全區 */
+      padding-top: max(12px, calc(env(safe-area-inset-top) + 10px));
+      padding-bottom: max(4px, env(safe-area-inset-bottom));
       padding-left: max(8px, env(safe-area-inset-left));
       padding-right: max(8px, env(safe-area-inset-right));
+      background-color: var(--bg-root);
+      position: relative;
+      z-index: 1;
     }
 
-    /* 頂部狀態列 */
+    /* ==================== 頂部狀態列 ====================
+       直立模式 (Portrait)：分為上下兩行
+         第 1 行：左邊 [⚙ 選項] + [界面2 | 界面3 | 設定]，右邊 [↻ 刷新]
+         第 2 行：左邊 24小時制綠色大時鐘，右邊 完整更新時間
+       橫向模式 (Landscape)：保持原本單行排列不變
+    ==================================================== */
     .top-header {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-template-areas:
+        "left refresh"
+        "clock update";
+      row-gap: 5px;
+      column-gap: 6px;
       align-items: center;
-      justify-content: space-between;
-      gap: 6px;
       padding-bottom: 6px;
       border-bottom: 1px solid #262629;
       flex-shrink: 0;
+      background-color: var(--bg-root);
     }
 
     .header-left {
+      grid-area: left;
       display: flex;
       align-items: center;
       gap: 6px;
-      flex: 1;
       min-width: 0;
+      flex-wrap: nowrap;
     }
 
     .btn-options {
@@ -92,6 +111,7 @@
       display: inline-flex;
       align-items: center;
       gap: 4px;
+      flex-shrink: 0;
     }
 
     .btn-options:active {
@@ -105,6 +125,7 @@
       padding: 2px;
       border: 1px solid #2E2E33;
       gap: 2px;
+      flex-shrink: 0;
     }
 
     .mode-pill {
@@ -135,47 +156,80 @@
     }
 
     .big-clock {
+      grid-area: clock;
       color: var(--green-clock);
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 21px;
+      font-size: 22px;
       font-weight: 800;
       letter-spacing: 0.5px;
-      padding: 0 4px;
-      flex-shrink: 0;
-      text-align: center;
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 6px;
-      flex: 1;
-      min-width: 0;
+      line-height: 1.15;
+      justify-self: start;
+      text-align: left;
+      white-space: nowrap;
     }
 
     .update-time {
+      grid-area: update;
       color: var(--text-muted);
-      font-size: 11px;
+      font-size: 12.5px;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      justify-self: end;
+      text-align: right;
     }
 
     .btn-refresh {
+      grid-area: refresh;
       background: #1F1F23;
       color: var(--green-clock);
       border: 1px solid #2E3B32;
       border-radius: 6px;
-      padding: 4px 7px;
-      font-size: 12px;
+      padding: 5px 9px;
+      font-size: 12.5px;
       font-weight: 700;
       cursor: pointer;
       flex-shrink: 0;
+      justify-self: end;
+      white-space: nowrap;
     }
 
     .btn-refresh:active {
       transform: scale(0.96);
+    }
+
+    /* 橫向模式 (Landscape)：保持原本單行排列 */
+    @media (orientation: landscape), (min-width: 700px) {
+      .top-header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .header-left {
+        flex: 1;
+        order: 1;
+      }
+      .big-clock {
+        order: 2;
+        font-size: 26px;
+        padding: 0 6px;
+        text-align: center;
+        flex-shrink: 0;
+      }
+      .update-time {
+        order: 3;
+        flex: 1;
+        font-size: 13px;
+        text-align: right;
+        padding-right: 4px;
+      }
+      .btn-refresh {
+        order: 4;
+        font-size: 12.5px;
+      }
+      .btn-options {
+        font-size: 14px;
+      }
     }
 
     /* 主看板內容區 */
@@ -185,28 +239,22 @@
       margin-top: 6px;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* 界面2 / 界面3 8格容器 */
+    /* 界面2 / 界面3 自訂方格容器 */
     .grid-mode23 {
       display: grid;
       grid-template-columns: 1fr;
       gap: 6px;
-      padding-bottom: 16px;
+      padding-bottom: 6px;
+      width: 100%;
     }
 
     @media (orientation: landscape), (min-width: 700px) {
       .grid-mode23 {
         grid-template-columns: 1fr 1fr;
-      }
-      .big-clock {
-        font-size: 26px;
-      }
-      .update-time {
-        font-size: 13px;
-      }
-      .btn-options {
-        font-size: 14px;
       }
     }
 
@@ -220,7 +268,7 @@
       padding: 8px 10px;
       display: flex;
       flex-direction: column;
-      height: 168px;
+      height: 185px;
       border: 1px solid #262629;
     }
 
@@ -334,7 +382,8 @@
       display: grid;
       grid-template-columns: 1fr;
       gap: 8px;
-      padding-bottom: 16px;
+      padding-bottom: 8px;
+      width: 100%;
     }
 
     @media (orientation: landscape), (min-width: 700px) {
@@ -372,8 +421,8 @@
       z-index: 100;
       display: none;
       flex-direction: column;
-      padding-top: env(safe-area-inset-top);
-      padding-bottom: env(safe-area-inset-bottom);
+      padding-top: max(8px, env(safe-area-inset-top));
+      padding-bottom: max(8px, env(safe-area-inset-bottom));
       padding-left: env(safe-area-inset-left);
       padding-right: env(safe-area-inset-right);
     }
@@ -460,6 +509,7 @@
       width: 48px;
       height: 28px;
       flex-shrink: 0;
+      display: inline-block;
     }
 
     .ios-switch input {
@@ -501,7 +551,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .target-tab-btn {
@@ -528,32 +578,93 @@
       color: var(--blue-accent);
     }
 
-    .slot-config-btn {
-      width: 100%;
-      text-align: left;
-      background-color: var(--bg-elevated);
-      color: #FFFFFF;
-      border: 1px solid #3A3A3F;
+    /* 2-15 格數量快速選擇列 */
+    .slot-count-bar {
+      background: #242429;
+      border: 1px solid #34343C;
       border-radius: 8px;
-      padding: 11px 12px;
-      margin-bottom: 7px;
-      font-size: 14px;
-      cursor: pointer;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+    }
+
+    .slot-count-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #FFFFFF;
     }
 
-    .slot-config-btn:active {
-      background-color: #38383D;
+    .slot-count-pills {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
     }
 
-    .slot-config-right {
+    .count-pill-btn {
+      background: #1B1B1F;
+      color: #BDBDBD;
+      border: 1px solid #383840;
+      border-radius: 6px;
+      padding: 6px 0;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .count-pill-btn.active-count {
+      background: rgba(0, 230, 118, 0.2);
+      border-color: var(--green-clock);
       color: var(--green-clock);
-      font-size: 12px;
+    }
+
+    /* 每一格車站設定列 (包含左邊揀站按鈕 + 右邊啟用開關 Switch) */
+    .slot-config-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background-color: var(--bg-elevated);
+      border: 1px solid #3A3A3F;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-bottom: 7px;
+      transition: opacity 0.15s ease;
+    }
+
+    .slot-config-row.slot-disabled {
+      opacity: 0.48;
+      background-color: #1E1E22;
+      border-color: #2C2C30;
+    }
+
+    .slot-config-btn {
+      flex: 1;
+      min-width: 0;
+      text-align: left;
+      background: none;
+      color: #FFFFFF;
+      border: none;
+      padding: 3px 2px;
+      font-size: 13.5px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .slot-config-title {
+      font-weight: 700;
+      color: #FFFFFF;
+      word-break: break-word;
+    }
+
+    .slot-config-sub {
+      color: var(--green-clock);
+      font-size: 11.5px;
       font-weight: 600;
-      flex-shrink: 0;
     }
 
     .action-btn {
@@ -639,7 +750,6 @@
       flex: 1;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      divide-y: 1px solid #26262A;
     }
 
     .modal-item-btn {
@@ -708,7 +818,7 @@
 </head>
 <body>
   <div id="appRoot">
-    <!-- 頂部狀態列 -->
+    <!-- 頂部狀態列：直立時自動分成兩行 (第2行左邊時鐘、右邊完整更新時間)，橫向時維持單行 -->
     <header class="top-header">
       <div class="header-left">
         <button type="button" id="btnQuickOptions" class="btn-options" title="打開選項或設定">
@@ -723,15 +833,14 @@
 
       <div id="tvBigClock" class="big-clock">00:00:00</div>
 
-      <div class="header-right">
-        <span id="tvUpdateTime" class="update-time">更新中...</span>
-        <button type="button" id="btnManualRefresh" class="btn-refresh" title="立即刷新到站時間">↻ 刷新</button>
-      </div>
+      <span id="tvUpdateTime" class="update-time">最後更新：--:--:--</span>
+
+      <button type="button" id="btnManualRefresh" class="btn-refresh" title="立即刷新到站時間">↻ 刷新</button>
     </header>
 
     <!-- 主看板區域 -->
     <main class="dashboard-body" id="dashboardBody">
-      <!-- [界面2] 及 [界面3] 共用 8 格自訂看板 -->
+      <!-- [界面2] 及 [界面3] 共用自訂方格看板 (支援 2 至 15 格動態顯示) -->
       <section id="scrollMode23" class="grid-mode23"></section>
 
       <!-- [界面1] 預設固定看板 (保留供隨時切換參考) -->
@@ -773,7 +882,7 @@
     </main>
   </div>
 
-  <!-- 獨立「設定」頁面 (已移除 Lenovo 平板假熄 Mon 及無關權限設定，專注保留界面2/3設定) -->
+  <!-- 獨立「設定」頁面 -->
   <div id="layoutSettingsPage" class="overlay-page" aria-hidden="true">
     <div class="settings-topbar">
       <button type="button" id="btnCloseSettings" class="btn-back">⬅ 返回看板</button>
@@ -786,7 +895,7 @@
         <div class="settings-section-title" style="color:var(--yellow-lrt);">📺 一、顯示介面選擇 (拉動切換)</div>
 
         <label class="switch-row" for="swMode2">
-          <span class="switch-label"><strong>[界面2]</strong> 自訂 8 格看板 A (支援直立向下捲動 / 橫向雙欄)</span>
+          <span class="switch-label"><strong>[界面2]</strong> 自訂看板 A (可自由設定 2 - 15 個車站方格)</span>
           <span class="ios-switch">
             <input type="checkbox" id="swMode2" />
             <span class="ios-slider"></span>
@@ -794,7 +903,7 @@
         </label>
 
         <label class="switch-row" for="swMode3">
-          <span class="switch-label"><strong>[界面3]</strong> 自訂 8 格看板 B (獨立儲存另一組 8 格常用車站)</span>
+          <span class="switch-label"><strong>[界面3]</strong> 自訂看板 B (獨立儲存另一組 2 - 15 個常用車站)</span>
           <span class="ios-switch">
             <input type="checkbox" id="swMode3" />
             <span class="ios-slider"></span>
@@ -810,7 +919,7 @@
         </label>
 
         <label class="switch-row" for="swForceTwoCol">
-          <span class="switch-label">📱 iPhone 直立時亦強制使用「左右雙欄 (2x4)」緊湊排列</span>
+          <span class="switch-label">📱 iPhone 直立時亦強制使用「左右雙欄」緊湊排列</span>
           <span class="ios-switch">
             <input type="checkbox" id="swForceTwoCol" />
             <span class="ios-slider"></span>
@@ -847,39 +956,37 @@
         </label>
       </div>
 
-      <!-- 區塊 3：8 個方格車站自訂選擇 -->
+      <!-- 區塊 3：2 至 15 個方格車站自訂選擇與開關 -->
       <div class="settings-section">
-        <div class="settings-section-title" style="color:var(--green-accent);">🚏 三、設定 [界面2 / 界面3] 的 8 個車站方格</div>
+        <div class="settings-section-title" style="color:var(--green-accent);">🚏 三、設定 [界面2 / 界面3] 的車站方格 (自由選擇 2 - 15 格)</div>
         <div style="font-size:12.5px; color:#9E9E9E; margin-bottom:10px;">
-          提示：除咗喺呢度設定之外，你喺主畫面直接點擊任何一格嘅「黃色／橙色車站標題」，都可以即刻轉車站！
+          你可以喺下方快速點選要顯示幾多個方格（2 至 15 格），或者逐格拉動右邊開關（ON/OFF）。未打開嘅方格喺主畫面唔會顯示出嚟！
         </div>
 
         <div class="edit-target-tabs">
-          <button type="button" id="btnEditTargetMode2" class="target-tab-btn active-m2">編輯 [界面2] 8格車站</button>
-          <button type="button" id="btnEditTargetMode3" class="target-tab-btn">編輯 [界面3] 8格車站</button>
+          <button type="button" id="btnEditTargetMode2" class="target-tab-btn active-m2">編輯 [界面2] 車站</button>
+          <button type="button" id="btnEditTargetMode3" class="target-tab-btn">編輯 [界面3] 車站</button>
+        </div>
+
+        <!-- 2 至 15 格快速選擇器 -->
+        <div class="slot-count-bar">
+          <div class="slot-count-header">
+            <span id="tvActiveSlotCountLabel">現時開啟方格數量：8 格</span>
+            <span style="font-size:12px; color:#9E9E9E;">點擊數字快速設定 (2-15格)</span>
+          </div>
+          <div id="containerCountPills" class="slot-count-pills"></div>
         </div>
 
         <div id="containerSetSlotButtons"></div>
 
         <button type="button" id="btnResetCurrentTargetSlots" class="action-btn" style="color:#FF8A65;">
-          ↺ 將現正編輯嘅界面還原為預設 8 個車站
-        </button>
-      </div>
-
-      <!-- 區塊 4：匯出 GitHub 部署單一檔案 -->
-      <div class="settings-section">
-        <div class="settings-section-title" style="color:#00E676;">📦 四、下載 GitHub Pages 部署檔案</div>
-        <div style="font-size:12.5px; color:#9E9E9E; margin-bottom:8px;">
-          你可以直接下載呢個獨立完整嘅 <code>index.html</code> 檔案（已內置 iPhone 主畫面 Icon 及所有功能），直接上傳去 GitHub 即刻用得：
-        </div>
-        <button type="button" id="btnDownloadIndexHtml" class="action-btn" style="background:#1B3B2B; border-color:#00E676; color:#00E676; font-weight:700;">
-          📥 下載 index.html 檔案 (上傳 GitHub 用)
+          ↺ 將現正編輯嘅界面還原為預設車站設定 (8格)
         </button>
       </div>
     </div>
   </div>
 
-  <!-- 通用彈出視窗 Modal (用於：快速選項 / 選擇輕鐵或巴士類別 / 搜尋車站) -->
+  <!-- 通用彈出視窗 Modal -->
   <div id="modalBackdrop" class="modal-backdrop" aria-hidden="true">
     <div class="modal-card" role="dialog" aria-modal="true">
       <div class="modal-header">
@@ -903,6 +1010,10 @@
       "use strict";
 
       // ==================== 常數與車站資料庫 ====================
+      var MAX_SLOTS = 15;
+      var MIN_SLOTS = 2;
+      var DEFAULT_ACTIVE_SLOTS = 8;
+
       var LRT_AFFLUENCE_ID = "80";
       var LRT_NGAN_WAI_ID = "230";
       var KMB_HUNG_KIU_STOPS = ["2FD7EBBD4AF78A93", "6FB7BC1E5BC1E4EE", "8C32D9DDB85891A6"];
@@ -947,7 +1058,6 @@
       var KEY_FORCE_TWO_COL = "force_two_col";
       var KEY_CACHED_TM_BUS_STOPS = "cached_tm_bus_stops_v1";
 
-      // 狀態變數 (預設開機直接進入 [界面2] 方便 iPhone 使用)
       var currentUiMode = 2;
       var settingsEditingTargetMode = 2;
       var tuenMunBusStopOptions = [];
@@ -957,6 +1067,7 @@
       var tvHeaderTitle = document.getElementById("tvHeaderTitle");
       var tvBigClock = document.getElementById("tvBigClock");
       var tvUpdateTime = document.getElementById("tvUpdateTime");
+      var dashboardBody = document.getElementById("dashboardBody");
       var scrollMode23 = document.getElementById("scrollMode23");
       var layoutMode1 = document.getElementById("layoutMode1");
       var layoutSettingsPage = document.getElementById("layoutSettingsPage");
@@ -974,12 +1085,20 @@
       var swTimeFormatBoth = document.getElementById("swTimeFormatBoth");
       var btnEditTargetMode2 = document.getElementById("btnEditTargetMode2");
       var btnEditTargetMode3 = document.getElementById("btnEditTargetMode3");
+      var tvActiveSlotCountLabel = document.getElementById("tvActiveSlotCountLabel");
+      var containerCountPills = document.getElementById("containerCountPills");
       var containerSetSlotButtons = document.getElementById("containerSetSlotButtons");
 
+      var cardElements = [];
       var tvSlotTitles = [];
       var tvSlotNotes = [];
       var tvSlotBodies = [];
-      var btnSetSlots = [];
+
+      var slotConfigRows = [];
+      var slotConfigTitleSpans = [];
+      var slotConfigSubSpans = [];
+      var slotEnableCheckboxes = [];
+      var countPillButtons = [];
 
       // ==================== 安全 LocalStorage 讀寫 ====================
       function storageGet(key, fallback) {
@@ -1089,7 +1208,7 @@
         }
       }
 
-      // ==================== 8 格車站讀寫設定 ====================
+      // ==================== 15 格車站讀寫與啟用狀態設定 ====================
       function getSlotPrefix(mode, slotIndex) {
         return "m" + mode + "_slot_" + slotIndex;
       }
@@ -1103,7 +1222,48 @@
           case 4: return { type: "BUS", name: "屯門轉車站 (往九龍方向) ", ids: SPECIAL_TMR_BBI_KOWLOON };
           case 5: return { type: "BUS", name: "屯門轉車站 (往屯門方向) ", ids: SPECIAL_TMR_BBI_TUEN_MUN };
           case 6: return { type: "LRT", name: "市中心站", ids: "280" };
-          default: return { type: "BUS", name: "大興體育館", ids: "629D4E7DD9EF1AC6,ADE15F24D2EE0B20" };
+          case 7: return { type: "BUS", name: "大興體育館", ids: "629D4E7DD9EF1AC6,ADE15F24D2EE0B20" };
+          case 8: return { type: "LRT", name: "兆康站", ids: "100" };
+          case 9: return { type: "LRT", name: "屯門站", ids: "295" };
+          case 10: return { type: "LRT", name: "大興 (北) 站", ids: "212" };
+          case 11: return { type: "LRT", name: "大興 (南) 站", ids: "220" };
+          case 12: return { type: "LRT", name: "蔡意橋站", ids: "75" };
+          case 13: return { type: "LRT", name: "屯門醫院站", ids: "90" };
+          default: return { type: "LRT", name: "良景站", ids: "150" };
+        }
+      }
+
+      function isSlotEnabled(mode, slotIndex) {
+        var defaultEnabled = (slotIndex < DEFAULT_ACTIVE_SLOTS) ? "1" : "0";
+        return storageGet(getSlotPrefix(mode, slotIndex) + "_enabled", defaultEnabled) === "1";
+      }
+
+      function setSlotEnabled(mode, slotIndex, enabledBool) {
+        storageSet(getSlotPrefix(mode, slotIndex) + "_enabled", enabledBool ? "1" : "0");
+      }
+
+      function getEnabledSlotIndices(mode) {
+        var list = [];
+        for (var i = 0; i < MAX_SLOTS; i++) {
+          if (isSlotEnabled(mode, i)) list.push(i);
+        }
+        // 保證最少有 2 格開啟
+        if (list.length < MIN_SLOTS) {
+          for (var j = 0; j < MAX_SLOTS && list.length < MIN_SLOTS; j++) {
+            if (list.indexOf(j) === -1) {
+              setSlotEnabled(mode, j, true);
+              list.push(j);
+            }
+          }
+          list.sort(function (a, b) { return a - b; });
+        }
+        return list;
+      }
+
+      function setModeActiveSlotCount(mode, targetCount) {
+        var count = Math.max(MIN_SLOTS, Math.min(MAX_SLOTS, targetCount));
+        for (var i = 0; i < MAX_SLOTS; i++) {
+          setSlotEnabled(mode, i, i < count);
         }
       }
 
@@ -1124,14 +1284,17 @@
         storageSet(prefix + "_type", type);
         storageSet(prefix + "_name", cleanName);
         storageSet(prefix + "_ids", idsCsv);
+        // 當用家喺設定入面揀咗某一格嘅車站，自動確保該格開啟
+        setSlotEnabled(mode, slotIndex, true);
       }
 
       function resetModeSlots(mode) {
-        for (var i = 0; i < 8; i++) {
+        for (var i = 0; i < MAX_SLOTS; i++) {
           var prefix = getSlotPrefix(mode, i);
           storageRemove(prefix + "_type");
           storageRemove(prefix + "_name");
           storageRemove(prefix + "_ids");
+          storageRemove(prefix + "_enabled");
         }
       }
 
@@ -1148,14 +1311,19 @@
         return storageGet(KEY_FORCE_TWO_COL, "0") === "1";
       }
 
-      // ==================== 建立 8 格卡片與設定按鈕 ====================
-      function buildEightStationCards() {
+      function isPortraitViewport() {
+        return window.innerHeight >= window.innerWidth && window.innerWidth < 700;
+      }
+
+      // ==================== 建立 15 格卡片與設定項目 ====================
+      function buildAllStationCards() {
         scrollMode23.innerHTML = "";
+        cardElements = [];
         tvSlotTitles = [];
         tvSlotNotes = [];
         tvSlotBodies = [];
 
-        for (var i = 0; i < 8; i++) {
+        for (var i = 0; i < MAX_SLOTS; i++) {
           (function (slotIdx) {
             var card = document.createElement("div");
             card.className = "station-card";
@@ -1189,36 +1357,147 @@
 
             card.appendChild(headerRow);
             card.appendChild(bodyDiv);
+            cardElements.push(card);
             scrollMode23.appendChild(card);
           })(i);
         }
       }
 
-      function buildSettingsSlotButtons() {
+      function buildSettingsSlotControls() {
+        // 建立 2 至 15 格數字快速按鈕
+        containerCountPills.innerHTML = "";
+        countPillButtons = [];
+        for (var c = MIN_SLOTS; c <= MAX_SLOTS; c++) {
+          (function (targetCount) {
+            var pBtn = document.createElement("button");
+            pBtn.type = "button";
+            pBtn.className = "count-pill-btn";
+            pBtn.textContent = targetCount + "格";
+            pBtn.addEventListener("click", function () {
+              setModeActiveSlotCount(settingsEditingTargetMode, targetCount);
+              updateMode23SlotHeadersAndLayout();
+              refreshSettingsPageUiState();
+              refreshAllTransitData();
+              showToast("[界面" + settingsEditingTargetMode + "] 已設定顯示 " + targetCount + " 個方格");
+            });
+            countPillButtons.push({ count: targetCount, btn: pBtn });
+            containerCountPills.appendChild(pBtn);
+          })(c);
+        }
+
+        // 建立 15 格獨立車站選擇及開關列
         containerSetSlotButtons.innerHTML = "";
-        btnSetSlots = [];
-        for (var i = 0; i < 8; i++) {
+        slotConfigRows = [];
+        slotConfigTitleSpans = [];
+        slotConfigSubSpans = [];
+        slotEnableCheckboxes = [];
+
+        for (var i = 0; i < MAX_SLOTS; i++) {
           (function (slotIdx) {
+            var row = document.createElement("div");
+            row.className = "slot-config-row";
+
             var btn = document.createElement("button");
             btn.type = "button";
             btn.className = "slot-config-btn";
+
+            var titleSpan = document.createElement("span");
+            titleSpan.className = "slot-config-title";
+            var subSpan = document.createElement("span");
+            subSpan.className = "slot-config-sub";
+
+            btn.appendChild(titleSpan);
+            btn.appendChild(subSpan);
+
             btn.addEventListener("click", function () {
               showSlotStationTypeDialog(settingsEditingTargetMode, slotIdx);
             });
-            btnSetSlots.push(btn);
-            containerSetSlotButtons.appendChild(btn);
+
+            var swLabel = document.createElement("label");
+            swLabel.className = "ios-switch";
+            swLabel.title = "開啟或隱藏此方格";
+
+            var chk = document.createElement("input");
+            chk.type = "checkbox";
+            chk.addEventListener("change", function () {
+              var enabledNow = getEnabledSlotIndices(settingsEditingTargetMode);
+              if (!chk.checked && enabledNow.length <= MIN_SLOTS) {
+                chk.checked = true;
+                showToast("每個界面最少需要保留 " + MIN_SLOTS + " 個顯示方格");
+                return;
+              }
+              setSlotEnabled(settingsEditingTargetMode, slotIdx, chk.checked);
+              updateMode23SlotHeadersAndLayout();
+              refreshSettingsPageUiState();
+              refreshAllTransitData();
+            });
+
+            var slider = document.createElement("span");
+            slider.className = "ios-slider";
+
+            swLabel.appendChild(chk);
+            swLabel.appendChild(slider);
+
+            row.appendChild(btn);
+            row.appendChild(swLabel);
+
+            slotConfigRows.push(row);
+            slotConfigTitleSpans.push(titleSpan);
+            slotConfigSubSpans.push(subSpan);
+            slotEnableCheckboxes.push(chk);
+            containerSetSlotButtons.appendChild(row);
           })(i);
         }
       }
 
-      function updateMode23SlotHeaders() {
+      // 動態計算 iPhone 18 Pro 直立模式嘅卡片高度，善用屏幕下方所有空間
+      function updateMode23SlotHeadersAndLayout() {
         var activeMode = (currentUiMode === 3) ? 3 : 2;
-        for (var i = 0; i < 8; i++) {
-          var type = getSlotType(activeMode, i);
-          var name = formatParentheses(getSlotName(activeMode, i)).trim();
+        var enabledIndices = getEnabledSlotIndices(activeMode);
+        var enabledCount = enabledIndices.length;
+
+        var portrait = isPortraitViewport();
+        var twoCol = !portrait || isForceTwoCol();
+        var bodyH = dashboardBody ? dashboardBody.clientHeight : 0;
+        if (bodyH <= 0) {
+          bodyH = window.innerHeight - (portrait ? 78 : 52);
+        }
+
+        var gapPx = 6;
+        var targetCardHeight;
+        if (portrait) {
+          // 直立模式：自動根據已啟用方格數量 (2格、3格、或4格以上) 動態填滿整個屏幕下方空間
+          var visibleRows;
+          if (!twoCol) {
+            visibleRows = Math.min(4, Math.max(2, enabledCount));
+          } else {
+            var totalRows = Math.ceil(enabledCount / 2);
+            visibleRows = Math.min(4, Math.max(2, totalRows));
+          }
+          var totalGaps = (visibleRows - 1) * gapPx + 4;
+          targetCardHeight = Math.max(150, Math.floor((bodyH - totalGaps) / visibleRows));
+        } else {
+          // 橫向模式：維持原本高度不變
+          targetCardHeight = 200;
+        }
+
+        for (var i = 0; i < MAX_SLOTS; i++) {
+          var card = cardElements[i];
           var tvTitle = tvSlotTitles[i];
           var tvNote = tvSlotNotes[i];
-          if (!tvTitle) continue;
+          if (!card || !tvTitle) continue;
+
+          var isShown = enabledIndices.indexOf(i) !== -1;
+          if (!isShown) {
+            card.style.display = "none";
+            continue;
+          }
+
+          card.style.display = "flex";
+          card.style.height = targetCardHeight + "px";
+
+          var type = getSlotType(activeMode, i);
+          var name = formatParentheses(getSlotName(activeMode, i)).trim();
           if (type === "LRT") {
             tvTitle.textContent = "【輕鐵站】" + name;
             tvTitle.className = "card-title-btn card-title-lrt";
@@ -1254,7 +1533,7 @@
           layoutMode1.style.display = "none";
           scrollMode23.style.display = "grid";
           tvHeaderTitle.textContent = "⚙ 選項 [界面" + currentUiMode + "]";
-          updateMode23SlotHeaders();
+          updateMode23SlotHeadersAndLayout();
         }
       }
 
@@ -1269,23 +1548,38 @@
         swTimeFormatMin.checked = (timeStyle === 1);
         swTimeFormatBoth.checked = (timeStyle === 2);
 
+        var m2Count = getEnabledSlotIndices(2).length;
+        var m3Count = getEnabledSlotIndices(3).length;
+        btnEditTargetMode2.textContent = "編輯 [界面2] 車站 (" + m2Count + "格)";
+        btnEditTargetMode3.textContent = "編輯 [界面3] 車站 (" + m3Count + "格)";
         btnEditTargetMode2.className = "target-tab-btn" + (settingsEditingTargetMode === 2 ? " active-m2" : "");
         btnEditTargetMode3.className = "target-tab-btn" + (settingsEditingTargetMode === 3 ? " active-m3" : "");
 
-        for (var i = 0; i < 8; i++) {
-          var btn = btnSetSlots[i];
-          if (!btn) continue;
+        var activeIndices = getEnabledSlotIndices(settingsEditingTargetMode);
+        var activeCount = activeIndices.length;
+        tvActiveSlotCountLabel.textContent = "[界面" + settingsEditingTargetMode + "] 現時已開啟：" + activeCount + " 格";
+
+        for (var c = 0; c < countPillButtons.length; c++) {
+          var item = countPillButtons[c];
+          item.btn.className = "count-pill-btn" + (item.count === activeCount ? " active-count" : "");
+        }
+
+        for (var i = 0; i < MAX_SLOTS; i++) {
+          var row = slotConfigRows[i];
+          var tSpan = slotConfigTitleSpans[i];
+          var sSpan = slotConfigSubSpans[i];
+          var chk = slotEnableCheckboxes[i];
+          if (!row || !tSpan || !sSpan || !chk) continue;
+
+          var enabled = activeIndices.indexOf(i) !== -1;
           var type = getSlotType(settingsEditingTargetMode, i);
           var name = formatParentheses(getSlotName(settingsEditingTargetMode, i)).trim();
           var typeLabel = (type === "LRT") ? "【輕鐵站】" : "【巴士站】";
-          btn.innerHTML = "";
-          var leftSpan = document.createElement("span");
-          leftSpan.textContent = "[界面" + settingsEditingTargetMode + " - 第 " + (i + 1) + " 格] " + typeLabel + name;
-          var rightSpan = document.createElement("span");
-          rightSpan.className = "slot-config-right";
-          rightSpan.textContent = "點擊更改 ❯";
-          btn.appendChild(leftSpan);
-          btn.appendChild(rightSpan);
+
+          chk.checked = enabled;
+          row.className = "slot-config-row" + (enabled ? "" : " slot-disabled");
+          tSpan.textContent = "[界面" + settingsEditingTargetMode + " - 第 " + (i + 1) + " 格] " + typeLabel + name;
+          sSpan.textContent = enabled ? "✅ 已在主畫面顯示 (點擊更改車站 ❯)" : "⚪ 未開啟・主畫面隱藏中 (拉動右邊開關顯示)";
         }
       }
 
@@ -1376,18 +1670,17 @@
         modalBackdrop.setAttribute("aria-hidden", "false");
       }
 
-      // 左上角 [選項] 快速彈窗
       function showQuickOptionsPopup() {
         openListModal("選項 (現時：[界面" + currentUiMode + "])", [
           {
-            label: "切換界面2 (自訂 8 格看板 A)",
+            label: "切換界面2 (自訂看板 A - 現時 " + getEnabledSlotIndices(2).length + " 格)",
             onSelect: function () {
               setUiMode(2);
               showToast("已切換至 [界面2]");
             }
           },
           {
-            label: "切換界面3 (自訂 8 格看板 B)",
+            label: "切換界面3 (自訂看板 B - 現時 " + getEnabledSlotIndices(3).length + " 格)",
             onSelect: function () {
               setUiMode(3);
               showToast("已切換至 [界面3]");
@@ -1443,7 +1736,7 @@
                 if (parenPos < 0) parenPos = rawName.indexOf(" (屯");
                 var cleanName = (parenPos > 0) ? rawName.substring(0, parenPos).trim() : rawName.trim();
                 saveSlotConfig(targetMode, slotIndex, "LRT", cleanName + "站", stationId);
-                updateMode23SlotHeaders();
+                updateMode23SlotHeadersAndLayout();
                 refreshSettingsPageUiState();
                 refreshAllTransitData();
                 showToast("[界面" + targetMode + " " + posName + "] 已設為：【輕鐵站】" + cleanName + "站");
@@ -1467,7 +1760,7 @@
               label: opt.displayTitle,
               onSelect: function () {
                 saveSlotConfig(targetMode, slotIndex, "BUS", opt.cleanName, opt.stopIds.join(","));
-                updateMode23SlotHeaders();
+                updateMode23SlotHeadersAndLayout();
                 refreshSettingsPageUiState();
                 refreshAllTransitData();
                 showToast("[界面" + targetMode + " " + posName + "] 已設為：【巴士站】" + opt.cleanName);
@@ -1956,7 +2249,7 @@
 
       function refreshAllTransitData() {
         var nowStr = formatHkTime(new Date(), true);
-        tvUpdateTime.textContent = "更新：" + nowStr;
+        tvUpdateTime.textContent = "最後更新：" + nowStr + " (每5秒刷新)";
 
         if (currentUiMode === 1) {
           fetchLrtStationUnified(LRT_AFFLUENCE_ID, 2, document.getElementById("tvLrtAffluence"));
@@ -1966,13 +2259,15 @@
           fetchBusSectionMode1(KMB_TAI_HING_STOPS, false, false, document.getElementById("tvKmbTaiHing"));
           fetchBusSectionMode1(LWB_TAI_HING_STOPS, true, false, document.getElementById("tvLwbTaiHing"));
         } else {
-          updateMode23SlotHeaders();
+          updateMode23SlotHeadersAndLayout();
           var timeStyle = getTimeDisplayStyle();
           var activeMode = (currentUiMode === 3) ? 3 : 2;
-          for (var i = 0; i < 8; i++) {
-            var type = getSlotType(activeMode, i);
-            var idsCsv = getSlotIdsCsv(activeMode, i);
-            var targetView = tvSlotBodies[i];
+          var enabledIndices = getEnabledSlotIndices(activeMode);
+          for (var k = 0; k < enabledIndices.length; k++) {
+            var slotIdx = enabledIndices[k];
+            var type = getSlotType(activeMode, slotIdx);
+            var idsCsv = getSlotIdsCsv(activeMode, slotIdx);
+            var targetView = tvSlotBodies[slotIdx];
             if (!targetView) continue;
             if (type === "LRT") {
               fetchLrtStationUnified(idsCsv.trim(), timeStyle, targetView);
@@ -2055,28 +2350,23 @@
 
         document.getElementById("btnResetCurrentTargetSlots").addEventListener("click", function () {
           resetModeSlots(settingsEditingTargetMode);
-          updateMode23SlotHeaders();
+          updateMode23SlotHeadersAndLayout();
           refreshSettingsPageUiState();
           refreshAllTransitData();
           showToast("已還原 [界面" + settingsEditingTargetMode + "] 為預設 8 個車站");
         });
 
-        document.getElementById("btnDownloadIndexHtml").addEventListener("click", function () {
-          try {
-            var fullHtml = "<!DOCTYPE html>" + document.documentElement.outerHTML;
-            var blob = new Blob([fullHtml], { type: "text/html;charset=utf-8" });
-            var url = URL.createObjectURL(blob);
-            var a = document.createElement("a");
-            a.href = url;
-            a.download = "index.html";
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
-            showToast("已開始下載 index.html");
-          } catch (e) {
-            showToast("請使用對話框內提供的檔案下載");
+        window.addEventListener("resize", function () {
+          if (currentUiMode === 2 || currentUiMode === 3) {
+            updateMode23SlotHeadersAndLayout();
           }
+        });
+        window.addEventListener("orientationchange", function () {
+          setTimeout(function () {
+            if (currentUiMode === 2 || currentUiMode === 3) {
+              updateMode23SlotHeadersAndLayout();
+            }
+          }, 120);
         });
       }
 
@@ -2086,27 +2376,41 @@
         currentUiMode = (savedMode === 1 || savedMode === 2 || savedMode === 3) ? savedMode : 2;
         settingsEditingTargetMode = (currentUiMode === 3) ? 3 : 2;
 
-        buildEightStationCards();
-        buildSettingsSlotButtons();
+        buildAllStationCards();
+        buildSettingsSlotControls();
         initDefaultTuenMunBusStops();
         loadAllTuenMunBusStopsInBackground();
         bindEvents();
         applyUiModeView();
 
-        // 24小時制即時時鐘
         function updateClock() {
           tvBigClock.textContent = formatHkTime(new Date(), true);
         }
         updateClock();
         setInterval(updateClock, 1000);
 
-        // 每 5 秒自動刷新數據
         refreshAllTransitData();
         setInterval(refreshAllTransitData, 5000);
 
-        // 註冊 Service Worker (如在 GitHub Pages 環境下存在 sw.js)
+        requestAnimationFrame(function () {
+          updateMode23SlotHeadersAndLayout();
+          setTimeout(updateMode23SlotHeadersAndLayout, 150);
+        });
+
+        if ("caches" in window) {
+          caches.keys().then(function (keys) {
+            for (var i = 0; i < keys.length; i++) {
+              if (keys[i].indexOf("v1") !== -1) {
+                caches.delete(keys[i]);
+              }
+            }
+          }).catch(function () {});
+        }
+
         if ("serviceWorker" in navigator && window.location.protocol.indexOf("http") === 0) {
-          navigator.serviceWorker.register("./sw.js").catch(function () {});
+          navigator.serviceWorker.register("./sw.js").then(function (reg) {
+            if (reg && typeof reg.update === "function") reg.update();
+          }).catch(function () {});
         }
       }
 
