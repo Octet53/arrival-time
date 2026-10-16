@@ -1,0 +1,2117 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>到站時間</title>
+  <!-- iOS Safari PWA 全螢幕及主畫面圖示設定 -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="到站時間" />
+  <meta name="theme-color" content="#0F0F0F" />
+  <link rel="apple-touch-icon" href="data:image/png;base64,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" />
+  <link rel="icon" type="image/png" href="data:image/png;base64,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" />
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    :root {
+      --bg-root: #0F0F0F;
+      --bg-card: #1C1C1E;
+      --bg-elevated: #2C2C2E;
+      --bg-modal: #18181B;
+      --text-white: #FFFFFF;
+      --text-muted: #9E9E9E;
+      --text-sub: #BDBDBD;
+      --green-clock: #00E676;
+      --yellow-lrt: #FFD54F;
+      --orange-bus: #FF8A65;
+      --blue-accent: #4FC3F7;
+      --green-accent: #81C784;
+      --red-accent: #FF6E6E;
+      --amber-accent: #FFB74D;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-root);
+      color: var(--text-white);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro TC", "PingFang HK", "Helvetica Neue", Arial, sans-serif;
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    #appRoot {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+      padding-top: max(6px, env(safe-area-inset-top));
+      padding-bottom: max(6px, env(safe-area-inset-bottom));
+      padding-left: max(8px, env(safe-area-inset-left));
+      padding-right: max(8px, env(safe-area-inset-right));
+    }
+
+    /* 頂部狀態列 */
+    .top-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #262629;
+      flex-shrink: 0;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .btn-options {
+      background: #1F1F23;
+      color: var(--text-sub);
+      border: 1px solid #333338;
+      border-radius: 6px;
+      padding: 5px 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-options:active {
+      background: #2C2C32;
+    }
+
+    .mode-pills {
+      display: inline-flex;
+      background: #1A1A1D;
+      border-radius: 6px;
+      padding: 2px;
+      border: 1px solid #2E2E33;
+      gap: 2px;
+    }
+
+    .mode-pill {
+      background: transparent;
+      color: #9E9E9E;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 7px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .mode-pill.active-mode2 {
+      background: rgba(255, 213, 79, 0.18);
+      color: var(--yellow-lrt);
+    }
+
+    .mode-pill.active-mode3 {
+      background: rgba(79, 195, 247, 0.18);
+      color: var(--blue-accent);
+    }
+
+    .mode-pill.active-mode1 {
+      background: rgba(129, 199, 132, 0.18);
+      color: var(--green-accent);
+    }
+
+    .big-clock {
+      color: var(--green-clock);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      padding: 0 4px;
+      flex-shrink: 0;
+      text-align: center;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .update-time {
+      color: var(--text-muted);
+      font-size: 11px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .btn-refresh {
+      background: #1F1F23;
+      color: var(--green-clock);
+      border: 1px solid #2E3B32;
+      border-radius: 6px;
+      padding: 4px 7px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .btn-refresh:active {
+      transform: scale(0.96);
+    }
+
+    /* 主看板內容區 */
+    .dashboard-body {
+      flex: 1;
+      min-height: 0;
+      margin-top: 6px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* 界面2 / 界面3 8格容器 */
+    .grid-mode23 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 6px;
+      padding-bottom: 16px;
+    }
+
+    @media (orientation: landscape), (min-width: 700px) {
+      .grid-mode23 {
+        grid-template-columns: 1fr 1fr;
+      }
+      .big-clock {
+        font-size: 26px;
+      }
+      .update-time {
+        font-size: 13px;
+      }
+      .btn-options {
+        font-size: 14px;
+      }
+    }
+
+    .grid-mode23.force-two-col {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .station-card {
+      background-color: var(--bg-card);
+      border-radius: 8px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      height: 168px;
+      border: 1px solid #262629;
+    }
+
+    @media (orientation: landscape), (min-width: 700px) {
+      .station-card {
+        height: 200px;
+      }
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 4px;
+      margin-bottom: 4px;
+      border-bottom: 1px solid #2A2A2E;
+      flex-shrink: 0;
+      gap: 4px;
+    }
+
+    .card-title-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      text-align: left;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .card-title-btn:active {
+      opacity: 0.75;
+    }
+
+    .card-title-lrt {
+      color: var(--yellow-lrt);
+    }
+
+    .card-title-bus {
+      color: var(--orange-bus);
+    }
+
+    .card-note {
+      color: var(--text-muted);
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .card-scroll {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.42;
+      color: var(--text-white);
+      padding-right: 2px;
+    }
+
+    .platform-header {
+      color: #B0BEC5;
+      font-size: 11.5px;
+      font-weight: 600;
+      margin-top: 4px;
+      margin-bottom: 1px;
+    }
+
+    .platform-header:first-child {
+      margin-top: 0;
+    }
+
+    .eta-row {
+      display: flex;
+      align-items: baseline;
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin-bottom: 1px;
+    }
+
+    .eta-route {
+      font-weight: 800;
+      font-size: 14.5px;
+      min-width: 44px;
+      display: inline-block;
+      color: #FFFFFF;
+      flex-shrink: 0;
+    }
+
+    .eta-dest-times {
+      font-size: 13px;
+      color: #F5F5F7;
+    }
+
+    .eta-empty {
+      color: var(--text-muted);
+      font-size: 13px;
+      padding: 4px 0;
+    }
+
+    /* 界面1 固定看板 */
+    .grid-mode1 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      padding-bottom: 16px;
+    }
+
+    @media (orientation: landscape), (min-width: 700px) {
+      .grid-mode1 {
+        grid-template-columns: 1fr 1fr;
+        height: 100%;
+      }
+    }
+
+    .mode1-card {
+      background-color: var(--bg-card);
+      border-radius: 8px;
+      padding: 10px;
+      border: 1px solid #262629;
+      display: flex;
+      flex-direction: column;
+      min-height: 210px;
+    }
+
+    .mode1-sub-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 6px 0 3px 0;
+    }
+
+    .mode1-sub-title:first-child {
+      margin-top: 0;
+    }
+
+    /* 全螢幕設定頁面 & 彈出式視窗 */
+    .overlay-page {
+      position: fixed;
+      inset: 0;
+      background-color: #121214;
+      z-index: 100;
+      display: none;
+      flex-direction: column;
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+
+    .overlay-page.open {
+      display: flex;
+    }
+
+    .settings-topbar {
+      display: flex;
+      align-items: center;
+      background-color: #1F1F23;
+      padding: 12px 14px;
+      border-bottom: 1px solid #2E2E33;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .btn-back {
+      background: none;
+      border: none;
+      color: var(--green-clock);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+
+    .settings-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #FFFFFF;
+      flex: 1;
+    }
+
+    .settings-content {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 12px;
+      max-width: 760px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .settings-section {
+      background-color: var(--bg-card);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 12px;
+      border: 1px solid #28282C;
+    }
+
+    .settings-section-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .switch-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 0;
+      border-bottom: 1px solid #26262A;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .switch-row:last-child {
+      border-bottom: none;
+    }
+
+    .switch-label {
+      font-size: 14.5px;
+      color: #FFFFFF;
+      line-height: 1.35;
+      flex: 1;
+    }
+
+    /* iOS 風格拉動 Switch */
+    .ios-switch {
+      position: relative;
+      width: 48px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+
+    .ios-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .ios-slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #39393D;
+      transition: 0.2s;
+      border-radius: 28px;
+    }
+
+    .ios-slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.2s;
+      border-radius: 50%;
+    }
+
+    .ios-switch input:checked + .ios-slider {
+      background-color: #34C759;
+    }
+
+    .ios-switch input:checked + .ios-slider:before {
+      transform: translateX(20px);
+    }
+
+    .edit-target-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .target-tab-btn {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #3A3A3F;
+      background: #242428;
+      color: #BDBDBD;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .target-tab-btn.active-m2 {
+      background: rgba(255, 213, 79, 0.16);
+      border-color: var(--yellow-lrt);
+      color: var(--yellow-lrt);
+    }
+
+    .target-tab-btn.active-m3 {
+      background: rgba(79, 195, 247, 0.16);
+      border-color: var(--blue-accent);
+      color: var(--blue-accent);
+    }
+
+    .slot-config-btn {
+      width: 100%;
+      text-align: left;
+      background-color: var(--bg-elevated);
+      color: #FFFFFF;
+      border: 1px solid #3A3A3F;
+      border-radius: 8px;
+      padding: 11px 12px;
+      margin-bottom: 7px;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .slot-config-btn:active {
+      background-color: #38383D;
+    }
+
+    .slot-config-right {
+      color: var(--green-clock);
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .action-btn {
+      width: 100%;
+      padding: 11px 12px;
+      border-radius: 8px;
+      border: 1px solid #3A3A3F;
+      background-color: #26262B;
+      color: #FFFFFF;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 6px;
+      text-align: center;
+    }
+
+    .action-btn:active {
+      background-color: #34343B;
+    }
+
+    /* 彈窗 Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background-color: var(--bg-modal);
+      border: 1px solid #333338;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 480px;
+      max-height: 84vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+    }
+
+    .modal-header {
+      padding: 13px 16px;
+      border-bottom: 1px solid #2C2C30;
+      font-size: 16px;
+      font-weight: 700;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-search-wrap {
+      padding: 10px 14px;
+      border-bottom: 1px solid #2C2C30;
+      background: #141417;
+    }
+
+    .modal-search-input {
+      width: 100%;
+      background: #242429;
+      border: 1px solid #3A3A40;
+      border-radius: 8px;
+      padding: 9px 12px;
+      color: #FFFFFF;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .modal-search-input:focus {
+      border-color: var(--blue-accent);
+    }
+
+    .modal-list {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      divide-y: 1px solid #26262A;
+    }
+
+    .modal-item-btn {
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      border-bottom: 1px solid #242428;
+      color: #FFFFFF;
+      padding: 13px 16px;
+      font-size: 14.5px;
+      cursor: pointer;
+      display: block;
+      line-height: 1.35;
+    }
+
+    .modal-item-btn:active, .modal-item-btn:hover {
+      background-color: #26262B;
+    }
+
+    .modal-footer {
+      padding: 10px 14px;
+      border-top: 1px solid #2C2C30;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .btn-modal-cancel {
+      background: #2C2C30;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 7px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* 底部 Toast 提示 */
+    .toast-msg {
+      position: fixed;
+      bottom: max(20px, env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(40, 40, 46, 0.96);
+      color: #FFFFFF;
+      border: 1px solid #4A4A52;
+      padding: 9px 16px;
+      border-radius: 20px;
+      font-size: 13.5px;
+      font-weight: 600;
+      z-index: 300;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      white-space: nowrap;
+      max-width: 92vw;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .toast-msg.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="appRoot">
+    <!-- 頂部狀態列 -->
+    <header class="top-header">
+      <div class="header-left">
+        <button type="button" id="btnQuickOptions" class="btn-options" title="打開選項或設定">
+          <span id="tvHeaderTitle">⚙ 選項 [界面2]</span>
+        </button>
+        <div class="mode-pills" aria-label="快速切換界面">
+          <button type="button" id="pillMode2" class="mode-pill active-mode2">界面2</button>
+          <button type="button" id="pillMode3" class="mode-pill">界面3</button>
+          <button type="button" id="pillSettings" class="mode-pill" style="color:#00E676;">設定</button>
+        </div>
+      </div>
+
+      <div id="tvBigClock" class="big-clock">00:00:00</div>
+
+      <div class="header-right">
+        <span id="tvUpdateTime" class="update-time">更新中...</span>
+        <button type="button" id="btnManualRefresh" class="btn-refresh" title="立即刷新到站時間">↻ 刷新</button>
+      </div>
+    </header>
+
+    <!-- 主看板區域 -->
+    <main class="dashboard-body" id="dashboardBody">
+      <!-- [界面2] 及 [界面3] 共用 8 格自訂看板 -->
+      <section id="scrollMode23" class="grid-mode23"></section>
+
+      <!-- [界面1] 預設固定看板 (保留供隨時切換參考) -->
+      <section id="layoutMode1" class="grid-mode1" style="display:none;">
+        <div class="mode1-card">
+          <div class="card-header">
+            <span class="card-title-btn card-title-lrt" style="cursor:default;">輕鐵－澤豐站</span>
+            <span class="card-note">(*為拖卡車)</span>
+          </div>
+          <div id="tvLrtAffluence" class="card-scroll">載入中...</div>
+        </div>
+
+        <div class="mode1-card">
+          <div class="card-scroll">
+            <div class="mode1-sub-title" style="color:#FF6E6E;">九巴－紅橋站 (往九龍)</div>
+            <div id="tvKmbHungKiu">載入中...</div>
+            <div class="mode1-sub-title" style="color:#FFB74D; margin-top:10px;">龍運－紅橋站 (往機場方向)</div>
+            <div id="tvLwbHungKiu">載入中...</div>
+          </div>
+        </div>
+
+        <div class="mode1-card">
+          <div class="card-header">
+            <span class="card-title-btn card-title-lrt" style="cursor:default; color:#4FC3F7;">輕鐵－銀圍站</span>
+            <span class="card-note">(*為拖卡車)</span>
+          </div>
+          <div id="tvLrtNganWai" class="card-scroll">載入中...</div>
+        </div>
+
+        <div class="mode1-card">
+          <div class="card-scroll">
+            <div class="mode1-sub-title" style="color:#81C784;">九巴－大興體育館 (往九龍方向)</div>
+            <div id="tvKmbTaiHing">載入中...</div>
+            <div class="mode1-sub-title" style="color:#FFB74D; margin-top:10px;">龍運－大興體育館 (往機場方向)</div>
+            <div id="tvLwbTaiHing">載入中...</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- 獨立「設定」頁面 (已移除 Lenovo 平板假熄 Mon 及無關權限設定，專注保留界面2/3設定) -->
+  <div id="layoutSettingsPage" class="overlay-page" aria-hidden="true">
+    <div class="settings-topbar">
+      <button type="button" id="btnCloseSettings" class="btn-back">⬅ 返回看板</button>
+      <div class="settings-title">⚙ 到站時間 － 看板設定</div>
+    </div>
+
+    <div class="settings-content">
+      <!-- 區塊 1：顯示介面選擇 -->
+      <div class="settings-section">
+        <div class="settings-section-title" style="color:var(--yellow-lrt);">📺 一、顯示介面選擇 (拉動切換)</div>
+
+        <label class="switch-row" for="swMode2">
+          <span class="switch-label"><strong>[界面2]</strong> 自訂 8 格看板 A (支援直立向下捲動 / 橫向雙欄)</span>
+          <span class="ios-switch">
+            <input type="checkbox" id="swMode2" />
+            <span class="ios-slider"></span>
+          </span>
+        </label>
+
+        <label class="switch-row" for="swMode3">
+          <span class="switch-label"><strong>[界面3]</strong> 自訂 8 格看板 B (獨立儲存另一組 8 格常用車站)</span>
+          <span class="ios-switch">
+            <input type="checkbox" id="swMode3" />
+            <span class="ios-slider"></span>
+          </span>
+        </label>
+
+        <label class="switch-row" for="swMode1">
+          <span class="switch-label"><strong>[界面1]</strong> 預設固定看板 (澤豐 / 銀圍 / 紅橋 / 大興 - 內容固定)</span>
+          <span class="ios-switch">
+            <input type="checkbox" id="swMode1" />
+            <span class="ios-slider"></span>
+          </span>
+        </label>
+
+        <label class="switch-row" for="swForceTwoCol">
+          <span class="switch-label">📱 iPhone 直立時亦強制使用「左右雙欄 (2x4)」緊湊排列</span>
+          <span class="ios-switch">
+            <input type="checkbox" id="swForceTwoCol" />
+            <span class="ios-slider"></span>
+          </span>
+        </label>
+      </div>
+
+      <!-- 區塊 2：到站時間顯示方式 -->
+      <div class="settings-section">
+        <div class="settings-section-title" style="color:var(--blue-accent);">⏱ 二、[界面2 / 界面3] 到站時間顯示方式</div>
+
+        <label class="switch-row" for="swTimeFormatClock">
+          <span class="switch-label">只顯示時間 (例如：<code>12:34</code>)</span>
+          <span class="ios-switch">
+            <input type="checkbox" id="swTimeFormatClock" />
+            <span class="ios-slider"></span>
+          </span>
+        </label>
+
+        <label class="switch-row" for="swTimeFormatMin">
+          <span class="switch-label">只顯示分鐘 (例如：<code>6分</code>)</span>
+          <span class="ios-switch">
+            <input type="checkbox" id="swTimeFormatMin" />
+            <span class="ios-slider"></span>
+          </span>
+        </label>
+
+        <label class="switch-row" for="swTimeFormatBoth">
+          <span class="switch-label">顯示分鐘 + 時間 (例如：<code>6分 (12:34)</code>)</span>
+          <span class="ios-switch">
+            <input type="checkbox" id="swTimeFormatBoth" />
+            <span class="ios-slider"></span>
+          </span>
+        </label>
+      </div>
+
+      <!-- 區塊 3：8 個方格車站自訂選擇 -->
+      <div class="settings-section">
+        <div class="settings-section-title" style="color:var(--green-accent);">🚏 三、設定 [界面2 / 界面3] 的 8 個車站方格</div>
+        <div style="font-size:12.5px; color:#9E9E9E; margin-bottom:10px;">
+          提示：除咗喺呢度設定之外，你喺主畫面直接點擊任何一格嘅「黃色／橙色車站標題」，都可以即刻轉車站！
+        </div>
+
+        <div class="edit-target-tabs">
+          <button type="button" id="btnEditTargetMode2" class="target-tab-btn active-m2">編輯 [界面2] 8格車站</button>
+          <button type="button" id="btnEditTargetMode3" class="target-tab-btn">編輯 [界面3] 8格車站</button>
+        </div>
+
+        <div id="containerSetSlotButtons"></div>
+
+        <button type="button" id="btnResetCurrentTargetSlots" class="action-btn" style="color:#FF8A65;">
+          ↺ 將現正編輯嘅界面還原為預設 8 個車站
+        </button>
+      </div>
+
+      <!-- 區塊 4：匯出 GitHub 部署單一檔案 -->
+      <div class="settings-section">
+        <div class="settings-section-title" style="color:#00E676;">📦 四、下載 GitHub Pages 部署檔案</div>
+        <div style="font-size:12.5px; color:#9E9E9E; margin-bottom:8px;">
+          你可以直接下載呢個獨立完整嘅 <code>index.html</code> 檔案（已內置 iPhone 主畫面 Icon 及所有功能），直接上傳去 GitHub 即刻用得：
+        </div>
+        <button type="button" id="btnDownloadIndexHtml" class="action-btn" style="background:#1B3B2B; border-color:#00E676; color:#00E676; font-weight:700;">
+          📥 下載 index.html 檔案 (上傳 GitHub 用)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 通用彈出視窗 Modal (用於：快速選項 / 選擇輕鐵或巴士類別 / 搜尋車站) -->
+  <div id="modalBackdrop" class="modal-backdrop" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <span id="modalTitle">選項</span>
+      </div>
+      <div id="modalSearchWrap" class="modal-search-wrap" style="display:none;">
+        <input type="text" id="modalSearchInput" class="modal-search-input" placeholder="輸入站名關鍵字搜尋..." autocomplete="off" />
+      </div>
+      <div id="modalList" class="modal-list"></div>
+      <div class="modal-footer">
+        <button type="button" id="btnModalCancel" class="btn-modal-cancel">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast 訊息 -->
+  <div id="toastMsg" class="toast-msg"></div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      // ==================== 常數與車站資料庫 ====================
+      var LRT_AFFLUENCE_ID = "80";
+      var LRT_NGAN_WAI_ID = "230";
+      var KMB_HUNG_KIU_STOPS = ["2FD7EBBD4AF78A93", "6FB7BC1E5BC1E4EE", "8C32D9DDB85891A6"];
+      var LWB_HUNG_KIU_STOPS = ["210978D525EEDF4F"];
+      var KMB_TAI_HING_STOPS = ["629D4E7DD9EF1AC6"];
+      var LWB_TAI_HING_STOPS = ["ADE15F24D2EE0B20"];
+      var PREFERRED_KMB_ORDER = ["58X", "63X", "260X", "58M", "68A", "258A", "258S", "N260"];
+
+      var SPECIAL_TMR_BBI_KOWLOON = "DYNAMIC_TMR_BBI_KOWLOON";
+      var SPECIAL_TMR_BBI_TUEN_MUN = "DYNAMIC_TMR_BBI_TUEN_MUN";
+      var SPECIAL_TMR_BBI_BOTH = "DYNAMIC_TMR_BBI_BOTH";
+
+      // 屯門區全齊 44 個輕鐵站清單
+      var TUEN_MUN_LRT_STATIONS = [
+        ["1", "屯門碼頭 (第1區) "], ["10", "美樂 (第1區) "], ["15", "蝴蝶 (第1區) "],
+        ["20", "輕鐵車廠 (第1區) "], ["30", "龍門 (第1區) "], ["240", "兆禧 (第1區) "],
+        ["250", "海皇路 (第1區) "], ["260", "豐景園 (第1區) "], ["265", "兆麟 (第1區) "],
+        ["920", "三聖 (第1區) "], ["40", "青山村 (第2區) "], ["50", "青雲 (第2區) "],
+        ["60", "建安 (第2區) "], ["70", "河田 (第2區) "], ["75", "蔡意橋 (第2區) "],
+        ["80", "澤豐 (第2區) "], ["170", "石排 (第2區) "], ["180", "山景 (北) (第2區) "],
+        ["190", "山景 (南) (第2區) "], ["200", "鳴琴 (第2區) "], ["212", "大興 (北) (第2區) "],
+        ["220", "大興 (南) (第2區) "], ["230", "銀圍 (第2區) "], ["270", "安定 (第2區) "],
+        ["275", "友愛 (第2區) "], ["280", "市中心 (第2區) "], ["295", "屯門 (第2區) "],
+        ["300", "杯渡 (第2區) "], ["310", "何福堂 (第2區) "], ["320", "新墟 (第2區) "],
+        ["330", "景峰 (第2區) "], ["90", "屯門醫院 (第3區) "], ["100", "兆康 (第3區) "],
+        ["110", "麒麟 (第3區) "], ["120", "青松 (第3區) "], ["130", "建生 (第3區) "],
+        ["140", "田景 (第3區) "], ["150", "良景 (第3區) "], ["160", "新圍 (第3區) "],
+        ["340", "鳳地 (第3區) "], ["350", "藍地 (第3區) "], ["360", "泥圍 (第3區) "],
+        ["370", "鍾屋村 (第3區) "], ["380", "洪水橋 (屯元交界) "]
+      ];
+
+      var INBOUND_KEYWORDS = [
+        "建生", "屯門", "寶田", "大興", "良景", "山景", "富泰", "兆康",
+        "洪水橋", "元朗", "天水圍", "朗屏", "青發街", "上水", "粉嶺",
+        "龍門", "三聖", "黃金海岸", "掃管笏", "大欖", "小欖", "悅湖",
+        "蝴蝶", "湖景", "美樂", "龍鼓灘", "曾咀", "和田", "菁田", "欣田"
+      ];
+
+      var STORAGE_PREFIX = "ArrivalTimePWA_v1_";
+      var KEY_UI_MODE = "ui_mode";
+      var KEY_TIME_DISPLAY_STYLE = "time_display_style";
+      var KEY_FORCE_TWO_COL = "force_two_col";
+      var KEY_CACHED_TM_BUS_STOPS = "cached_tm_bus_stops_v1";
+
+      // 狀態變數 (預設開機直接進入 [界面2] 方便 iPhone 使用)
+      var currentUiMode = 2;
+      var settingsEditingTargetMode = 2;
+      var tuenMunBusStopOptions = [];
+      var tmrBbiAllStopIds = [];
+
+      // DOM 元素快取
+      var tvHeaderTitle = document.getElementById("tvHeaderTitle");
+      var tvBigClock = document.getElementById("tvBigClock");
+      var tvUpdateTime = document.getElementById("tvUpdateTime");
+      var scrollMode23 = document.getElementById("scrollMode23");
+      var layoutMode1 = document.getElementById("layoutMode1");
+      var layoutSettingsPage = document.getElementById("layoutSettingsPage");
+
+      var pillMode2 = document.getElementById("pillMode2");
+      var pillMode3 = document.getElementById("pillMode3");
+      var pillSettings = document.getElementById("pillSettings");
+
+      var swMode1 = document.getElementById("swMode1");
+      var swMode2 = document.getElementById("swMode2");
+      var swMode3 = document.getElementById("swMode3");
+      var swForceTwoCol = document.getElementById("swForceTwoCol");
+      var swTimeFormatClock = document.getElementById("swTimeFormatClock");
+      var swTimeFormatMin = document.getElementById("swTimeFormatMin");
+      var swTimeFormatBoth = document.getElementById("swTimeFormatBoth");
+      var btnEditTargetMode2 = document.getElementById("btnEditTargetMode2");
+      var btnEditTargetMode3 = document.getElementById("btnEditTargetMode3");
+      var containerSetSlotButtons = document.getElementById("containerSetSlotButtons");
+
+      var tvSlotTitles = [];
+      var tvSlotNotes = [];
+      var tvSlotBodies = [];
+      var btnSetSlots = [];
+
+      // ==================== 安全 LocalStorage 讀寫 ====================
+      function storageGet(key, fallback) {
+        try {
+          var val = window.localStorage.getItem(STORAGE_PREFIX + key);
+          return val !== null ? val : fallback;
+        } catch (e) {
+          return fallback;
+        }
+      }
+
+      function storageSet(key, val) {
+        try {
+          window.localStorage.setItem(STORAGE_PREFIX + key, String(val));
+        } catch (e) {}
+      }
+
+      function storageRemove(key) {
+        try {
+          window.localStorage.removeItem(STORAGE_PREFIX + key);
+        } catch (e) {}
+      }
+
+      // ==================== Toast 提示 ====================
+      var toastTimer = null;
+      function showToast(msg) {
+        var el = document.getElementById("toastMsg");
+        if (!el) return;
+        el.textContent = msg;
+        el.classList.add("show");
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () {
+          el.classList.remove("show");
+        }, 2200);
+      }
+
+      // ==================== 字串與輕鐵月台輔助函數 ====================
+      function formatParentheses(text) {
+        if (!text) return "";
+        var s = String(text).replace(/（/g, "(").replace(/）/g, ")");
+        s = s.replace(/\s*\(\s*/g, " (").replace(/\s*\)\s*/g, ") ");
+        return s;
+      }
+
+      function getLrtPlatformHeaderText(stationId, platformId) {
+        switch (String(stationId)) {
+          case "1":
+            if (platformId === 1) return "【1號月台】－下站美樂";
+            if (platformId === 2) return "【2號月台】－下站兆禧";
+            return "【" + platformId + "號月台】－下站美樂／兆禧";
+          case "10": return (platformId === 1) ? "【1號月台】－下站蝴蝶" : "【2號月台】－下站屯門碼頭";
+          case "15": return (platformId === 1) ? "【1號月台】－下站輕鐵車廠" : "【2號月台】－下站美樂";
+          case "20": return (platformId === 1) ? "【1號月台】－下站龍門" : "【2號月台】－下站蝴蝶";
+          case "30": return (platformId === 1) ? "【1號月台】－下站青山村" : "【2號月台】－下站輕鐵車廠";
+          case "40": return (platformId === 1) ? "【1號月台】－下站青雲" : "【2號月台】－下站龍門";
+          case "50": return (platformId === 1) ? "【1號月台】－下站建安／鳴琴" : "【2號月台】－下站青山村";
+          case "60": return (platformId === 1) ? "【1號月台】－下站屯門／河田" : "【2號月台】－下站山景 (南) ／青雲";
+          case "70": return (platformId === 1) ? "【1號月台】－下站蔡意橋" : "【2號月台】－下站屯門／建安";
+          case "75": return (platformId === 1) ? "【1號月台】－下站澤豐／銀圍" : "【2號月台】－下站河田";
+          case "80": return (platformId === 1) ? "【1號月台】－下站屯門醫院" : "【2號月台】－下站蔡意橋／銀圍";
+          case "90": return (platformId === 1) ? "【1號月台】－下站兆康" : "【2號月台】－下站澤豐";
+          case "100":
+            if (platformId === 1) return "【1號月台】－下站藍地";
+            if (platformId === 2) return "【2號月台】－下站屯門醫院／鳳地";
+            if (platformId === 3) return "【3號月台】－下站麒麟";
+            if (platformId === 4) return "【4號月台】－總站／落客月台";
+            if (platformId === 5) return "【5號月台】－下站藍地／屯門醫院";
+            if (platformId === 6) return "【6號月台】－下站青松／麒麟";
+            return "【" + platformId + "號月台】";
+          case "110": return (platformId === 1) ? "【1號月台】－下站兆康" : "【2號月台】－下站青松";
+          case "120": return (platformId === 1) ? "【1號月台】－下站麒麟／兆康" : "【2號月台】－下站建生";
+          case "130": return (platformId === 1) ? "【1號月台】－下站青松" : "【2號月台】－下站田景";
+          case "140": return (platformId === 1) ? "【1號月台】－下站建生" : "【2號月台】－下站良景";
+          case "150": return (platformId === 1) ? "【1號月台】－下站田景" : "【2號月台】－下站新圍";
+          case "160": return (platformId === 1) ? "【1號月台】－下站良景" : "【2號月台】－下站石排／大興 (北) ";
+          case "170": return (platformId === 1) ? "【1號月台】－下站新圍／大興 (北) " : "【2號月台】－下站鳴琴／山景 (北) ";
+          case "180": return "【" + platformId + "號月台】－下站石排";
+          case "190": return (platformId === 1) ? "【1號月台】－下站山景 (北) " : "【2號月台】－下站建安";
+          case "200": return (platformId === 1) ? "【1號月台】－下站石排" : "【2號月台】－下站青雲／建安";
+          case "212": return (platformId === 1) ? "【1號月台】－下站石排／新圍" : "【2號月台】－下站大興 (南) ";
+          case "220": return (platformId === 1) ? "【1號月台】－下站大興 (北) " : "【2號月台】－下站銀圍";
+          case "230": return (platformId === 1) ? "【1號月台】－下站大興南" : "【2號月台】－下站蔡意橋／澤豐";
+          case "240": return (platformId === 1) ? "【1號月台】－下站海皇路" : "【2號月台】－下站屯門碼頭";
+          case "250": return (platformId === 1) ? "【1號月台】－下站豐景園" : "【2號月台】－下站兆禧";
+          case "260": return (platformId === 1) ? "【1號月台】－下站兆麟" : "【2號月台】－下站海皇路";
+          case "265": return (platformId === 1) ? "【1號月台】－下站安定" : "【2號月台】－下站三聖／豐景園";
+          case "270": return (platformId === 1) ? "【1號月台】－下站市中心" : "【2號月台】－下站友愛／兆麟";
+          case "275": return "【" + platformId + "號月台】－下站安定";
+          case "280":
+            if (platformId === 1) return "【1號月台】－下站屯門／杯渡";
+            if (platformId === 2) return "【2號月台】－下站安定";
+            if (platformId === 3) return "【3號月台】－下站屯門";
+            if (platformId === 4) return "【4號月台】－下站安定／友愛";
+            return "【" + platformId + "號月台】";
+          case "295": return (platformId === 1) ? "【1號月台】－下站河田" : "【2號月台】－下站市中心／建安";
+          case "300": return (platformId === 1) ? "【1號月台】－下站何福堂" : "【2號月台】－下站市中心";
+          case "310": return (platformId === 1) ? "【1號月台】－下站新墟" : "【2號月台】－下站杯渡";
+          case "320": return (platformId === 1) ? "【1號月台】－下站景峰" : "【2號月台】－下站何福堂";
+          case "330": return (platformId === 1) ? "【1號月台】－下站鳳地" : "【2號月台】－下站新墟";
+          case "340": return (platformId === 1) ? "【1號月台】－下站兆康" : "【2號月台】－下站景峰";
+          case "350": return (platformId === 1) ? "【1號月台】－下站泥圍" : "【2號月台】－下站兆康";
+          case "360": return (platformId === 1) ? "【1號月台】－下站鍾屋村" : "【2號月台】－下站藍地";
+          case "370": return (platformId === 1) ? "【1號月台】－下站洪水橋" : "【2號月台】－下站泥圍";
+          case "380": return (platformId === 1) ? "【1號月台】－下站塘坊村" : "【2號月台】－下站鍾屋村";
+          case "920": return "【" + platformId + "號月台】－下站兆麟";
+          default: return "【" + platformId + "號月台】";
+        }
+      }
+
+      // ==================== 8 格車站讀寫設定 ====================
+      function getSlotPrefix(mode, slotIndex) {
+        return "m" + mode + "_slot_" + slotIndex;
+      }
+
+      function getDefaultSlot(slotIndex) {
+        switch (slotIndex) {
+          case 0: return { type: "LRT", name: "澤豐站", ids: "80" };
+          case 1: return { type: "BUS", name: "紅橋 (往九龍及機場) ", ids: "2FD7EBBD4AF78A93,6FB7BC1E5BC1E4EE,8C32D9DDB85891A6,210978D525EEDF4F" };
+          case 2: return { type: "LRT", name: "銀圍站", ids: "230" };
+          case 3: return { type: "LRT", name: "麒麟站", ids: "110" };
+          case 4: return { type: "BUS", name: "屯門轉車站 (往九龍方向) ", ids: SPECIAL_TMR_BBI_KOWLOON };
+          case 5: return { type: "BUS", name: "屯門轉車站 (往屯門方向) ", ids: SPECIAL_TMR_BBI_TUEN_MUN };
+          case 6: return { type: "LRT", name: "市中心站", ids: "280" };
+          default: return { type: "BUS", name: "大興體育館", ids: "629D4E7DD9EF1AC6,ADE15F24D2EE0B20" };
+        }
+      }
+
+      function getSlotType(mode, slotIndex) {
+        return storageGet(getSlotPrefix(mode, slotIndex) + "_type", getDefaultSlot(slotIndex).type);
+      }
+
+      function getSlotName(mode, slotIndex) {
+        return storageGet(getSlotPrefix(mode, slotIndex) + "_name", getDefaultSlot(slotIndex).name);
+      }
+
+      function getSlotIdsCsv(mode, slotIndex) {
+        return storageGet(getSlotPrefix(mode, slotIndex) + "_ids", getDefaultSlot(slotIndex).ids);
+      }
+
+      function saveSlotConfig(mode, slotIndex, type, cleanName, idsCsv) {
+        var prefix = getSlotPrefix(mode, slotIndex);
+        storageSet(prefix + "_type", type);
+        storageSet(prefix + "_name", cleanName);
+        storageSet(prefix + "_ids", idsCsv);
+      }
+
+      function resetModeSlots(mode) {
+        for (var i = 0; i < 8; i++) {
+          var prefix = getSlotPrefix(mode, i);
+          storageRemove(prefix + "_type");
+          storageRemove(prefix + "_name");
+          storageRemove(prefix + "_ids");
+        }
+      }
+
+      function getTimeDisplayStyle() {
+        var val = parseInt(storageGet(KEY_TIME_DISPLAY_STYLE, "2"), 10);
+        return (val === 0 || val === 1 || val === 2) ? val : 2;
+      }
+
+      function saveTimeDisplayStyle(style) {
+        storageSet(KEY_TIME_DISPLAY_STYLE, style);
+      }
+
+      function isForceTwoCol() {
+        return storageGet(KEY_FORCE_TWO_COL, "0") === "1";
+      }
+
+      // ==================== 建立 8 格卡片與設定按鈕 ====================
+      function buildEightStationCards() {
+        scrollMode23.innerHTML = "";
+        tvSlotTitles = [];
+        tvSlotNotes = [];
+        tvSlotBodies = [];
+
+        for (var i = 0; i < 8; i++) {
+          (function (slotIdx) {
+            var card = document.createElement("div");
+            card.className = "station-card";
+
+            var headerRow = document.createElement("div");
+            headerRow.className = "card-header";
+
+            var titleBtn = document.createElement("button");
+            titleBtn.type = "button";
+            titleBtn.className = "card-title-btn card-title-lrt";
+            titleBtn.title = "點擊更換此格車站";
+            titleBtn.addEventListener("click", function () {
+              if (currentUiMode === 2 || currentUiMode === 3) {
+                showSlotStationTypeDialog(currentUiMode, slotIdx);
+              }
+            });
+            tvSlotTitles.push(titleBtn);
+
+            var noteSpan = document.createElement("span");
+            noteSpan.className = "card-note";
+            noteSpan.textContent = "(*為拖卡車)";
+            tvSlotNotes.push(noteSpan);
+
+            headerRow.appendChild(titleBtn);
+            headerRow.appendChild(noteSpan);
+
+            var bodyDiv = document.createElement("div");
+            bodyDiv.className = "card-scroll";
+            bodyDiv.textContent = "載入中...";
+            tvSlotBodies.push(bodyDiv);
+
+            card.appendChild(headerRow);
+            card.appendChild(bodyDiv);
+            scrollMode23.appendChild(card);
+          })(i);
+        }
+      }
+
+      function buildSettingsSlotButtons() {
+        containerSetSlotButtons.innerHTML = "";
+        btnSetSlots = [];
+        for (var i = 0; i < 8; i++) {
+          (function (slotIdx) {
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "slot-config-btn";
+            btn.addEventListener("click", function () {
+              showSlotStationTypeDialog(settingsEditingTargetMode, slotIdx);
+            });
+            btnSetSlots.push(btn);
+            containerSetSlotButtons.appendChild(btn);
+          })(i);
+        }
+      }
+
+      function updateMode23SlotHeaders() {
+        var activeMode = (currentUiMode === 3) ? 3 : 2;
+        for (var i = 0; i < 8; i++) {
+          var type = getSlotType(activeMode, i);
+          var name = formatParentheses(getSlotName(activeMode, i)).trim();
+          var tvTitle = tvSlotTitles[i];
+          var tvNote = tvSlotNotes[i];
+          if (!tvTitle) continue;
+          if (type === "LRT") {
+            tvTitle.textContent = "【輕鐵站】" + name;
+            tvTitle.className = "card-title-btn card-title-lrt";
+            if (tvNote) {
+              tvNote.textContent = "(*為拖卡車)";
+              tvNote.style.display = "";
+            }
+          } else {
+            tvTitle.textContent = "【巴士站】" + name;
+            tvTitle.className = "card-title-btn card-title-bus";
+            if (tvNote) {
+              tvNote.style.display = "none";
+            }
+          }
+        }
+      }
+
+      function applyUiModeView() {
+        pillMode2.className = "mode-pill" + (currentUiMode === 2 ? " active-mode2" : "");
+        pillMode3.className = "mode-pill" + (currentUiMode === 3 ? " active-mode3" : "");
+
+        if (isForceTwoCol()) {
+          scrollMode23.classList.add("force-two-col");
+        } else {
+          scrollMode23.classList.remove("force-two-col");
+        }
+
+        if (currentUiMode === 1) {
+          layoutMode1.style.display = "grid";
+          scrollMode23.style.display = "none";
+          tvHeaderTitle.textContent = "⚙ 選項 [界面1]";
+        } else {
+          layoutMode1.style.display = "none";
+          scrollMode23.style.display = "grid";
+          tvHeaderTitle.textContent = "⚙ 選項 [界面" + currentUiMode + "]";
+          updateMode23SlotHeaders();
+        }
+      }
+
+      function refreshSettingsPageUiState() {
+        swMode1.checked = (currentUiMode === 1);
+        swMode2.checked = (currentUiMode === 2);
+        swMode3.checked = (currentUiMode === 3);
+        swForceTwoCol.checked = isForceTwoCol();
+
+        var timeStyle = getTimeDisplayStyle();
+        swTimeFormatClock.checked = (timeStyle === 0);
+        swTimeFormatMin.checked = (timeStyle === 1);
+        swTimeFormatBoth.checked = (timeStyle === 2);
+
+        btnEditTargetMode2.className = "target-tab-btn" + (settingsEditingTargetMode === 2 ? " active-m2" : "");
+        btnEditTargetMode3.className = "target-tab-btn" + (settingsEditingTargetMode === 3 ? " active-m3" : "");
+
+        for (var i = 0; i < 8; i++) {
+          var btn = btnSetSlots[i];
+          if (!btn) continue;
+          var type = getSlotType(settingsEditingTargetMode, i);
+          var name = formatParentheses(getSlotName(settingsEditingTargetMode, i)).trim();
+          var typeLabel = (type === "LRT") ? "【輕鐵站】" : "【巴士站】";
+          btn.innerHTML = "";
+          var leftSpan = document.createElement("span");
+          leftSpan.textContent = "[界面" + settingsEditingTargetMode + " - 第 " + (i + 1) + " 格] " + typeLabel + name;
+          var rightSpan = document.createElement("span");
+          rightSpan.className = "slot-config-right";
+          rightSpan.textContent = "點擊更改 ❯";
+          btn.appendChild(leftSpan);
+          btn.appendChild(rightSpan);
+        }
+      }
+
+      function setUiMode(newMode) {
+        currentUiMode = newMode;
+        if (newMode === 2 || newMode === 3) {
+          settingsEditingTargetMode = newMode;
+        }
+        storageSet(KEY_UI_MODE, newMode);
+        applyUiModeView();
+        refreshSettingsPageUiState();
+        refreshAllTransitData();
+      }
+
+      // ==================== 彈窗 Modal 系統 ====================
+      var modalBackdrop = document.getElementById("modalBackdrop");
+      var modalTitle = document.getElementById("modalTitle");
+      var modalSearchWrap = document.getElementById("modalSearchWrap");
+      var modalSearchInput = document.getElementById("modalSearchInput");
+      var modalList = document.getElementById("modalList");
+      var currentModalSearchHandler = null;
+
+      function closeModal() {
+        modalBackdrop.classList.remove("open");
+        modalBackdrop.setAttribute("aria-hidden", "true");
+        currentModalSearchHandler = null;
+      }
+
+      document.getElementById("btnModalCancel").addEventListener("click", closeModal);
+      modalBackdrop.addEventListener("click", function (e) {
+        if (e.target === modalBackdrop) closeModal();
+      });
+
+      modalSearchInput.addEventListener("input", function () {
+        if (typeof currentModalSearchHandler === "function") {
+          currentModalSearchHandler(modalSearchInput.value);
+        }
+      });
+
+      function openListModal(title, items, searchPlaceholder) {
+        modalTitle.textContent = title;
+        if (searchPlaceholder) {
+          modalSearchWrap.style.display = "block";
+          modalSearchInput.value = "";
+          modalSearchInput.placeholder = searchPlaceholder;
+        } else {
+          modalSearchWrap.style.display = "none";
+        }
+
+        function renderFiltered(keyword) {
+          modalList.innerHTML = "";
+          var kw = (keyword || "").trim().toUpperCase();
+          var count = 0;
+          for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            if (kw && item.label.toUpperCase().indexOf(kw) === -1) continue;
+            count++;
+            (function (it) {
+              var btn = document.createElement("button");
+              btn.type = "button";
+              btn.className = "modal-item-btn";
+              if (it.bold) {
+                btn.style.fontWeight = "800";
+                btn.style.fontSize = "16px";
+                btn.style.color = "#00E676";
+              }
+              btn.textContent = it.label;
+              btn.addEventListener("click", function () {
+                closeModal();
+                it.onSelect();
+              });
+              modalList.appendChild(btn);
+            })(item);
+          }
+          if (count === 0) {
+            var empty = document.createElement("div");
+            empty.style.padding = "18px";
+            empty.style.color = "#9E9E9E";
+            empty.style.textAlign = "center";
+            empty.textContent = "找不到符合「" + keyword + "」的車站";
+            modalList.appendChild(empty);
+          }
+        }
+
+        currentModalSearchHandler = searchPlaceholder ? renderFiltered : null;
+        renderFiltered("");
+        modalBackdrop.classList.add("open");
+        modalBackdrop.setAttribute("aria-hidden", "false");
+      }
+
+      // 左上角 [選項] 快速彈窗
+      function showQuickOptionsPopup() {
+        openListModal("選項 (現時：[界面" + currentUiMode + "])", [
+          {
+            label: "切換界面2 (自訂 8 格看板 A)",
+            onSelect: function () {
+              setUiMode(2);
+              showToast("已切換至 [界面2]");
+            }
+          },
+          {
+            label: "切換界面3 (自訂 8 格看板 B)",
+            onSelect: function () {
+              setUiMode(3);
+              showToast("已切換至 [界面3]");
+            }
+          },
+          {
+            label: "切換界面1 (預設固定看板)",
+            onSelect: function () {
+              setUiMode(1);
+              showToast("已切換至 [界面1]");
+            }
+          },
+          {
+            label: "設定",
+            bold: true,
+            onSelect: function () {
+              openSettingsPage();
+            }
+          }
+        ], null);
+      }
+
+      function showSlotStationTypeDialog(targetMode, slotIndex) {
+        var posName = "第 " + (slotIndex + 1) + " 格";
+        openListModal("[界面" + targetMode + " - " + posName + "] 選擇車站類別", [
+          {
+            label: "🚊 選擇「屯門區輕鐵站」 (全齊 44 個輕鐵站 - 兩邊月台顯示下站站名)",
+            onSelect: function () {
+              showLrtStationPickerDialog(targetMode, slotIndex);
+            }
+          },
+          {
+            label: "🚌 選擇「屯門區巴士站」 (含屯門轉車站來回方向 + 屯門全區九巴及龍運站)",
+            onSelect: function () {
+              showBusStationPickerDialog(targetMode, slotIndex);
+            }
+          }
+        ], null);
+      }
+
+      function showLrtStationPickerDialog(targetMode, slotIndex) {
+        var posName = "第 " + (slotIndex + 1) + " 格";
+        var items = [];
+        for (var i = 0; i < TUEN_MUN_LRT_STATIONS.length; i++) {
+          (function (idx) {
+            var stationId = TUEN_MUN_LRT_STATIONS[idx][0];
+            var rawName = TUEN_MUN_LRT_STATIONS[idx][1];
+            var label = "【輕鐵站】" + formatParentheses(rawName);
+            items.push({
+              label: label,
+              onSelect: function () {
+                var parenPos = rawName.indexOf(" (第");
+                if (parenPos < 0) parenPos = rawName.indexOf(" (屯");
+                var cleanName = (parenPos > 0) ? rawName.substring(0, parenPos).trim() : rawName.trim();
+                saveSlotConfig(targetMode, slotIndex, "LRT", cleanName + "站", stationId);
+                updateMode23SlotHeaders();
+                refreshSettingsPageUiState();
+                refreshAllTransitData();
+                showToast("[界面" + targetMode + " " + posName + "] 已設為：【輕鐵站】" + cleanName + "站");
+              }
+            });
+          })(i);
+        }
+        openListModal(
+          "[界面" + targetMode + " - " + posName + "] 選擇屯門區輕鐵站",
+          items,
+          "輸入輕鐵站名搜尋 (例如：澤豐 / 銀圍 / 麒麟 / 兆康 / 市中心)"
+        );
+      }
+
+      function showBusStationPickerDialog(targetMode, slotIndex) {
+        var posName = "第 " + (slotIndex + 1) + " 格";
+        var items = [];
+        for (var i = 0; i < tuenMunBusStopOptions.length; i++) {
+          (function (opt) {
+            items.push({
+              label: opt.displayTitle,
+              onSelect: function () {
+                saveSlotConfig(targetMode, slotIndex, "BUS", opt.cleanName, opt.stopIds.join(","));
+                updateMode23SlotHeaders();
+                refreshSettingsPageUiState();
+                refreshAllTransitData();
+                showToast("[界面" + targetMode + " " + posName + "] 已設為：【巴士站】" + opt.cleanName);
+              }
+            });
+          })(tuenMunBusStopOptions[i]);
+        }
+        openListModal(
+          "[界面" + targetMode + " - " + posName + "] 選擇屯門區巴士站",
+          items,
+          "輸入巴士站名搜尋 (例如：轉車站 / 市中心 / 紅橋 / 良景 / 和田)"
+        );
+      }
+
+      // ==================== 屯門區巴士站清單載入與快取 ====================
+      function getPinnedTopBusStations() {
+        return [
+          {
+            displayTitle: "⭐ 【巴士站】屯門轉車站 (往九龍方向 - 全部月台)",
+            cleanName: "屯門轉車站 (往九龍方向)",
+            stopIds: [SPECIAL_TMR_BBI_KOWLOON]
+          },
+          {
+            displayTitle: "⭐ 【巴士站】屯門轉車站 (往屯門方向 - 全部月台)",
+            cleanName: "屯門轉車站 (往屯門方向)",
+            stopIds: [SPECIAL_TMR_BBI_TUEN_MUN]
+          },
+          {
+            displayTitle: "⭐ 【巴士站】屯門轉車站 (來回方向全部路線)",
+            cleanName: "屯門轉車站 (來回方向)",
+            stopIds: [SPECIAL_TMR_BBI_BOTH]
+          },
+          {
+            displayTitle: "⭐ 【巴士站】紅橋 (往九龍及機場全部站柱)",
+            cleanName: "紅橋 (往九龍及機場)",
+            stopIds: ["DD56DC2336C878C1", "2FD7EBBD4AF78A93", "6FB7BC1E5BC1E4EE", "8C32D9DDB85891A6", "210978D525EEDF4F"]
+          },
+          {
+            displayTitle: "⭐ 【巴士站】大興體育館 (南行全部站柱)",
+            cleanName: "大興體育館",
+            stopIds: ["629D4E7DD9EF1AC6", "ADE15F24D2EE0B20"]
+          }
+        ];
+      }
+
+      function initDefaultTuenMunBusStops() {
+        tuenMunBusStopOptions = getPinnedTopBusStations();
+        var cachedStr = storageGet(KEY_CACHED_TM_BUS_STOPS, "");
+        if (cachedStr) {
+          try {
+            var parsed = JSON.parse(cachedStr);
+            if (parsed && Array.isArray(parsed.options) && Array.isArray(parsed.bbiIds)) {
+              tuenMunBusStopOptions = parsed.options;
+              tmrBbiAllStopIds = parsed.bbiIds;
+            }
+          } catch (e) {}
+        }
+      }
+
+      function loadAllTuenMunBusStopsInBackground() {
+        fetch("https://data.etabus.gov.hk/v1/transport/kmb/stop")
+          .then(function (res) { return res.json(); })
+          .then(function (root) {
+            if (!root || !Array.isArray(root.data)) return;
+            var groupedStops = {};
+            var groupedOrder = [];
+            var individualStops = [];
+            var bbiAll = [];
+
+            for (var i = 0; i < root.data.length; i++) {
+              var item = root.data[i];
+              var stopId = item.stop || "";
+              var nameTc = item.name_tc || "";
+              var lat = parseFloat(item.lat || 0);
+              var lng = parseFloat(item.long || 0);
+              if (!stopId || !nameTc) continue;
+
+              var isTmrBbi = nameTc.indexOf("屯門公路轉車站") !== -1 || nameTc.indexOf("屯門轉車站") !== -1;
+              if (isTmrBbi) {
+                bbiAll.push(stopId);
+              }
+              var inTuenMunBox = isTmrBbi || (lat >= 22.352 && lat <= 22.434 && lng >= 113.905 && lng <= 114.048);
+              if (!inTuenMunBox) continue;
+
+              var formattedFull = formatParentheses(nameTc).trim();
+              var baseName = formattedFull.replace(/\s*\([A-Z0-9\-]+\)\s*$/, "").trim();
+              if (!baseName) baseName = formattedFull;
+
+              if (!groupedStops[baseName]) {
+                groupedStops[baseName] = [];
+                groupedOrder.push(baseName);
+              }
+              groupedStops[baseName].push(stopId);
+
+              individualStops.push({
+                displayTitle: "【巴士站 - 單一方向站柱】" + formattedFull,
+                cleanName: formattedFull,
+                stopIds: [stopId]
+              });
+            }
+
+            var combinedList = getPinnedTopBusStations();
+            for (var g = 0; g < groupedOrder.length; g++) {
+              var stName = groupedOrder[g];
+              var ids = groupedStops[stName];
+              combinedList.push({
+                displayTitle: "【巴士站 - 全站路線】" + stName + " (共 " + ids.length + " 支站柱)",
+                cleanName: stName,
+                stopIds: ids
+              });
+            }
+            for (var k = 0; k < individualStops.length; k++) {
+              combinedList.push(individualStops[k]);
+            }
+
+            tuenMunBusStopOptions = combinedList;
+            tmrBbiAllStopIds = bbiAll;
+
+            storageSet(KEY_CACHED_TM_BUS_STOPS, JSON.stringify({
+              options: combinedList,
+              bbiIds: bbiAll
+            }));
+          })
+          .catch(function () {});
+      }
+
+      // ==================== 時間與方向判斷邏輯 ====================
+      function formatHkTime(dateObj, includeSeconds) {
+        try {
+          var opts = {
+            timeZone: "Asia/Hong_Kong",
+            hour12: false,
+            hour: "2-digit",
+            minute: "2-digit"
+          };
+          if (includeSeconds) opts.second = "2-digit";
+          return new Intl.DateTimeFormat("en-GB", opts).format(dateObj);
+        } catch (e) {
+          var h = String(dateObj.getHours()).padStart(2, "0");
+          var m = String(dateObj.getMinutes()).padStart(2, "0");
+          var s = String(dateObj.getSeconds()).padStart(2, "0");
+          return includeSeconds ? (h + ":" + m + ":" + s) : (h + ":" + m);
+        }
+      }
+
+      function formatArrivalTimeToken(diffMin, actualClock, timeStyle, starPrefix) {
+        if (timeStyle === 0) {
+          return starPrefix + actualClock;
+        } else if (timeStyle === 1) {
+          if (diffMin <= 0) return starPrefix + "即將";
+          return starPrefix + diffMin + "分";
+        } else {
+          if (diffMin <= 0) return starPrefix + "即將 (" + actualClock + ")";
+          return starPrefix + diffMin + "分 (" + actualClock + ")";
+        }
+      }
+
+      function isInboundTuenMunOrYuenLongDest(dest) {
+        for (var i = 0; i < INBOUND_KEYWORDS.length; i++) {
+          if (dest.indexOf(INBOUND_KEYWORDS[i]) !== -1) return true;
+        }
+        return false;
+      }
+
+      function isValidRouteMode1(route, dest, isLwbSection) {
+        if (!route || !dest) return false;
+        if (isInboundTuenMunOrYuenLongDest(dest)) return false;
+        if (isLwbSection) {
+          return route.indexOf("A") === 0 || route.indexOf("E") === 0 ||
+                 route.indexOf("NA") === 0 || route.indexOf("N") === 0 ||
+                 dest.indexOf("機場") !== -1 || dest.indexOf("國泰城") !== -1 ||
+                 dest.indexOf("飛機維修區") !== -1 || dest.indexOf("東涌") !== -1;
+        } else {
+          return !(route.indexOf("A") === 0 || route.indexOf("E") === 0 || route.indexOf("NA") === 0);
+        }
+      }
+
+      // ==================== API 抓取與 DOM 渲染 ====================
+      function renderEtaRowsToContainer(targetEl, blocks) {
+        targetEl.innerHTML = "";
+        if (!blocks || blocks.length === 0) {
+          var emptyDiv = document.createElement("div");
+          emptyDiv.className = "eta-empty";
+          emptyDiv.textContent = "暫無即將到站班次";
+          targetEl.appendChild(emptyDiv);
+          return;
+        }
+        for (var i = 0; i < blocks.length; i++) {
+          var b = blocks[i];
+          if (b.type === "platform") {
+            var pDiv = document.createElement("div");
+            pDiv.className = "platform-header";
+            pDiv.textContent = b.text;
+            targetEl.appendChild(pDiv);
+          } else if (b.type === "route") {
+            var rDiv = document.createElement("div");
+            rDiv.className = "eta-row";
+            var rSpan = document.createElement("span");
+            rSpan.className = "eta-route";
+            rSpan.textContent = b.route;
+            var dSpan = document.createElement("span");
+            dSpan.className = "eta-dest-times";
+            dSpan.textContent = "往" + b.dest + "➜" + b.times;
+            rDiv.appendChild(rSpan);
+            rDiv.appendChild(dSpan);
+            targetEl.appendChild(rDiv);
+          } else if (b.type === "empty") {
+            var eDiv = document.createElement("div");
+            eDiv.className = "eta-empty";
+            eDiv.textContent = b.text;
+            targetEl.appendChild(eDiv);
+          }
+        }
+      }
+
+      function fetchLrtStationUnified(stationId, timeStyle, targetView) {
+        var url = "https://rt.data.gov.hk/v1/transport/mtr/lrt/getSchedule?station_id=" + encodeURIComponent(stationId) + "&with_special=1";
+        fetch(url)
+          .then(function (res) { return res.json(); })
+          .then(function (root) {
+            var baseTimeMillis = Date.now();
+            if (root && root.system_time) {
+              var isoSys = String(root.system_time).trim().replace(" ", "T") + "+08:00";
+              var parsed = Date.parse(isoSys);
+              if (!isNaN(parsed)) baseTimeMillis = parsed;
+            }
+            var blocks = [];
+            if (root && root.status === 1 && Array.isArray(root.platform_list)) {
+              for (var i = 0; i < root.platform_list.length; i++) {
+                var p = root.platform_list[i];
+                var pId = p.platform_id;
+                blocks.push({
+                  type: "platform",
+                  text: getLrtPlatformHeaderText(stationId, pId)
+                });
+
+                var groupedTimes = {};
+                var routeOrder = [];
+                var routeNoMap = {};
+                var destMap = {};
+
+                if (Array.isArray(p.route_list)) {
+                  for (var j = 0; j < p.route_list.length; j++) {
+                    var r = p.route_list[j];
+                    var routeNo = String(r.route_no || "").trim();
+                    var dest = formatParentheses(r.dest_ch || "").trim();
+                    var timeCh = String(r.time_ch || "-");
+                    var cars = parseInt(r.train_length || 1, 10);
+                    if (!routeNo) continue;
+
+                    var addMins = 0;
+                    var m = timeCh.match(/(\d+)/);
+                    if (m) addMins = parseInt(m[1], 10);
+
+                    var isArriving = (timeCh === "-" || timeCh.indexOf("即將") !== -1 || timeCh.indexOf("離開") !== -1);
+                    var diffMin = isArriving ? 0 : addMins;
+                    var actualClock = formatHkTime(new Date(baseTimeMillis + addMins * 60000), false);
+                    var starPrefix = (cars === 2) ? "*" : "";
+                    var timeToken = formatArrivalTimeToken(diffMin, actualClock, timeStyle, starPrefix);
+
+                    var key = routeNo + "||" + dest;
+                    if (!groupedTimes[key]) {
+                      groupedTimes[key] = [];
+                      routeOrder.push(key);
+                      routeNoMap[key] = routeNo;
+                      destMap[key] = dest;
+                    }
+                    groupedTimes[key].push(timeToken.trim());
+                  }
+                }
+
+                if (routeOrder.length > 0) {
+                  for (var k = 0; k < routeOrder.length; k++) {
+                    var rk = routeOrder[k];
+                    blocks.push({
+                      type: "route",
+                      route: routeNoMap[rk],
+                      dest: destMap[rk],
+                      times: groupedTimes[rk].join(", ")
+                    });
+                  }
+                } else {
+                  blocks.push({ type: "empty", text: "暫無班次" });
+                }
+              }
+            }
+            renderEtaRowsToContainer(targetView, blocks);
+          })
+          .catch(function () {});
+      }
+
+      function fetchBusSectionMode1(stopIds, isLwbSection, usePreferredKmbOrder, targetView) {
+        var nowMillis = Date.now();
+        var promises = stopIds.map(function (sid) {
+          return fetch("https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/" + encodeURIComponent(sid.trim()))
+            .then(function (r) { return r.json(); })
+            .catch(function () { return null; });
+        });
+
+        Promise.all(promises).then(function (results) {
+          var routeEntries = {};
+          var routeDestMap = {};
+          var rawKeys = [];
+
+          for (var s = 0; s < results.length; s++) {
+            var root = results[s];
+            if (!root || !Array.isArray(root.data)) continue;
+            for (var i = 0; i < root.data.length; i++) {
+              var item = root.data[i];
+              var route = String(item.route || "").trim();
+              var dest = formatParentheses(item.dest_tc || "").trim();
+              var etaStr = String(item.eta || "");
+              if (!isValidRouteMode1(route, dest, isLwbSection)) continue;
+              if (etaStr && etaStr !== "null" && etaStr.length >= 19) {
+                var etaMillis = Date.parse(etaStr);
+                if (!isNaN(etaMillis)) {
+                  var diffSec = (etaMillis - nowMillis) / 1000;
+                  if (diffSec < -45) continue;
+                  var diffMin = Math.max(0, Math.round(diffSec / 60));
+                  var actualClock = formatHkTime(new Date(etaMillis), false);
+                  var timeLabel = formatArrivalTimeToken(diffMin, actualClock, 2, "");
+                  if (!routeEntries[route]) {
+                    routeEntries[route] = [];
+                    routeDestMap[route] = dest;
+                    rawKeys.push(route);
+                  }
+                  routeEntries[route].push({ etaMillis: etaMillis, label: timeLabel });
+                }
+              }
+            }
+          }
+
+          var orderedRoutes = [];
+          if (usePreferredKmbOrder) {
+            for (var p = 0; p < PREFERRED_KMB_ORDER.length; p++) {
+              var pref = PREFERRED_KMB_ORDER[p];
+              if (routeEntries[pref]) orderedRoutes.push(pref);
+            }
+          }
+          for (var r = 0; r < rawKeys.length; r++) {
+            if (orderedRoutes.indexOf(rawKeys[r]) === -1) {
+              orderedRoutes.push(rawKeys[r]);
+            }
+          }
+
+          var blocks = [];
+          for (var idx = 0; idx < orderedRoutes.length; idx++) {
+            var rNo = orderedRoutes[idx];
+            var entries = routeEntries[rNo] || [];
+            entries.sort(function (a, b) { return a.etaMillis - b.etaMillis; });
+            var topLabels = [];
+            for (var e = 0; e < entries.length; e++) {
+              if (topLabels.indexOf(entries[e].label) === -1) {
+                topLabels.push(entries[e].label);
+                if (topLabels.length >= 2) break;
+              }
+            }
+            blocks.push({
+              type: "route",
+              route: rNo,
+              dest: routeDestMap[rNo],
+              times: topLabels.join(", ")
+            });
+          }
+          renderEtaRowsToContainer(targetView, blocks);
+        });
+      }
+
+      function fetchBusStationAllRoutesMode23(stopIds, timeStyle, targetView) {
+        var needsBbi = false;
+        var bbiDirectionFilter = 0;
+        for (var i = 0; i < stopIds.length; i++) {
+          var s = stopIds[i].trim();
+          if (s === SPECIAL_TMR_BBI_KOWLOON) {
+            needsBbi = true;
+            bbiDirectionFilter = 1;
+          } else if (s === SPECIAL_TMR_BBI_TUEN_MUN) {
+            needsBbi = true;
+            bbiDirectionFilter = 2;
+          } else if (s === SPECIAL_TMR_BBI_BOTH) {
+            needsBbi = true;
+            bbiDirectionFilter = 0;
+          }
+        }
+
+        var ensureStopsPromise;
+        if (needsBbi && tmrBbiAllStopIds.length === 0) {
+          ensureStopsPromise = fetch("https://data.etabus.gov.hk/v1/transport/kmb/stop")
+            .then(function (r) { return r.json(); })
+            .then(function (root) {
+              if (root && Array.isArray(root.data)) {
+                var bbi = [];
+                for (var k = 0; k < root.data.length; k++) {
+                  var nm = root.data[k].name_tc || "";
+                  if (nm.indexOf("屯門公路轉車站") !== -1 || nm.indexOf("屯門轉車站") !== -1) {
+                    bbi.push(root.data[k].stop);
+                  }
+                }
+                tmrBbiAllStopIds = bbi;
+              }
+              return tmrBbiAllStopIds;
+            })
+            .catch(function () { return []; });
+        } else if (needsBbi) {
+          ensureStopsPromise = Promise.resolve(tmrBbiAllStopIds);
+        } else {
+          var cleanIds = [];
+          for (var c = 0; c < stopIds.length; c++) {
+            if (stopIds[c].trim()) cleanIds.push(stopIds[c].trim());
+          }
+          ensureStopsPromise = Promise.resolve(cleanIds);
+        }
+
+        ensureStopsPromise.then(function (resolvedStops) {
+          var nowMillis = Date.now();
+          var promises = resolvedStops.map(function (sid) {
+            return fetch("https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/" + encodeURIComponent(sid))
+              .then(function (r) { return r.json(); })
+              .catch(function () { return null; });
+          });
+
+          return Promise.all(promises).then(function (results) {
+            var routeKeyEntries = {};
+            var routeNoMap = {};
+            var destMap = {};
+            var keysOrder = [];
+
+            for (var s = 0; s < results.length; s++) {
+              var root = results[s];
+              if (!root || !Array.isArray(root.data)) continue;
+              for (var i = 0; i < root.data.length; i++) {
+                var item = root.data[i];
+                var route = String(item.route || "").trim();
+                var dest = formatParentheses(item.dest_tc || "").trim();
+                var etaStr = String(item.eta || "");
+                if (!route || !dest) continue;
+
+                if (bbiDirectionFilter === 1 && isInboundTuenMunOrYuenLongDest(dest)) continue;
+                if (bbiDirectionFilter === 2 && !isInboundTuenMunOrYuenLongDest(dest)) continue;
+
+                if (etaStr && etaStr !== "null" && etaStr.length >= 19) {
+                  var etaMillis = Date.parse(etaStr);
+                  if (!isNaN(etaMillis)) {
+                    var diffSec = (etaMillis - nowMillis) / 1000;
+                    if (diffSec < -45) continue;
+                    var diffMin = Math.max(0, Math.round(diffSec / 60));
+                    var actualClock = formatHkTime(new Date(etaMillis), false);
+                    var timeLabel = formatArrivalTimeToken(diffMin, actualClock, timeStyle, "");
+                    var key = route + "||" + dest;
+                    if (!routeKeyEntries[key]) {
+                      routeKeyEntries[key] = [];
+                      routeNoMap[key] = route;
+                      destMap[key] = dest;
+                      keysOrder.push(key);
+                    }
+                    routeKeyEntries[key].push({ etaMillis: etaMillis, label: timeLabel });
+                  }
+                }
+              }
+            }
+
+            var blocks = [];
+            var maxTimes = (timeStyle === 2) ? 2 : 3;
+            for (var idx = 0; idx < keysOrder.length; idx++) {
+              var k = keysOrder[idx];
+              var entries = routeKeyEntries[k] || [];
+              entries.sort(function (a, b) { return a.etaMillis - b.etaMillis; });
+              var topLabels = [];
+              for (var e = 0; e < entries.length; e++) {
+                if (topLabels.indexOf(entries[e].label) === -1) {
+                  topLabels.push(entries[e].label);
+                  if (topLabels.length >= maxTimes) break;
+                }
+              }
+              blocks.push({
+                type: "route",
+                route: routeNoMap[k],
+                dest: destMap[k],
+                times: topLabels.join(", ")
+              });
+            }
+            renderEtaRowsToContainer(targetView, blocks);
+          });
+        });
+      }
+
+      function refreshAllTransitData() {
+        var nowStr = formatHkTime(new Date(), true);
+        tvUpdateTime.textContent = "更新：" + nowStr;
+
+        if (currentUiMode === 1) {
+          fetchLrtStationUnified(LRT_AFFLUENCE_ID, 2, document.getElementById("tvLrtAffluence"));
+          fetchLrtStationUnified(LRT_NGAN_WAI_ID, 2, document.getElementById("tvLrtNganWai"));
+          fetchBusSectionMode1(KMB_HUNG_KIU_STOPS, false, true, document.getElementById("tvKmbHungKiu"));
+          fetchBusSectionMode1(LWB_HUNG_KIU_STOPS, true, false, document.getElementById("tvLwbHungKiu"));
+          fetchBusSectionMode1(KMB_TAI_HING_STOPS, false, false, document.getElementById("tvKmbTaiHing"));
+          fetchBusSectionMode1(LWB_TAI_HING_STOPS, true, false, document.getElementById("tvLwbTaiHing"));
+        } else {
+          updateMode23SlotHeaders();
+          var timeStyle = getTimeDisplayStyle();
+          var activeMode = (currentUiMode === 3) ? 3 : 2;
+          for (var i = 0; i < 8; i++) {
+            var type = getSlotType(activeMode, i);
+            var idsCsv = getSlotIdsCsv(activeMode, i);
+            var targetView = tvSlotBodies[i];
+            if (!targetView) continue;
+            if (type === "LRT") {
+              fetchLrtStationUnified(idsCsv.trim(), timeStyle, targetView);
+            } else {
+              fetchBusStationAllRoutesMode23(idsCsv.split(","), timeStyle, targetView);
+            }
+          }
+        }
+      }
+
+      // ==================== 設定頁面開關與事件綁定 ====================
+      function openSettingsPage() {
+        refreshSettingsPageUiState();
+        layoutSettingsPage.classList.add("open");
+        layoutSettingsPage.setAttribute("aria-hidden", "false");
+      }
+
+      function closeSettingsPage() {
+        layoutSettingsPage.classList.remove("open");
+        layoutSettingsPage.setAttribute("aria-hidden", "true");
+        applyUiModeView();
+        refreshAllTransitData();
+      }
+
+      function bindEvents() {
+        document.getElementById("btnQuickOptions").addEventListener("click", showQuickOptionsPopup);
+        pillMode2.addEventListener("click", function () { setUiMode(2); });
+        pillMode3.addEventListener("click", function () { setUiMode(3); });
+        pillSettings.addEventListener("click", openSettingsPage);
+        document.getElementById("btnManualRefresh").addEventListener("click", function () {
+          refreshAllTransitData();
+          showToast("已即時更新到站時間");
+        });
+
+        document.getElementById("btnCloseSettings").addEventListener("click", closeSettingsPage);
+
+        swMode1.addEventListener("change", function () {
+          if (swMode1.checked) setUiMode(1);
+          else refreshSettingsPageUiState();
+        });
+        swMode2.addEventListener("change", function () {
+          if (swMode2.checked) setUiMode(2);
+          else refreshSettingsPageUiState();
+        });
+        swMode3.addEventListener("change", function () {
+          if (swMode3.checked) setUiMode(3);
+          else refreshSettingsPageUiState();
+        });
+
+        swForceTwoCol.addEventListener("change", function () {
+          storageSet(KEY_FORCE_TWO_COL, swForceTwoCol.checked ? "1" : "0");
+          applyUiModeView();
+          refreshSettingsPageUiState();
+        });
+
+        swTimeFormatClock.addEventListener("change", function () {
+          if (swTimeFormatClock.checked) saveTimeDisplayStyle(0);
+          refreshSettingsPageUiState();
+          refreshAllTransitData();
+        });
+        swTimeFormatMin.addEventListener("change", function () {
+          if (swTimeFormatMin.checked) saveTimeDisplayStyle(1);
+          refreshSettingsPageUiState();
+          refreshAllTransitData();
+        });
+        swTimeFormatBoth.addEventListener("change", function () {
+          if (swTimeFormatBoth.checked) saveTimeDisplayStyle(2);
+          refreshSettingsPageUiState();
+          refreshAllTransitData();
+        });
+
+        btnEditTargetMode2.addEventListener("click", function () {
+          settingsEditingTargetMode = 2;
+          refreshSettingsPageUiState();
+        });
+        btnEditTargetMode3.addEventListener("click", function () {
+          settingsEditingTargetMode = 3;
+          refreshSettingsPageUiState();
+        });
+
+        document.getElementById("btnResetCurrentTargetSlots").addEventListener("click", function () {
+          resetModeSlots(settingsEditingTargetMode);
+          updateMode23SlotHeaders();
+          refreshSettingsPageUiState();
+          refreshAllTransitData();
+          showToast("已還原 [界面" + settingsEditingTargetMode + "] 為預設 8 個車站");
+        });
+
+        document.getElementById("btnDownloadIndexHtml").addEventListener("click", function () {
+          try {
+            var fullHtml = "<!DOCTYPE html>" + document.documentElement.outerHTML;
+            var blob = new Blob([fullHtml], { type: "text/html;charset=utf-8" });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement("a");
+            a.href = url;
+            a.download = "index.html";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+            showToast("已開始下載 index.html");
+          } catch (e) {
+            showToast("請使用對話框內提供的檔案下載");
+          }
+        });
+      }
+
+      // ==================== 啟動初始化 ====================
+      function initApp() {
+        var savedMode = parseInt(storageGet(KEY_UI_MODE, "2"), 10);
+        currentUiMode = (savedMode === 1 || savedMode === 2 || savedMode === 3) ? savedMode : 2;
+        settingsEditingTargetMode = (currentUiMode === 3) ? 3 : 2;
+
+        buildEightStationCards();
+        buildSettingsSlotButtons();
+        initDefaultTuenMunBusStops();
+        loadAllTuenMunBusStopsInBackground();
+        bindEvents();
+        applyUiModeView();
+
+        // 24小時制即時時鐘
+        function updateClock() {
+          tvBigClock.textContent = formatHkTime(new Date(), true);
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // 每 5 秒自動刷新數據
+        refreshAllTransitData();
+        setInterval(refreshAllTransitData, 5000);
+
+        // 註冊 Service Worker (如在 GitHub Pages 環境下存在 sw.js)
+        if ("serviceWorker" in navigator && window.location.protocol.indexOf("http") === 0) {
+          navigator.serviceWorker.register("./sw.js").catch(function () {});
+        }
+      }
+
+      initApp();
+    })();
+  </script>
+</body>
+</html>

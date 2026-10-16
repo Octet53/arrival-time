@@ -1,0 +1,24 @@
+{
+  "name": "到站時間",
+  "short_name": "到站時間",
+  "description": "輕鐵及九巴龍運實時到站時間看板 (支援界面2及界面3自訂8格車站)",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0F0F0F",
+  "theme_color": "#0F0F0F",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
