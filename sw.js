@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-time-pwa-v5";
+const CACHE_NAME = "arrival-time-pwa-v6";
 const ASSETS = ["./", "./index.html", "./manifest.json"];
 
 self.addEventListener("install", (event) => {
@@ -25,7 +25,8 @@ self.addEventListener("fetch", (event) => {
   if (
     url.includes("rt.data.gov.hk") ||
     url.includes("data.etabus.gov.hk") ||
-    url.includes("data.weather.gov.hk")
+    url.includes("data.weather.gov.hk") ||
+    url.includes("api.open-meteo.com")
   ) {
     return;
   }

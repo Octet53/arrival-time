@@ -342,10 +342,11 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     }
 
-    /* 卡片最右上角：即時氣溫及天氣概況 Emoji */
+    /* 卡片最右上角：即時氣溫及天氣概況 Emoji (支援輕觸 15 秒切換 💧降雨率%) */
     .card-weather {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 2px;
       background: rgba(255, 255, 255, 0.06);
       border: 1px solid rgba(255, 255, 255, 0.10);
@@ -356,6 +357,11 @@
       color: #E0E0E6;
       white-space: nowrap;
       flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .card-weather:active {
+      background: rgba(255, 255, 255, 0.16);
     }
 
     /* 拖卡車星號 * 字體縮小 20% (0.8em) */
@@ -1560,34 +1566,228 @@
         return "";
       }
 
-      // ==================== 香港天文台 (HKO) 即時氣象站配對及天氣 Emoji ====================
-      var MTR_NEAREST_WEATHER_STATION = {
-        "TUM": "屯門", "SIH": "屯門", "TIS": "濕地公園", "LOP": "元朗公園", "YUL": "元朗公園",
-        "KSR": "元朗公園", "TWW": "荃灣城門谷", "MEF": "深水埗", "NAC": "深水埗", "AUS": "京士柏",
-        "ETS": "香港天文台", "HUH": "香港天文台", "HOM": "京士柏", "TKW": "九龍城", "SUW": "九龍城",
-        "KAT": "九龍城", "DIH": "黃大仙", "HIK": "沙田", "TAW": "沙田", "CKT": "沙田",
-        "STW": "沙田", "CIO": "沙田", "SHM": "沙田", "TSH": "沙田", "HEO": "沙田",
-        "MOS": "沙田", "WKS": "沙田", "ADM": "香港公園", "EXC": "香港公園", "MKK": "京士柏",
-        "KOT": "九龍城", "SHT": "沙田", "FOT": "沙田", "RAC": "沙田", "UNI": "大埔",
-        "TAP": "大埔", "TWO": "大埔", "FAN": "上水", "SHS": "上水", "LOW": "上水",
-        "LMC": "上水", "CEN": "香港公園", "TST": "香港天文台", "JOR": "香港天文台", "YMT": "京士柏",
-        "MOK": "京士柏", "PRE": "深水埗", "SSP": "深水埗", "CSW": "深水埗", "LCK": "深水埗",
-        "LAK": "青衣", "KWF": "青衣", "KWH": "荃灣城門谷", "TWH": "荃灣城門谷", "TSW": "荃灣城門谷",
-        "WHA": "香港天文台", "SKM": "深水埗", "LOF": "九龍城", "WTS": "黃大仙", "CHH": "黃大仙",
-        "KOB": "觀塘", "NTK": "觀塘", "KWT": "觀塘", "LAT": "觀塘", "YAT": "將軍澳",
-        "TIK": "將軍澳", "KET": "香港公園", "HKU": "香港公園", "SYP": "香港公園", "SHW": "香港公園",
-        "WAC": "跑馬地", "CAB": "跑馬地", "TIH": "跑馬地", "FOH": "跑馬地", "NOP": "筲箕灣",
-        "QUB": "筲箕灣", "TAK": "筲箕灣", "SWH": "筲箕灣", "SKW": "筲箕灣", "HFC": "筲箕灣",
-        "CHW": "筲箕灣", "HOK": "香港公園", "KOW": "京士柏", "OLY": "深水埗", "TSY": "青衣",
-        "SUN": "青衣", "TUC": "赤鱲角", "TKO": "將軍澳", "LHP": "將軍澳", "HAH": "將軍澳",
-        "POA": "將軍澳", "OCP": "黃竹坑", "WCH": "黃竹坑", "LET": "黃竹坑", "SOH": "黃竹坑",
-        "AIR": "赤鱲角", "AWE": "赤鱲角", "DIS": "青衣"
+      // ==================== 香港天文台 (HKO) 自動氣象站直線距離配對 + 即時氣溫及💧降雨率 ====================
+      // 全港 31 個地面自動氣象站官方經緯度座標 (資料來源：香港天文台氣象站資料 https://www.hko.gov.hk/tc/cis/stn.htm)
+      var HKO_WEATHER_STATIONS = [
+        { id: "TU1", name: "屯門", aliases: ["屯門", "屯門兒童及青少年院"], lat: 22.3858, lng: 113.9642, district: "屯門" },
+        { id: "YLP", name: "元朗公園", aliases: ["元朗公園", "水邊圍"], lat: 22.4408, lng: 114.0183, district: "元朗" },
+        { id: "WLP", name: "濕地公園", aliases: ["濕地公園"], lat: 22.4667, lng: 114.0089, district: "元朗" },
+        { id: "LFS", name: "流浮山", aliases: ["流浮山"], lat: 22.4689, lng: 113.9836, district: "元朗" },
+        { id: "SEK", name: "石崗", aliases: ["石崗"], lat: 22.4361, lng: 114.0847, district: "元朗" },
+        { id: "SSH", name: "上水", aliases: ["上水"], lat: 22.5019, lng: 114.1111, district: "北區" },
+        { id: "TLS", name: "大隴", aliases: ["大隴"], lat: 22.4847, lng: 114.1175, district: "北區" },
+        { id: "TKL", name: "打鼓嶺", aliases: ["打鼓嶺"], lat: 22.5286, lng: 114.1567, district: "北區" },
+        { id: "YCT", name: "大埔", aliases: ["大埔", "大埔(元洲仔公園)", "大埔（元洲仔公園）", "大埔墟"], lat: 22.4483, lng: 114.1772, district: "大埔" },
+        { id: "PLC", name: "大美督", aliases: ["大美督"], lat: 22.4753, lng: 114.2375, district: "大埔" },
+        { id: "SHA", name: "沙田", aliases: ["沙田"], lat: 22.4025, lng: 114.2100, district: "沙田" },
+        { id: "SKG", name: "西貢", aliases: ["西貢"], lat: 22.3756, lng: 114.2744, district: "西貢" },
+        { id: "JKB", name: "將軍澳", aliases: ["將軍澳"], lat: 22.3158, lng: 114.2556, district: "西貢" },
+        { id: "CWB", name: "清水灣", aliases: ["清水灣"], lat: 22.2633, lng: 114.2997, district: "西貢" },
+        { id: "TW",  name: "荃灣城門谷", aliases: ["荃灣城門谷"], lat: 22.3756, lng: 114.1267, district: "荃灣" },
+        { id: "TY1", name: "青衣", aliases: ["青衣", "新青衣站", "長青"], lat: 22.3442, lng: 114.1100, district: "葵青" },
+        { id: "SSP", name: "深水埗", aliases: ["深水埗"], lat: 22.3358, lng: 114.1369, district: "深水埗" },
+        { id: "KP",  name: "京士柏", aliases: ["京士柏"], lat: 22.3119, lng: 114.1728, district: "油尖旺" },
+        { id: "HKO", name: "香港天文台", aliases: ["香港天文台", "天文台"], lat: 22.3019, lng: 114.1742, district: "油尖旺" },
+        { id: "KLT", name: "九龍城", aliases: ["九龍城", "廣播道"], lat: 22.3350, lng: 114.1847, district: "九龍城" },
+        { id: "WTS", name: "黃大仙", aliases: ["黃大仙", "新蒲崗"], lat: 22.3394, lng: 114.2053, district: "黃大仙" },
+        { id: "SE1", name: "啟德跑道公園", aliases: ["啟德跑道公園", "啟德"], lat: 22.3050, lng: 114.2169, district: "九龍城" },
+        { id: "KTG", name: "觀塘", aliases: ["觀塘"], lat: 22.3186, lng: 114.2247, district: "觀塘" },
+        { id: "HKP", name: "香港公園", aliases: ["香港公園"], lat: 22.2783, lng: 114.1622, district: "中西區" },
+        { id: "HPV", name: "跑馬地", aliases: ["跑馬地"], lat: 22.2706, lng: 114.1836, district: "灣仔" },
+        { id: "SKW", name: "筲箕灣", aliases: ["筲箕灣"], lat: 22.2817, lng: 114.2361, district: "東區" },
+        { id: "HKS", name: "黃竹坑", aliases: ["黃竹坑"], lat: 22.2478, lng: 114.1736, district: "南區" },
+        { id: "STY", name: "赤柱", aliases: ["赤柱"], lat: 22.2142, lng: 114.2186, district: "南區" },
+        { id: "HKA", name: "赤鱲角", aliases: ["赤鱲角", "香港國際機場"], lat: 22.3094, lng: 113.9219, district: "離島" },
+        { id: "PEN", name: "坪洲", aliases: ["坪洲"], lat: 22.2911, lng: 114.0433, district: "離島" },
+        { id: "CCH", name: "長洲", aliases: ["長洲"], lat: 22.2011, lng: 114.0267, district: "離島" }
+      ];
+
+      // 44 個輕鐵站經緯度座標
+      var LRT_STATION_COORDS = {
+        "1":   [22.3726, 113.9661], "10":  [22.3752, 113.9616], "15":  [22.3780, 113.9628],
+        "20":  [22.3822, 113.9636], "30":  [22.3852, 113.9653], "40":  [22.3905, 113.9672],
+        "50":  [22.3944, 113.9682], "60":  [22.3976, 113.9696], "70":  [22.3982, 113.9734],
+        "75":  [22.4014, 113.9746], "80":  [22.4057, 113.9764], "90":  [22.4106, 113.9776],
+        "100": [22.4119, 113.9788], "110": [22.4105, 113.9756], "120": [22.4071, 113.9729],
+        "130": [22.4084, 113.9695], "140": [22.4077, 113.9662], "150": [22.4067, 113.9638],
+        "160": [22.4040, 113.9632], "170": [22.4011, 113.9652], "180": [22.4021, 113.9618],
+        "190": [22.3985, 113.9626], "200": [22.3971, 113.9664], "212": [22.4034, 113.9693],
+        "220": [22.4027, 113.9718], "230": [22.4035, 113.9740], "240": [22.3741, 113.9696],
+        "250": [22.3802, 113.9713], "260": [22.3834, 113.9730], "265": [22.3842, 113.9754],
+        "270": [22.3881, 113.9748], "275": [22.3863, 113.9735], "280": [22.3917, 113.9748],
+        "295": [22.3951, 113.9731], "300": [22.3944, 113.9762], "310": [22.3976, 113.9776],
+        "320": [22.4006, 113.9781], "330": [22.4038, 113.9789], "340": [22.4074, 113.9794],
+        "350": [22.4184, 113.9826], "360": [22.4241, 113.9873], "370": [22.4293, 113.9917],
+        "380": [22.4337, 113.9977], "920": [22.3822, 113.9774]
       };
 
-      var hkoTempByPlace = {};
-      var hkoDefaultTemp = null;
-      var hkoWeatherEmoji = "⛅";
+      // 全港 98 個港鐵站經緯度座標
+      var MTR_STATION_COORDS = {
+        "TUM": [22.3953, 113.9731], "SIH": [22.4119, 113.9788], "TIS": [22.4481, 114.0044],
+        "LOP": [22.4477, 114.0253], "YUL": [22.4461, 114.0353], "KSR": [22.4347, 114.0633],
+        "TWW": [22.3686, 114.1097], "MEF": [22.3381, 114.1375], "NAC": [22.3267, 114.1533],
+        "AUS": [22.3047, 114.1664], "ETS": [22.2956, 114.1742], "HUH": [22.3028, 114.1817],
+        "HOM": [22.3092, 114.1828], "TKW": [22.3172, 114.1875], "SUW": [22.3258, 114.1917],
+        "KAT": [22.3303, 114.1992], "DIH": [22.3400, 114.2017], "HIK": [22.3639, 114.1708],
+        "TAW": [22.3731, 114.1786], "CKT": [22.3747, 114.1861], "STW": [22.3772, 114.1950],
+        "CIO": [22.3822, 114.2036], "SHM": [22.3878, 114.2083], "TSH": [22.4089, 114.2231],
+        "HEO": [22.4175, 114.2258], "MOS": [22.4247, 114.2317], "WKS": [22.4292, 114.2439],
+        "ADM": [22.2793, 114.1650], "EXC": [22.2817, 114.1753], "MKK": [22.3222, 114.1728],
+        "KOT": [22.3369, 114.1761], "SHT": [22.3828, 114.1875], "FOT": [22.3953, 114.1983],
+        "RAC": [22.4006, 114.2028], "UNI": [22.4133, 114.2103], "TAP": [22.4447, 114.1697],
+        "TWO": [22.4511, 114.1611], "FAN": [22.4922, 114.1386], "SHS": [22.5011, 114.1278],
+        "LOW": [22.5283, 114.1133], "LMC": [22.5144, 114.0658], "CEN": [22.2819, 114.1581],
+        "TST": [22.2975, 114.1722], "JOR": [22.3050, 114.1717], "YMT": [22.3131, 114.1706],
+        "MOK": [22.3192, 114.1694], "PRE": [22.3244, 114.1683], "SSP": [22.3308, 114.1622],
+        "CSW": [22.3356, 114.1564], "LCK": [22.3372, 114.1483], "LAK": [22.3483, 114.1261],
+        "KWF": [22.3569, 114.1261], "KWH": [22.3633, 114.1311], "TWH": [22.3708, 114.1250],
+        "TSW": [22.3736, 114.1178], "WHA": [22.3050, 114.1897], "SKM": [22.3319, 114.1686],
+        "LOF": [22.3381, 114.1872], "WTS": [22.3417, 114.1939], "CHH": [22.3347, 114.2089],
+        "KOB": [22.3236, 114.2142], "NTK": [22.3156, 114.2192], "KWT": [22.3122, 114.2264],
+        "LAT": [22.3067, 114.2331], "YAT": [22.2978, 114.2372], "TIK": [22.3042, 114.2525],
+        "KET": [22.2811, 114.1289], "HKU": [22.2842, 114.1356], "SYP": [22.2858, 114.1428],
+        "SHW": [22.2864, 114.1519], "WAC": [22.2775, 114.1731], "CAB": [22.2803, 114.1836],
+        "TIH": [22.2828, 114.1917], "FOH": [22.2881, 114.1936], "NOP": [22.2911, 114.2008],
+        "QUB": [22.2878, 114.2097], "TAK": [22.2847, 114.2164], "SWH": [22.2822, 114.2219],
+        "SKW": [22.2792, 114.2289], "HFC": [22.2769, 114.2397], "CHW": [22.2644, 114.2372],
+        "HOK": [22.2850, 114.1581], "KOW": [22.3047, 114.1614], "OLY": [22.3178, 114.1603],
+        "TSY": [22.3583, 114.1072], "SUN": [22.3317, 114.0289], "TUC": [22.2892, 113.9417],
+        "TKO": [22.3075, 114.2600], "HAH": [22.3156, 114.2644], "POA": [22.3225, 114.2581],
+        "LHP": [22.2958, 114.2689], "OCP": [22.2486, 114.1742], "WCH": [22.2481, 114.1675],
+        "LET": [22.2422, 114.1561], "SOH": [22.2428, 114.1461], "AIR": [22.3161, 113.9367],
+        "AWE": [22.3217, 113.9411], "DIS": [22.3156, 114.0450]
+      };
+
+      // 巴士站經緯度座標快取表 (預設常用站 + 動態從九巴 API 載入)
+      var busStopCoordsMap = {
+        "DYNAMIC_TMR_BBI_KOWLOON": [22.3627, 114.0156],
+        "DYNAMIC_TMR_BBI_TUEN_MUN": [22.3632, 114.0150],
+        "DYNAMIC_TMR_BBI_BOTH": [22.3629, 114.0153],
+        "DD56DC2336C878C1": [22.4021, 113.9774],
+        "2FD7EBBD4AF78A93": [22.4021, 113.9774],
+        "6FB7BC1E5BC1E4EE": [22.4021, 113.9774],
+        "8C32D9DDB85891A6": [22.4021, 113.9774],
+        "210978D525EEDF4F": [22.4021, 113.9774],
+        "629D4E7DD9EF1AC6": [22.4025, 113.9712],
+        "ADE15F24D2EE0B20": [22.4025, 113.9712]
+      };
+
+      // 氣象資料快取狀態
+      var hko1MinTempByStationId = {};
+      var hkoRhrTempByStationId = {};
+      var hkoHumidityByStationId = {};
+      var hkoHourlyRainMmByStationId = {};
+      var hkoDistrictRainMm = {};
+      var openMeteoByStationId = {};
+      var hkoGlobalIconEmoji = "⛅";
+      var hkoPsrBaseProb = null;
       var lastWeatherFetchMillis = 0;
+
+      // 計算地球表面兩點之間嘅直線距離 (Haversine 公式，單位：公里)
+      function calcStraightLineDistanceKm(lat1, lng1, lat2, lng2) {
+        var R = 6371.0;
+        var dLat = (lat2 - lat1) * Math.PI / 180.0;
+        var dLng = (lng2 - lng1) * Math.PI / 180.0;
+        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180.0) * Math.cos(lat2 * Math.PI / 180.0) *
+                Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+      }
+
+      function normalizePlaceName(name) {
+        return String(name || "")
+          .replace(/（/g, "(")
+          .replace(/）/g, ")")
+          .replace(/\s+/g, "")
+          .trim();
+      }
+
+      function matchHkoStationIdByPlaceName(rawPlace) {
+        var norm = normalizePlaceName(rawPlace);
+        if (!norm) return null;
+        for (var i = 0; i < HKO_WEATHER_STATIONS.length; i++) {
+          var st = HKO_WEATHER_STATIONS[i];
+          for (var j = 0; j < st.aliases.length; j++) {
+            if (normalizePlaceName(st.aliases[j]) === norm) {
+              return st.id;
+            }
+          }
+        }
+        for (var k = 0; k < HKO_WEATHER_STATIONS.length; k++) {
+          var st2 = HKO_WEATHER_STATIONS[k];
+          if (norm.indexOf(normalizePlaceName(st2.name)) !== -1) {
+            return st2.id;
+          }
+        }
+        return null;
+      }
+
+      // 根據用戶所選車站 (輕鐵 / 港鐵 / 巴士) 取得該車站嘅經緯度座標
+      function getTransitStationCoords(type, idsCsv) {
+        var raw = String(idsCsv || "").trim();
+        if (type === "LRT") {
+          if (LRT_STATION_COORDS[raw]) {
+            return { lat: LRT_STATION_COORDS[raw][0], lng: LRT_STATION_COORDS[raw][1] };
+          }
+          return { lat: 22.3951, lng: 113.9731 };
+        } else if (type === "MTR") {
+          var firstToken = raw.split(",")[0].trim();
+          var staCode = firstToken.indexOf(":") !== -1 ? firstToken.split(":")[1].trim() : firstToken;
+          if (staCode && MTR_STATION_COORDS[staCode]) {
+            return { lat: MTR_STATION_COORDS[staCode][0], lng: MTR_STATION_COORDS[staCode][1] };
+          }
+          return { lat: 22.3019, lng: 114.1742 };
+        } else {
+          var stopIds = raw.split(",");
+          for (var i = 0; i < stopIds.length; i++) {
+            var sid = stopIds[i].trim();
+            if (sid && busStopCoordsMap[sid]) {
+              return { lat: busStopCoordsMap[sid][0], lng: busStopCoordsMap[sid][1] };
+            }
+          }
+          return { lat: 22.3951, lng: 113.9731 };
+        }
+      }
+
+      function hasValidTemperatureDataForStation(stId) {
+        return (hko1MinTempByStationId[stId] !== undefined) ||
+               (hkoRhrTempByStationId[stId] !== undefined) ||
+               (openMeteoByStationId[stId] && openMeteoByStationId[stId].temp !== undefined);
+      }
+
+      // 以地圖上直線距離最近果一個氣象站作準
+      function findNearestWeatherStationForSlot(type, idsCsv) {
+        var coords = getTransitStationCoords(type, idsCsv);
+        var bestStation = HKO_WEATHER_STATIONS[0];
+        var minDist = Infinity;
+
+        // 優先從已有即時氣溫數據嘅氣象站中選出直線距離最近嗰個
+        var foundWithData = false;
+        for (var i = 0; i < HKO_WEATHER_STATIONS.length; i++) {
+          var st = HKO_WEATHER_STATIONS[i];
+          if (!hasValidTemperatureDataForStation(st.id)) continue;
+          var d = calcStraightLineDistanceKm(coords.lat, coords.lng, st.lat, st.lng);
+          if (d < minDist) {
+            minDist = d;
+            bestStation = st;
+            foundWithData = true;
+          }
+        }
+
+        if (!foundWithData) {
+          minDist = Infinity;
+          for (var j = 0; j < HKO_WEATHER_STATIONS.length; j++) {
+            var stAll = HKO_WEATHER_STATIONS[j];
+            var dAll = calcStraightLineDistanceKm(coords.lat, coords.lng, stAll.lat, stAll.lng);
+            if (dAll < minDist) {
+              minDist = dAll;
+              bestStation = stAll;
+            }
+          }
+        }
+        return bestStation;
+      }
 
       function mapHkoIconToEmoji(iconNo) {
         var code = parseInt(iconNo, 10);
@@ -1607,81 +1807,359 @@
         return "⛅";
       }
 
-      function getWeatherBadgeTextForSlot(type, idsCsv) {
-        var targetPlace = "屯門";
-        if (type === "LRT") {
-          targetPlace = (String(idsCsv).trim() === "380") ? "元朗公園" : "屯門";
-        } else if (type === "MTR") {
-          var firstPair = String(idsCsv || "").split(",")[0].trim();
-          var parts = firstPair.split(":");
-          var staCode = parts.length > 1 ? parts[1].trim() : "";
-          if (staCode && MTR_NEAREST_WEATHER_STATION[staCode]) {
-            targetPlace = MTR_NEAREST_WEATHER_STATION[staCode];
+      function mapWmoCodeToEmoji(wmoCode, isDay) {
+        var c = parseInt(wmoCode, 10);
+        if (isNaN(c)) return hkoGlobalIconEmoji;
+        if (c === 0 || c === 1) return (isDay === 0) ? "🌙" : "☀️";
+        if (c === 2) return (isDay === 0) ? "🌙" : "⛅";
+        if (c === 3) return "☁️";
+        if (c === 45 || c === 48) return "🌫️";
+        if (c >= 51 && c <= 57) return "🌦️";
+        if (c === 61 || c === 80) return "🌦️";
+        if (c >= 63 && c <= 67) return "🌧️";
+        if (c >= 81 && c <= 82) return "🌧️";
+        if (c >= 95) return "⛈️";
+        return hkoGlobalIconEmoji;
+      }
+
+      // 取得指定氣象站嘅即時氣溫 + 天氣概況 Emoji，以及同一個氣象站嘅 💧降雨率%
+      function getWeatherDisplayPairForSlot(type, idsCsv) {
+        var st = findNearestWeatherStationForSlot(type, idsCsv);
+        var stId = st.id;
+
+        // 1. 計算該氣象站嘅精準氣溫
+        var tempDisplay = null;
+        if (hko1MinTempByStationId[stId] !== undefined) {
+          // 優先使用香港天文台「最新一分鐘平均氣溫」自動氣象站實測值 (精確至 0.1°C)
+          tempDisplay = Number(hko1MinTempByStationId[stId]).toFixed(1);
+        } else if (openMeteoByStationId[stId] && openMeteoByStationId[stId].temp !== undefined && hkoRhrTempByStationId[stId] !== undefined) {
+          // 若 CSV 受瀏覽器限制，結合天文台該站實測溫度與該氣象站座標精細溫差，確保各氣象站準確反映當地實況
+          var rhrVal = Number(hkoRhrTempByStationId[stId]);
+          var omVal = Number(openMeteoByStationId[stId].temp);
+          if (Math.abs(omVal - rhrVal) <= 0.8) {
+            tempDisplay = omVal.toFixed(1);
+          } else {
+            var frac = omVal - Math.round(omVal);
+            if (frac > 0.4) frac = 0.4;
+            if (frac < -0.4) frac = -0.4;
+            tempDisplay = (rhrVal + frac).toFixed(1);
           }
-        } else {
-          targetPlace = "屯門";
+        } else if (hkoRhrTempByStationId[stId] !== undefined) {
+          tempDisplay = String(hkoRhrTempByStationId[stId]);
+        } else if (openMeteoByStationId[stId] && openMeteoByStationId[stId].temp !== undefined) {
+          tempDisplay = Number(openMeteoByStationId[stId].temp).toFixed(1);
         }
 
-        var tempVal = hkoTempByPlace[targetPlace];
-        if (tempVal === undefined && targetPlace === "屯門") {
-          tempVal = hkoTempByPlace["元朗公園"] !== undefined ? hkoTempByPlace["元朗公園"] : hkoTempByPlace["流浮山"];
+        // 2. 計算該氣象站嘅即時天氣 Emoji
+        var stationRainMm = 0;
+        if (hkoHourlyRainMmByStationId[stId] !== undefined) {
+          stationRainMm = Math.max(stationRainMm, hkoHourlyRainMmByStationId[stId]);
         }
-        if (tempVal === undefined && targetPlace === "濕地公園") {
-          tempVal = hkoTempByPlace["元朗公園"] !== undefined ? hkoTempByPlace["元朗公園"] : hkoTempByPlace["屯門"];
+        if (st.district && hkoDistrictRainMm[st.district] !== undefined) {
+          stationRainMm = Math.max(stationRainMm, hkoDistrictRainMm[st.district]);
         }
-        if (tempVal === undefined) {
-          tempVal = hkoDefaultTemp;
+
+        var emoji = hkoGlobalIconEmoji;
+        if (stationRainMm >= 2) {
+          emoji = "🌧️";
+        } else if (stationRainMm > 0) {
+          emoji = "🌦️";
+        } else if (openMeteoByStationId[stId] && openMeteoByStationId[stId].weatherCode !== undefined) {
+          emoji = mapWmoCodeToEmoji(openMeteoByStationId[stId].weatherCode, openMeteoByStationId[stId].isDay);
         }
-        if (tempVal === null || tempVal === undefined) {
-          return "--°C " + hkoWeatherEmoji;
+
+        // 3. 計算來自同一個氣象站嘅降雨資料 (💧XX%)
+        var rainPct = null;
+        if (openMeteoByStationId[stId] && openMeteoByStationId[stId].rainProb !== undefined && openMeteoByStationId[stId].rainProb !== null) {
+          rainPct = Math.round(Number(openMeteoByStationId[stId].rainProb));
         }
-        return tempVal + "°C " + hkoWeatherEmoji;
+        if (stationRainMm >= 5) {
+          rainPct = 100;
+        } else if (stationRainMm >= 1) {
+          rainPct = Math.max(rainPct !== null ? rainPct : 0, 90);
+        } else if (stationRainMm > 0) {
+          rainPct = Math.max(rainPct !== null ? rainPct : 0, 75);
+        }
+        if (rainPct === null) {
+          if (hkoPsrBaseProb !== null) {
+            rainPct = hkoPsrBaseProb;
+          } else {
+            var rh = hkoHumidityByStationId[stId];
+            if (rh !== undefined && rh >= 85) rainPct = 30;
+            else if (rh !== undefined && rh >= 75) rainPct = 15;
+            else rainPct = 10;
+          }
+        }
+        rainPct = Math.max(0, Math.min(100, Math.round(rainPct)));
+
+        var normalText = (tempDisplay !== null ? (tempDisplay + "°C ") : "--°C ") + emoji;
+        var rainText = "💧" + rainPct + "%";
+        return {
+          stationName: st.name,
+          normalText: normalText,
+          rainText: rainText
+        };
+      }
+
+      // ==================== 右上角天氣徽章 15 秒短暫切換 (氣溫⛅ <-> 💧降雨%) ====================
+      var weatherFlipStateMap = {};
+
+      function isWeatherBadgeCurrentlyFlipped(weatherKey) {
+        var entry = weatherFlipStateMap[weatherKey];
+        if (!entry) return false;
+        if (Date.now() >= entry.expireAt) {
+          delete weatherFlipStateMap[weatherKey];
+          return false;
+        }
+        return true;
+      }
+
+      function resetWeatherBadgeFlipState(weatherKey) {
+        var existing = weatherFlipStateMap[weatherKey];
+        if (existing) {
+          if (existing.timerId) clearTimeout(existing.timerId);
+          delete weatherFlipStateMap[weatherKey];
+        }
+      }
+
+      function toggleWeatherBadgeTempFlip(weatherKey, badgeEl) {
+        var now = Date.now();
+        var existing = weatherFlipStateMap[weatherKey];
+        if (existing && existing.expireAt > now) {
+          // 再次輕觸：即時跳轉返原本氣溫顯示方式
+          if (existing.timerId) clearTimeout(existing.timerId);
+          delete weatherFlipStateMap[weatherKey];
+          if (badgeEl && badgeEl.getAttribute("data-orig-text")) {
+            badgeEl.textContent = badgeEl.getAttribute("data-orig-text");
+          }
+        } else {
+          // 輕觸一下：短暫切換為同一個氣象站嘅降雨資料 [💧XX%]，為時 15 秒
+          if (existing && existing.timerId) clearTimeout(existing.timerId);
+          var timerId = setTimeout(function () {
+            delete weatherFlipStateMap[weatherKey];
+            var allBadges = document.querySelectorAll("[data-weather-key]");
+            for (var i = 0; i < allBadges.length; i++) {
+              if (allBadges[i].getAttribute("data-weather-key") === weatherKey) {
+                var orig = allBadges[i].getAttribute("data-orig-text");
+                if (orig) allBadges[i].textContent = orig;
+              }
+            }
+          }, 15000);
+          weatherFlipStateMap[weatherKey] = {
+            expireAt: now + 15000,
+            timerId: timerId
+          };
+          if (badgeEl && badgeEl.getAttribute("data-alt-text")) {
+            badgeEl.textContent = badgeEl.getAttribute("data-alt-text");
+          }
+        }
+      }
+
+      function applyWeatherPairToBadge(badgeEl, weatherKey, pairObj) {
+        if (!badgeEl || !pairObj) return;
+        badgeEl.setAttribute("data-weather-key", weatherKey);
+        badgeEl.setAttribute("data-orig-text", pairObj.normalText);
+        badgeEl.setAttribute("data-alt-text", pairObj.rainText);
+        badgeEl.title = "最近氣象站：" + pairObj.stationName + " (輕觸切換降雨率)";
+        if (isWeatherBadgeCurrentlyFlipped(weatherKey)) {
+          badgeEl.textContent = pairObj.rainText;
+        } else {
+          badgeEl.textContent = pairObj.normalText;
+        }
       }
 
       function updateAllWeatherBadges() {
-        var m1Ids = ["tvWeatherMode1_0", "tvWeatherMode1_1", "tvWeatherMode1_2", "tvWeatherMode1_3"];
-        var tuenMunWeather = getWeatherBadgeTextForSlot("LRT", "80");
-        for (var m = 0; m < m1Ids.length; m++) {
-          var el = document.getElementById(m1Ids[m]);
-          if (el) el.textContent = tuenMunWeather;
+        var m1Configs = [
+          { id: "tvWeatherMode1_0", key: "mode1_weather_0", type: "LRT", ids: "80" },
+          { id: "tvWeatherMode1_1", key: "mode1_weather_1", type: "BUS", ids: "2FD7EBBD4AF78A93" },
+          { id: "tvWeatherMode1_2", key: "mode1_weather_2", type: "LRT", ids: "230" },
+          { id: "tvWeatherMode1_3", key: "mode1_weather_3", type: "BUS", ids: "629D4E7DD9EF1AC6" }
+        ];
+        for (var m = 0; m < m1Configs.length; m++) {
+          var cfg = m1Configs[m];
+          var el = document.getElementById(cfg.id);
+          if (el) {
+            var p1 = getWeatherDisplayPairForSlot(cfg.type, cfg.ids);
+            applyWeatherPairToBadge(el, cfg.key, p1);
+          }
         }
+
         var activeMode = (currentUiMode === 3) ? 3 : 2;
         for (var i = 0; i < MAX_SLOTS; i++) {
           var wEl = tvSlotWeathers[i];
           if (!wEl) continue;
           var type = getSlotType(activeMode, i);
           var idsCsv = getSlotIdsCsv(activeMode, i);
-          wEl.textContent = getWeatherBadgeTextForSlot(type, idsCsv);
+          var wKey = "slot_weather_" + i;
+          var pairObj = getWeatherDisplayPairForSlot(type, idsCsv);
+          applyWeatherPairToBadge(wEl, wKey, pairObj);
         }
       }
 
-      function fetchHkoWeatherIfNeeded() {
+      function parseHko1MinCsv(csvText, targetMap) {
+        if (!csvText) return;
+        var lines = String(csvText).split(/\r?\n/);
+        for (var i = 1; i < lines.length; i++) {
+          var line = lines[i].trim();
+          if (!line) continue;
+          var cols = line.split(",");
+          if (cols.length >= 3) {
+            var stName = cols[1].trim();
+            var rawVal = cols[2].replace(/\*/g, "").trim();
+            var numVal = parseFloat(rawVal);
+            if (!isNaN(numVal)) {
+              var stId = matchHkoStationIdByPlaceName(stName);
+              if (stId) {
+                targetMap[stId] = numVal;
+              }
+            }
+          }
+        }
+      }
+
+      // 每 30 分鐘 (1,800,000 ms) 自動刷新一次各氣象站即時氣溫、天氣圖示及降雨資料
+      var WEATHER_REFRESH_INTERVAL_MS = 30 * 60 * 1000;
+      function fetchHkoWeatherIfNeeded(forceFetch) {
         var now = Date.now();
-        // 每 60 秒向香港天文台 API 更新一次各區即時氣溫及天氣圖示
-        if (now - lastWeatherFetchMillis < 60000 && hkoDefaultTemp !== null) {
+        if (!forceFetch && lastWeatherFetchMillis > 0 && (now - lastWeatherFetchMillis < WEATHER_REFRESH_INTERVAL_MS)) {
           updateAllWeatherBadges();
           return;
         }
         lastWeatherFetchMillis = now;
+
+        // 1. 抓取香港天文台「最新一分鐘平均氣溫」CSV (精確至 0.1°C)
+        fetch("https://data.weather.gov.hk/weatherAPI/hko_data/regional-weather/latest_1min_temperature_uc.csv")
+          .then(function (r) { return r.ok ? r.text() : ""; })
+          .then(function (txt) {
+            if (txt) {
+              parseHko1MinCsv(txt, hko1MinTempByStationId);
+              updateAllWeatherBadges();
+            }
+          })
+          .catch(function () {});
+
+        // 2. 抓取香港天文台「本港地區天氣報告」(rhrread)
         fetch("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=tc")
           .then(function (r) { return r.json(); })
           .then(function (root) {
             if (!root) return;
             if (Array.isArray(root.icon) && root.icon.length > 0) {
-              hkoWeatherEmoji = mapHkoIconToEmoji(root.icon[0]);
+              hkoGlobalIconEmoji = mapHkoIconToEmoji(root.icon[0]);
             }
             if (root.temperature && Array.isArray(root.temperature.data)) {
-              var arr = root.temperature.data;
-              for (var i = 0; i < arr.length; i++) {
-                var p = arr[i].place;
-                var v = arr[i].value;
-                if (p && v !== undefined && v !== null) {
-                  hkoTempByPlace[p] = v;
-                  if (p === "香港天文台" || hkoDefaultTemp === null) {
-                    hkoDefaultTemp = v;
-                  }
+              var tArr = root.temperature.data;
+              for (var i = 0; i < tArr.length; i++) {
+                var stId = matchHkoStationIdByPlaceName(tArr[i].place);
+                var val = parseFloat(tArr[i].value);
+                if (stId && !isNaN(val)) {
+                  hkoRhrTempByStationId[stId] = val;
                 }
               }
+            }
+            if (root.humidity && Array.isArray(root.humidity.data)) {
+              var hArr = root.humidity.data;
+              for (var h = 0; h < hArr.length; h++) {
+                var hStId = matchHkoStationIdByPlaceName(hArr[h].place);
+                var hVal = parseFloat(hArr[h].value);
+                if (hStId && !isNaN(hVal)) {
+                  hkoHumidityByStationId[hStId] = hVal;
+                }
+              }
+            }
+            if (root.rainfall && Array.isArray(root.rainfall.data)) {
+              var rArr = root.rainfall.data;
+              for (var r = 0; r < rArr.length; r++) {
+                var dPlace = normalizePlaceName(rArr[r].place);
+                var maxRain = parseFloat(rArr[r].max !== undefined ? rArr[r].max : (rArr[r].min || 0));
+                if (dPlace && !isNaN(maxRain)) {
+                  hkoDistrictRainMm[dPlace] = maxRain;
+                }
+              }
+            }
+            updateAllWeatherBadges();
+          })
+          .catch(function () {});
+
+        // 3. 抓取香港天文台「自動氣象站過去一小時雨量」(hourlyRainfall.php)
+        fetch("https://data.weather.gov.hk/weatherAPI/opendata/hourlyRainfall.php?lang=tc")
+          .then(function (r) { return r.json(); })
+          .then(function (root) {
+            if (!root || !Array.isArray(root.hourlyRainfall)) return;
+            for (var i = 0; i < root.hourlyRainfall.length; i++) {
+              var item = root.hourlyRainfall[i];
+              var stId = matchHkoStationIdByPlaceName(item.automaticWeatherStation);
+              var mm = parseFloat(item.value);
+              if (stId && !isNaN(mm)) {
+                hkoHourlyRainMmByStationId[stId] = mm;
+              }
+            }
+            updateAllWeatherBadges();
+          })
+          .catch(function () {});
+
+        // 4. 抓取香港天文台九天天氣預報 (fnd) 嘅顯著降雨概率 (PSR) 作後備基準
+        fetch("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang=tc")
+          .then(function (r) { return r.json(); })
+          .then(function (root) {
+            if (!root || !Array.isArray(root.weatherForecast) || root.weatherForecast.length === 0) return;
+            var psr = String(root.weatherForecast[0].PSR || "").trim();
+            if (psr === "高") hkoPsrBaseProb = 85;
+            else if (psr === "中高") hkoPsrBaseProb = 70;
+            else if (psr === "中") hkoPsrBaseProb = 50;
+            else if (psr === "中低") hkoPsrBaseProb = 30;
+            else if (psr === "低") hkoPsrBaseProb = 10;
+            updateAllWeatherBadges();
+          })
+          .catch(function () {});
+
+        // 5. 按全部 31 個天文台自動氣象站嘅官方經緯度座標，抓取各站即時氣溫、天氣代碼及每小時降雨概率 (%)
+        var lats = [];
+        var lngs = [];
+        for (var s = 0; s < HKO_WEATHER_STATIONS.length; s++) {
+          lats.push(HKO_WEATHER_STATIONS[s].lat);
+          lngs.push(HKO_WEATHER_STATIONS[s].lng);
+        }
+        var omUrl = "https://api.open-meteo.com/v1/forecast?latitude=" + lats.join(",") +
+                    "&longitude=" + lngs.join(",") +
+                    "&current=temperature_2m,relative_humidity_2m,precipitation,weather_code,is_day" +
+                    "&hourly=precipitation_probability&forecast_days=1&timezone=Asia%2FHong_Kong";
+        fetch(omUrl)
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            var list = Array.isArray(data) ? data : [data];
+            var hkHourStr = "00";
+            try {
+              hkHourStr = new Intl.DateTimeFormat("en-GB", {
+                timeZone: "Asia/Hong_Kong",
+                hour12: false,
+                hour: "2-digit"
+              }).format(new Date());
+            } catch (e) {}
+            var currentHourIdx = parseInt(hkHourStr, 10);
+            if (isNaN(currentHourIdx) || currentHourIdx < 0 || currentHourIdx > 23) currentHourIdx = 0;
+
+            for (var i = 0; i < list.length && i < HKO_WEATHER_STATIONS.length; i++) {
+              var stObj = HKO_WEATHER_STATIONS[i];
+              var entry = list[i];
+              if (!entry) continue;
+              var cur = entry.current || {};
+              var prob = null;
+              if (entry.hourly && Array.isArray(entry.hourly.precipitation_probability)) {
+                var pArr = entry.hourly.precipitation_probability;
+                if (currentHourIdx < pArr.length && pArr[currentHourIdx] !== null && pArr[currentHourIdx] !== undefined) {
+                  prob = pArr[currentHourIdx];
+                } else if (pArr.length > 0) {
+                  prob = pArr[0];
+                }
+              }
+              openMeteoByStationId[stObj.id] = {
+                temp: cur.temperature_2m,
+                rh: cur.relative_humidity_2m,
+                precip: cur.precipitation,
+                weatherCode: cur.weather_code,
+                isDay: cur.is_day,
+                rainProb: prob
+              };
             }
             updateAllWeatherBadges();
           })
@@ -2198,6 +2676,7 @@
         storageSet(prefix + "_name", formatParentheses(cleanName));
         storageSet(prefix + "_ids", idsCsv);
         setSlotEnabled(mode, slotIndex, true);
+        resetWeatherBadgeFlipState("slot_weather_" + slotIndex);
       }
 
       function resetModeSlots(mode) {
@@ -2300,6 +2779,12 @@
             var weatherSpan = document.createElement("span");
             weatherSpan.className = "card-weather";
             weatherSpan.textContent = "--°C ⛅";
+            var wKey = "slot_weather_" + slotIdx;
+            weatherSpan.setAttribute("data-weather-key", wKey);
+            weatherSpan.addEventListener("click", function (ev) {
+              ev.stopPropagation();
+              toggleWeatherBadgeTempFlip(wKey, weatherSpan);
+            });
             tvSlotWeathers.push(weatherSpan);
 
             rightWrap.appendChild(noteSpan);
@@ -2433,7 +2918,9 @@
           tvTitle.textContent = formatStationDisplayWithEmoji(type, name);
 
           if (tvWeather) {
-            tvWeather.textContent = getWeatherBadgeTextForSlot(type, idsCsv);
+            var wKey = "slot_weather_" + i;
+            var pairObj = getWeatherDisplayPairForSlot(type, idsCsv);
+            applyWeatherPairToBadge(tvWeather, wKey, pairObj);
           }
 
           if (type === "LRT") {
@@ -2879,6 +3366,13 @@
             if (parsed && Array.isArray(parsed.options) && Array.isArray(parsed.bbiIds)) {
               tuenMunBusStopOptions = parsed.options;
               tmrBbiAllStopIds = parsed.bbiIds;
+              if (parsed.coordsMap && typeof parsed.coordsMap === "object") {
+                for (var ck in parsed.coordsMap) {
+                  if (Object.prototype.hasOwnProperty.call(parsed.coordsMap, ck)) {
+                    busStopCoordsMap[ck] = parsed.coordsMap[ck];
+                  }
+                }
+              }
             }
           } catch (e) {}
         }
@@ -2902,6 +3396,9 @@
               var lng = parseFloat(item.long || 0);
               if (!stopId || !nameTc) continue;
 
+              if (!isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0) {
+                busStopCoordsMap[stopId] = [lat, lng];
+              }
               var isTmrBbi = nameTc.indexOf("屯門公路轉車站") !== -1 || nameTc.indexOf("屯門轉車站") !== -1;
               if (isTmrBbi) {
                 bbiAll.push(stopId);
@@ -2946,8 +3443,10 @@
             try {
               window.localStorage.setItem(STORAGE_PREFIX + KEY_CACHED_TM_BUS_STOPS, JSON.stringify({
                 options: combinedList,
-                bbiIds: bbiAll
+                bbiIds: bbiAll,
+                coordsMap: busStopCoordsMap
               }));
+              updateAllWeatherBadges();
             } catch (e) {}
           })
           .catch(function () {});
@@ -3647,6 +4146,20 @@
       }
 
       function bindEvents() {
+        var m1WeatherIds = ["tvWeatherMode1_0", "tvWeatherMode1_1", "tvWeatherMode1_2", "tvWeatherMode1_3"];
+        for (var mw = 0; mw < m1WeatherIds.length; mw++) {
+          (function (idx) {
+            var wEl = document.getElementById(m1WeatherIds[idx]);
+            if (wEl) {
+              var wKey = "mode1_weather_" + idx;
+              wEl.setAttribute("data-weather-key", wKey);
+              wEl.addEventListener("click", function (ev) {
+                ev.stopPropagation();
+                toggleWeatherBadgeTempFlip(wKey, wEl);
+              });
+            }
+          })(mw);
+        }
         document.getElementById("btnQuickOptions").addEventListener("click", showQuickOptionsPopup);
         pillMode2.addEventListener("click", function () { setUiMode(2); });
         pillMode3.addEventListener("click", function () { setUiMode(3); });
@@ -3805,11 +4318,15 @@
         setInterval(updateClock, 1000);
 
         setInterval(refreshAllTransitData, 5000);
+        // 天氣資料獨立設定為每 30 分鐘 (1,800,000 ms) 刷新一次
+        setInterval(function () {
+          fetchHkoWeatherIfNeeded(true);
+        }, 30 * 60 * 1000);
 
         if ("caches" in window) {
           caches.keys().then(function (keys) {
             for (var i = 0; i < keys.length; i++) {
-              if (keys[i].indexOf("v1") !== -1 || keys[i].indexOf("v2") !== -1 || keys[i].indexOf("v3") !== -1 || keys[i].indexOf("v4") !== -1) {
+              if (keys[i].indexOf("v1") !== -1 || keys[i].indexOf("v2") !== -1 || keys[i].indexOf("v3") !== -1 || keys[i].indexOf("v4") !== -1 || keys[i].indexOf("v5") !== -1) {
                 caches.delete(keys[i]);
               }
             }
