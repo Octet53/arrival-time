@@ -1,7 +1,7 @@
 {
   "name": "到站時間",
   "short_name": "到站時間",
-  "description": "輕鐵、港鐵及九巴龍運實時到站時間看板 (支援界面2及界面3自訂2-15格車站)",
+  "description": "輕鐵・港鐵・九巴・龍運實時到站時間及分區天氣看板",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0F0F0F",
