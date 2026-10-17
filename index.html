@@ -4,8 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>到站時間</title>
-  <!-- iOS Safari PWA 主畫面全螢幕設定：
-       改用 default 配合純黑 theme-color 及頂部實體防模糊保護層，徹底防止 iOS 主畫面 WebClip 頂部漸層模糊 -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -45,13 +43,16 @@
       background-color: var(--bg-root);
       color: var(--text-white);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro TC", "PingFang HK", "Helvetica Neue", Arial, sans-serif;
-      /* 改用原生整頁捲動，消除 iOS Standalone 內部容器捲動觸發嘅系統頂欄模糊遮罩 */
       overflow-x: hidden;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       user-select: none;
       -webkit-user-select: none;
       -webkit-font-smoothing: antialiased;
+    }
+
+    body.modal-open {
+      overflow: hidden;
     }
 
     /* 專為 iPhone 主畫面 App 版 (Standalone Mode) 而設嘅頂部防模糊實體保護區 */
@@ -87,9 +88,7 @@
       background-color: var(--bg-root);
     }
 
-    /* ==================== 頂部狀態列 ====================
-       不使用 backdrop-filter，採用 100% 不透明純黑實色底，防止任何模糊渲染
-    ==================================================== */
+    /* ==================== 頂部狀態列 ==================== */
     .top-header {
       display: grid;
       grid-template-columns: 1fr auto;
@@ -257,7 +256,6 @@
       width: 100%;
     }
 
-    /* 界面2 / 界面3 自訂方格容器：align-items: start 確保每張卡片高度100%跟隨自身內容 */
     .grid-mode23 {
       display: grid;
       grid-template-columns: 1fr;
@@ -277,7 +275,7 @@
       grid-template-columns: 1fr 1fr;
     }
 
-    /* 卡片高度完全自動依據內容決定 (無需在卡片內捲動) */
+    /* 卡片高度完全自動依據內容決定 */
     .station-card {
       background-color: var(--bg-card);
       border-radius: 10px;
@@ -296,7 +294,7 @@
       padding-bottom: 5px;
       margin-bottom: 5px;
       border-bottom: 1px solid #2A2A2E;
-      gap: 4px;
+      gap: 6px;
     }
 
     .card-title-btn {
@@ -330,6 +328,13 @@
       color: var(--blue-mtr);
     }
 
+    .card-header-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
     .card-note {
       color: var(--text-muted);
       font-size: 11px;
@@ -337,7 +342,31 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     }
 
-    /* 卡片內容區：取消內部捲動，自動伸展高度 */
+    /* 卡片最右上角：即時氣溫及天氣概況 Emoji */
+    .card-weather {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      border-radius: 5px;
+      padding: 1px 6px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #E0E0E6;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* 拖卡車星號 * 字體縮小 20% (0.8em) */
+    .coupled-star {
+      font-size: 0.8em;
+      display: inline-block;
+      line-height: 1;
+      vertical-align: baseline;
+      margin-left: 1px;
+    }
+
     .card-body-auto {
       height: auto;
       overflow: visible;
@@ -359,9 +388,7 @@
       margin-top: 0;
     }
 
-    /* ==================== 半透明階磚 (Tiles) 設計 ====================
-       路線一個階磚、總站一個階磚、每個到站時間各自一個獨立階磚
-    ================================================================ */
+    /* ==================== 半透明階磚 (Tiles) 設計 ==================== */
     .eta-row {
       display: flex;
       flex-wrap: wrap;
@@ -416,6 +443,11 @@
       padding: 2px 7px;
       border-radius: 5px;
       line-height: 1.3;
+      cursor: pointer;
+    }
+
+    .tile-time:active {
+      background: rgba(0, 230, 118, 0.25);
     }
 
     .eta-empty {
@@ -424,7 +456,7 @@
       padding: 3px 2px;
     }
 
-    /* 界面1 固定看板 (同樣自動高度無需內捲) */
+    /* 界面1 固定看板 */
     .grid-mode1 {
       display: grid;
       grid-template-columns: 1fr;
@@ -450,46 +482,54 @@
       height: auto;
     }
 
-    .mode1-sub-title {
-      font-size: 15.5px;
-      font-weight: 700;
+    .mode1-sub-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       margin: 8px 0 5px 0;
+      gap: 6px;
     }
 
-    .mode1-sub-title:first-child {
+    .mode1-sub-header:first-child {
       margin-top: 0;
     }
 
-    /* 全螢幕設定頁面 & 彈出式視窗 */
-    .overlay-page {
-      position: fixed;
-      inset: 0;
+    .mode1-sub-title {
+      font-size: 15.5px;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    /* ==================== 獨立「設定」頁面 ====================
+       改用單一頁面流 (切換 #appRoot 與 #layoutSettingsPage 顯示)，
+       徹底消除 iOS fixed 底層背景捲動搶焦點導致嘅畫面凍結 Bug！
+    ========================================================= */
+    .settings-page {
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
       background-color: #121214;
-      z-index: 100;
       display: none;
       flex-direction: column;
-      padding-top: max(12px, env(safe-area-inset-top, 0px));
-      padding-bottom: max(12px, env(safe-area-inset-bottom, 0px));
+      padding-bottom: max(20px, env(safe-area-inset-bottom, 0px));
       padding-left: env(safe-area-inset-left, 0px);
       padding-right: env(safe-area-inset-right, 0px);
     }
 
-    body.is-ios-standalone .overlay-page {
-      padding-top: max(54px, calc(env(safe-area-inset-top, 47px) + 8px));
-    }
-
-    .overlay-page.open {
+    .settings-page.open {
       display: flex;
     }
 
     .settings-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
       display: flex;
       align-items: center;
       background-color: #1F1F23;
       padding: 12px 14px;
       border-bottom: 1px solid #2E2E33;
       gap: 14px;
-      flex-shrink: 0;
     }
 
     .btn-back {
@@ -511,8 +551,6 @@
 
     .settings-content {
       flex: 1;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
       padding: 12px;
       max-width: 760px;
       width: 100%;
@@ -681,7 +719,6 @@
       color: var(--blue-mtr);
     }
 
-    /* 2-15 格數量快速選擇列 */
     .slot-count-bar {
       background: #242429;
       border: 1px solid #34343C;
@@ -724,7 +761,6 @@
       color: var(--green-clock);
     }
 
-    /* 每一格車站設定列 */
     .slot-config-row {
       display: flex;
       align-items: center;
@@ -795,18 +831,17 @@
       margin-top: 8px;
     }
 
-    .backup-textarea {
+    .backup-input-box {
       width: 100%;
       background: #16161A;
       color: #00E676;
       border: 1px solid #383842;
       border-radius: 8px;
-      padding: 8px 10px;
+      padding: 9px 10px;
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 12px;
       margin-top: 8px;
-      resize: none;
-      height: 58px;
+      outline: none;
     }
 
     /* 彈窗 Modal */
@@ -847,6 +882,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 8px;
     }
 
     .modal-search-wrap {
@@ -884,7 +920,7 @@
       border-bottom: 1px solid #242428;
       color: #FFFFFF;
       padding: 13px 16px;
-      font-size: 14.5px;
+      font-size: 15px;
       cursor: pointer;
       display: block;
       line-height: 1.35;
@@ -898,7 +934,21 @@
       padding: 10px 14px;
       border-top: 1px solid #2C2C30;
       display: flex;
+      align-items: center;
       justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .btn-modal-back {
+      background: #23342B;
+      color: #00E676;
+      border: 1px solid #2F523E;
+      border-radius: 7px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-right: auto;
     }
 
     .btn-modal-cancel {
@@ -945,7 +995,7 @@
   <div id="standaloneTopGuard" aria-hidden="true"></div>
 
   <div id="appRoot">
-    <!-- 頂部狀態列：直立時分成兩行 (第2行左邊時鐘、右邊完整更新時間)，橫向時維持單行 -->
+    <!-- 頂部狀態列 -->
     <header class="top-header">
       <div class="header-left">
         <button type="button" id="btnQuickOptions" class="btn-options" title="打開選項或設定">
@@ -965,7 +1015,7 @@
       <button type="button" id="btnManualRefresh" class="btn-refresh" title="立即刷新到站時間">↻ 刷新</button>
     </header>
 
-    <!-- 主看板區域：卡片高度自動根據內容伸縮，用家只需在卡片外上下捲動畫面 -->
+    <!-- 主看板區域 -->
     <main class="dashboard-body" id="dashboardBody">
       <!-- [界面2] 及 [界面3] 共用自訂方格看板 (2 至 15 格) -->
       <section id="scrollMode23" class="grid-mode23"></section>
@@ -974,34 +1024,50 @@
       <section id="layoutMode1" class="grid-mode1" style="display:none;">
         <div class="mode1-card">
           <div class="card-header">
-            <span class="card-title-btn card-title-lrt" style="cursor:default;">【輕鐵站】🚋🚞澤豐站🚋🚞</span>
-            <span class="card-note">(*為拖卡車)</span>
+            <span class="card-title-btn card-title-lrt" style="cursor:default;">【輕鐵站】🚋澤豐站</span>
+            <div class="card-header-right">
+              <span class="card-note">(<span class="coupled-star">*</span>為拖卡車)</span>
+              <span id="tvWeatherMode1_0" class="card-weather">--°C ⛅</span>
+            </div>
           </div>
           <div id="tvLrtAffluence" class="card-body-auto">載入中...</div>
         </div>
 
         <div class="mode1-card">
           <div class="card-body-auto">
-            <div class="mode1-sub-title" style="color:#FF6E6E;">九巴－紅橋站 (往九龍)</div>
+            <div class="mode1-sub-header">
+              <div class="mode1-sub-title" style="color:#FF6E6E;">九巴－紅橋站 (往九龍)</div>
+              <span id="tvWeatherMode1_1" class="card-weather">--°C ⛅</span>
+            </div>
             <div id="tvKmbHungKiu">載入中...</div>
-            <div class="mode1-sub-title" style="color:#FFB74D; margin-top:10px;">龍運－紅橋站 (往機場方向)</div>
+            <div class="mode1-sub-header" style="margin-top:10px;">
+              <div class="mode1-sub-title" style="color:#FFB74D;">龍運－紅橋站 (往機場方向)</div>
+            </div>
             <div id="tvLwbHungKiu">載入中...</div>
           </div>
         </div>
 
         <div class="mode1-card">
           <div class="card-header">
-            <span class="card-title-btn card-title-lrt" style="cursor:default; color:#4FC3F7;">【輕鐵站】🚋🚞銀圍站🚋🚞</span>
-            <span class="card-note">(*為拖卡車)</span>
+            <span class="card-title-btn card-title-lrt" style="cursor:default; color:#4FC3F7;">【輕鐵站】🚋銀圍站</span>
+            <div class="card-header-right">
+              <span class="card-note">(<span class="coupled-star">*</span>為拖卡車)</span>
+              <span id="tvWeatherMode1_2" class="card-weather">--°C ⛅</span>
+            </div>
           </div>
           <div id="tvLrtNganWai" class="card-body-auto">載入中...</div>
         </div>
 
         <div class="mode1-card">
           <div class="card-body-auto">
-            <div class="mode1-sub-title" style="color:#81C784;">九巴－大興體育館 (往九龍方向)</div>
+            <div class="mode1-sub-header">
+              <div class="mode1-sub-title" style="color:#81C784;">九巴－大興體育館 (往九龍方向)</div>
+              <span id="tvWeatherMode1_3" class="card-weather">--°C ⛅</span>
+            </div>
             <div id="tvKmbTaiHing">載入中...</div>
-            <div class="mode1-sub-title" style="color:#FFB74D; margin-top:10px;">龍運－大興體育館 (往機場方向)</div>
+            <div class="mode1-sub-header" style="margin-top:10px;">
+              <div class="mode1-sub-title" style="color:#FFB74D;">龍運－大興體育館 (往機場方向)</div>
+            </div>
             <div id="tvLwbTaiHing">載入中...</div>
           </div>
         </div>
@@ -1009,8 +1075,8 @@
     </main>
   </div>
 
-  <!-- 獨立「設定」頁面 -->
-  <div id="layoutSettingsPage" class="overlay-page" aria-hidden="true">
+  <!-- 獨立「設定」頁面 (開啟時自動隱藏 #appRoot，徹底杜絕背景捲動及凍結問題) -->
+  <div id="layoutSettingsPage" class="settings-page" aria-hidden="true">
     <div class="settings-topbar">
       <button type="button" id="btnCloseSettings" class="btn-back">⬅ 返回看板</button>
       <div class="settings-title">⚙ 到站時間 － 看板設定</div>
@@ -1061,24 +1127,24 @@
         <!-- 2A. 輕鐵設定 -->
         <div class="sub-group-box">
           <div class="sub-group-header" style="color:var(--yellow-lrt);">
-            <span>🚋🚞 輕鐵 到站時間顯示方式</span>
+            <span>🚋 輕鐵 到站時間顯示方式</span>
           </div>
           <label class="switch-row" for="swLrtTimeClock">
-            <span class="switch-label">只顯示時間 (拖卡星號在時間後，例如：<code>12:34*</code>)</span>
+            <span class="switch-label">只顯示時間 (例如：<code>12:34*</code>)</span>
             <span class="ios-switch">
               <input type="checkbox" id="swLrtTimeClock" />
               <span class="ios-slider"></span>
             </span>
           </label>
           <label class="switch-row" for="swLrtTimeMin">
-            <span class="switch-label">只顯示分鐘 (拖卡星號在分鐘後，例如：<code>6分*</code>)</span>
+            <span class="switch-label">只顯示分鐘 (例如：<code>6分*</code>)</span>
             <span class="ios-switch">
               <input type="checkbox" id="swLrtTimeMin" />
               <span class="ios-slider"></span>
             </span>
           </label>
           <label class="switch-row" for="swLrtTimeBoth">
-            <span class="switch-label">顯示分鐘 + 時間 (拖卡星號在分鐘後，例如：<code>6分* (12:34)</code>)</span>
+            <span class="switch-label">顯示分鐘 + 時間 (例如：<code>6分* (12:34)</code>)</span>
             <span class="ios-switch">
               <input type="checkbox" id="swLrtTimeBoth" />
               <span class="ios-slider"></span>
@@ -1134,7 +1200,7 @@
         <!-- 2C. 港鐵設定 -->
         <div class="sub-group-box">
           <div class="sub-group-header" style="color:var(--blue-mtr);">
-            <span>🚇🚈 港鐵 到站時間顯示方式</span>
+            <span>🚇 港鐵 到站時間顯示方式</span>
           </div>
           <label class="switch-row" for="swMtrTimeClock">
             <span class="switch-label">只顯示時間 (例如：<code>12:34</code>)</span>
@@ -1173,7 +1239,7 @@
       <div class="settings-section">
         <div class="settings-section-title" style="color:var(--green-accent);">🚏 三、設定 [界面2 / 界面3] 的車站方格 (自由選擇 2 - 15 格)</div>
         <div style="font-size:12.5px; color:#9E9E9E; margin-bottom:10px;">
-          可選擇「輕鐵站 (44站)」、「港鐵站 (全港重鐵綫)」或「巴士站 (九巴及龍運)」。未打開嘅方格喺主畫面唔會顯示出嚟！
+          可選擇「輕鐵站」、「港鐵站」或「巴士站」。未打開嘅方格喺主畫面唔會顯示出嚟！
         </div>
 
         <div class="edit-target-tabs">
@@ -1201,7 +1267,7 @@
       <div class="settings-section">
         <div class="settings-section-title" style="color:var(--green-clock);">💾 四、儲存個人設定 (後台更新 App 絕不還原)</div>
         <div style="font-size:12.5px; color:#BDBDBD; line-height:1.45; margin-bottom:8px;">
-          系統已啟用<strong>三重本機永久保存 (LocalStorage + IndexedDB + Cookie)</strong>，每次你喺 GitHub 後台更新程式碼，用戶界面嘅自訂車站同顯示設定都唔會被洗走。你亦可以撳下方按鈕手動鎖定或複製設定備份碼：
+          系統已啟用<strong>三重本機永久保存 (LocalStorage + IndexedDB + Cookie)</strong>，每次你喺 GitHub 後台更新程式碼，用戶界面嘅自訂車站同顯示設定都唔會被洗走。
         </div>
         <button type="button" id="btnSaveLockProfile" class="action-btn" style="background:#193829; border-color:#00E676; color:#00E676; font-weight:700;">
           💾 立即儲存並鎖定個人設定 (防還原保護)
@@ -1210,12 +1276,12 @@
           <button type="button" id="btnCopyBackupCode" class="action-btn" style="margin-top:0;">📋 複製個人設定備份碼</button>
           <button type="button" id="btnImportBackupCode" class="action-btn" style="margin-top:0; color:#4FC3F7;">📥 貼上並還原備份碼</button>
         </div>
-        <textarea id="taBackupCode" class="backup-textarea" placeholder="在此可檢視或貼上個人設定備份碼..."></textarea>
+        <input type="text" id="inputBackupCode" class="backup-input-box" placeholder="如需跨裝置還原，請在此貼上備份碼再按「貼上並還原備份碼」" autocomplete="off" />
       </div>
     </div>
   </div>
 
-  <!-- 通用彈出視窗 Modal -->
+  <!-- 通用彈出視窗 Modal (新增「⬅ 返回」鍵支援返回上一頁) -->
   <div id="modalBackdrop" class="modal-backdrop" aria-hidden="true">
     <div class="modal-card" role="dialog" aria-modal="true">
       <div class="modal-header">
@@ -1226,6 +1292,7 @@
       </div>
       <div id="modalList" class="modal-list"></div>
       <div class="modal-footer">
+        <button type="button" id="btnModalBack" class="btn-modal-back" style="display:none;">⬅ 返回</button>
         <button type="button" id="btnModalCancel" class="btn-modal-cancel">取消</button>
       </div>
     </div>
@@ -1238,7 +1305,6 @@
     (function () {
       "use strict";
 
-      // 檢測 iOS 主畫面 Standalone 模式，啟動頂部防模糊實體保護層
       var isStandaloneMode = (window.navigator.standalone === true) ||
         (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches);
       if (isStandaloneMode) {
@@ -1348,7 +1414,7 @@
           lineName: "將軍澳綫",
           stations: [
             ["NOP", "北角"], ["QUB", "鰂魚涌"], ["YAT", "油塘"], ["TIK", "調景嶺"], ["TKO", "將軍澳"],
-            ["LHP", "康城"], ["HAH", "坑口"], ["POA", "寶琳"]
+            ["HAH", "坑口"], ["POA", "寶琳"], ["LHP", "康城"]
           ]
         },
         {
@@ -1376,53 +1442,296 @@
 
       var MTR_STATION_NAME_MAP = {};
       var MTR_LINE_NAME_MAP = {};
-      var MTR_PICKER_OPTIONS = [];
+      var MTR_LINE_OBJ_MAP = {};
+      var MTR_STATION_ALL_PAIRS_MAP = {};
 
       function initMtrStationDictionaries() {
-        var stationAllLinesMap = {};
-        var stationOrder = [];
+        MTR_STATION_ALL_PAIRS_MAP = {};
         for (var l = 0; l < MTR_LINES_DATA.length; l++) {
           var lineObj = MTR_LINES_DATA[l];
           MTR_LINE_NAME_MAP[lineObj.lineCode] = lineObj.lineName;
+          MTR_LINE_OBJ_MAP[lineObj.lineCode] = lineObj;
           for (var s = 0; s < lineObj.stations.length; s++) {
             var code = lineObj.stations[s][0];
             var name = lineObj.stations[s][1];
             MTR_STATION_NAME_MAP[code] = name;
-            if (!stationAllLinesMap[code]) {
-              stationAllLinesMap[code] = { name: name, pairs: [], lineNames: [] };
-              stationOrder.push(code);
+            var pairKey = lineObj.lineCode + ":" + code;
+            if (!MTR_STATION_ALL_PAIRS_MAP[code]) {
+              MTR_STATION_ALL_PAIRS_MAP[code] = [];
             }
-            stationAllLinesMap[code].pairs.push(lineObj.lineCode + ":" + code);
-            stationAllLinesMap[code].lineNames.push(lineObj.lineName);
+            if (MTR_STATION_ALL_PAIRS_MAP[code].indexOf(pairKey) === -1) {
+              MTR_STATION_ALL_PAIRS_MAP[code].push(pairKey);
+            }
+          }
+        }
+      }
+
+      function expandMtrStationPairsCsv(rawIdsCsv) {
+        var tokens = String(rawIdsCsv || "").split(",");
+        var expanded = [];
+        for (var i = 0; i < tokens.length; i++) {
+          var t = tokens[i].trim();
+          if (!t) continue;
+          var staCode = t.indexOf(":") !== -1 ? t.split(":")[1].trim() : t;
+          var allPairs = MTR_STATION_ALL_PAIRS_MAP[staCode];
+          if (allPairs && allPairs.length > 0) {
+            for (var j = 0; j < allPairs.length; j++) {
+              if (expanded.indexOf(allPairs[j]) === -1) {
+                expanded.push(allPairs[j]);
+              }
+            }
+          } else if (t.indexOf(":") !== -1 && expanded.indexOf(t) === -1) {
+            expanded.push(t);
+          }
+        }
+        return expanded;
+      }
+
+      // 計算港鐵站月台嘅「下站站名」，樣式同輕鐵站完全一致 (【1號月台】－下站XXX)
+      function getMtrNextStationName(lineCode, staCode, destCode, routeFlag, dirKey) {
+        var lineObj = MTR_LINE_OBJ_MAP[lineCode];
+        if (!lineObj) return "";
+        var stations = lineObj.stations;
+        var currIdx = -1;
+        var destIdx = -1;
+        for (var i = 0; i < stations.length; i++) {
+          if (stations[i][0] === staCode) currIdx = i;
+          if (stations[i][0] === destCode) destIdx = i;
+        }
+        if (currIdx === -1) return "";
+        if (destCode === staCode) return "總站／落客月台";
+
+        // 東鐵綫 (EAL) 分支處理 (火炭/馬場、羅湖/落馬洲)
+        if (lineCode === "EAL") {
+          var isNorth = (destIdx > currIdx) || (dirKey === "UP" && destIdx === -1);
+          if (staCode === "SHT") {
+            if (!isNorth) return "大圍";
+            return (routeFlag === "RAC" || destCode === "RAC") ? "馬場" : "火炭";
+          }
+          if (staCode === "FOT" || staCode === "RAC") {
+            return isNorth ? "大學" : "沙田";
+          }
+          if (staCode === "UNI") {
+            if (isNorth) return "大埔墟";
+            return (routeFlag === "RAC" || destCode === "RAC") ? "馬場" : "火炭";
+          }
+          if (staCode === "SHS") {
+            if (!isNorth) return "粉嶺";
+            return (destCode === "LMC") ? "落馬洲" : "羅湖";
+          }
+          if (staCode === "LOW" || staCode === "LMC") {
+            return "上水";
           }
         }
 
-        MTR_PICKER_OPTIONS = [];
-        // 先加入轉乘站「全綫月台」選項
-        for (var k = 0; k < stationOrder.length; k++) {
-          var stCode = stationOrder[k];
-          var info = stationAllLinesMap[stCode];
-          if (info.pairs.length > 1) {
-            MTR_PICKER_OPTIONS.push({
-              displayTitle: "⭐ 【港鐵 - 全綫月台】🚇🚈" + info.name + "站🚇🚈 (" + info.lineNames.join(" / ") + ")",
-              cleanName: info.name + "站 (" + info.lineNames.join("/") + ")",
-              idsCsv: info.pairs.join(",")
-            });
+        // 將軍澳綫 (TKL) 分支處理 (坑口/寶琳 vs 康城)
+        if (lineCode === "TKL") {
+          var isEast = (destIdx > currIdx) || (dirKey === "UP" && destIdx === -1);
+          if (staCode === "TKO") {
+            if (!isEast) return "調景嶺";
+            return (destCode === "LHP") ? "康城" : "坑口";
+          }
+          if (staCode === "LHP") {
+            return "將軍澳";
+          }
+          if (staCode === "HAH") {
+            return (destCode === "POA" || isEast) ? "寶琳" : "將軍澳";
+          }
+          if (staCode === "POA") {
+            return "坑口";
           }
         }
-        // 再按每條港鐵綫加入各站選項
-        for (var m = 0; m < MTR_LINES_DATA.length; m++) {
-          var ln = MTR_LINES_DATA[m];
-          for (var j = 0; j < ln.stations.length; j++) {
-            var c = ln.stations[j][0];
-            var nm = ln.stations[j][1];
-            MTR_PICKER_OPTIONS.push({
-              displayTitle: "【港鐵 - " + ln.lineName + "】🚇🚈" + nm + "站🚇🚈",
-              cleanName: nm + "站 (" + ln.lineName + ")",
-              idsCsv: ln.lineCode + ":" + c
-            });
+
+        // 一般直線路段的下站計算
+        if (destIdx !== -1) {
+          if (destIdx > currIdx && currIdx + 1 < stations.length) {
+            return stations[currIdx + 1][1];
+          }
+          if (destIdx < currIdx && currIdx - 1 >= 0) {
+            return stations[currIdx - 1][1];
           }
         }
+        if (dirKey === "UP" && currIdx + 1 < stations.length) {
+          return stations[currIdx + 1][1];
+        }
+        if (dirKey === "DOWN" && currIdx - 1 >= 0) {
+          return stations[currIdx - 1][1];
+        }
+        return "";
+      }
+
+      // ==================== 香港天文台 (HKO) 即時氣象站配對及天氣 Emoji ====================
+      var MTR_NEAREST_WEATHER_STATION = {
+        "TUM": "屯門", "SIH": "屯門", "TIS": "濕地公園", "LOP": "元朗公園", "YUL": "元朗公園",
+        "KSR": "元朗公園", "TWW": "荃灣城門谷", "MEF": "深水埗", "NAC": "深水埗", "AUS": "京士柏",
+        "ETS": "香港天文台", "HUH": "香港天文台", "HOM": "京士柏", "TKW": "九龍城", "SUW": "九龍城",
+        "KAT": "九龍城", "DIH": "黃大仙", "HIK": "沙田", "TAW": "沙田", "CKT": "沙田",
+        "STW": "沙田", "CIO": "沙田", "SHM": "沙田", "TSH": "沙田", "HEO": "沙田",
+        "MOS": "沙田", "WKS": "沙田", "ADM": "香港公園", "EXC": "香港公園", "MKK": "京士柏",
+        "KOT": "九龍城", "SHT": "沙田", "FOT": "沙田", "RAC": "沙田", "UNI": "大埔",
+        "TAP": "大埔", "TWO": "大埔", "FAN": "上水", "SHS": "上水", "LOW": "上水",
+        "LMC": "上水", "CEN": "香港公園", "TST": "香港天文台", "JOR": "香港天文台", "YMT": "京士柏",
+        "MOK": "京士柏", "PRE": "深水埗", "SSP": "深水埗", "CSW": "深水埗", "LCK": "深水埗",
+        "LAK": "青衣", "KWF": "青衣", "KWH": "荃灣城門谷", "TWH": "荃灣城門谷", "TSW": "荃灣城門谷",
+        "WHA": "香港天文台", "SKM": "深水埗", "LOF": "九龍城", "WTS": "黃大仙", "CHH": "黃大仙",
+        "KOB": "觀塘", "NTK": "觀塘", "KWT": "觀塘", "LAT": "觀塘", "YAT": "將軍澳",
+        "TIK": "將軍澳", "KET": "香港公園", "HKU": "香港公園", "SYP": "香港公園", "SHW": "香港公園",
+        "WAC": "跑馬地", "CAB": "跑馬地", "TIH": "跑馬地", "FOH": "跑馬地", "NOP": "筲箕灣",
+        "QUB": "筲箕灣", "TAK": "筲箕灣", "SWH": "筲箕灣", "SKW": "筲箕灣", "HFC": "筲箕灣",
+        "CHW": "筲箕灣", "HOK": "香港公園", "KOW": "京士柏", "OLY": "深水埗", "TSY": "青衣",
+        "SUN": "青衣", "TUC": "赤鱲角", "TKO": "將軍澳", "LHP": "將軍澳", "HAH": "將軍澳",
+        "POA": "將軍澳", "OCP": "黃竹坑", "WCH": "黃竹坑", "LET": "黃竹坑", "SOH": "黃竹坑",
+        "AIR": "赤鱲角", "AWE": "赤鱲角", "DIS": "青衣"
+      };
+
+      var hkoTempByPlace = {};
+      var hkoDefaultTemp = null;
+      var hkoWeatherEmoji = "⛅";
+      var lastWeatherFetchMillis = 0;
+
+      function mapHkoIconToEmoji(iconNo) {
+        var code = parseInt(iconNo, 10);
+        if (code === 50) return "☀️";
+        if (code === 51 || code === 52) return "⛅";
+        if (code === 53 || code === 54) return "🌦️";
+        if (code === 60 || code === 61 || code === 76) return "☁️";
+        if (code === 62 || code === 63 || code === 64) return "🌧️";
+        if (code === 65) return "⛈️";
+        if (code >= 70 && code <= 75) return "🌙";
+        if (code === 77) return "🌙";
+        if (code === 80) return "💨";
+        if (code === 81 || code === 82) return "⛅";
+        if (code === 83 || code === 84 || code === 85) return "🌫️";
+        if (code === 90 || code === 91) return "☀️";
+        if (code === 92 || code === 93) return "❄️";
+        return "⛅";
+      }
+
+      function getWeatherBadgeTextForSlot(type, idsCsv) {
+        var targetPlace = "屯門";
+        if (type === "LRT") {
+          targetPlace = (String(idsCsv).trim() === "380") ? "元朗公園" : "屯門";
+        } else if (type === "MTR") {
+          var firstPair = String(idsCsv || "").split(",")[0].trim();
+          var parts = firstPair.split(":");
+          var staCode = parts.length > 1 ? parts[1].trim() : "";
+          if (staCode && MTR_NEAREST_WEATHER_STATION[staCode]) {
+            targetPlace = MTR_NEAREST_WEATHER_STATION[staCode];
+          }
+        } else {
+          targetPlace = "屯門";
+        }
+
+        var tempVal = hkoTempByPlace[targetPlace];
+        if (tempVal === undefined && targetPlace === "屯門") {
+          tempVal = hkoTempByPlace["元朗公園"] !== undefined ? hkoTempByPlace["元朗公園"] : hkoTempByPlace["流浮山"];
+        }
+        if (tempVal === undefined && targetPlace === "濕地公園") {
+          tempVal = hkoTempByPlace["元朗公園"] !== undefined ? hkoTempByPlace["元朗公園"] : hkoTempByPlace["屯門"];
+        }
+        if (tempVal === undefined) {
+          tempVal = hkoDefaultTemp;
+        }
+        if (tempVal === null || tempVal === undefined) {
+          return "--°C " + hkoWeatherEmoji;
+        }
+        return tempVal + "°C " + hkoWeatherEmoji;
+      }
+
+      function updateAllWeatherBadges() {
+        var m1Ids = ["tvWeatherMode1_0", "tvWeatherMode1_1", "tvWeatherMode1_2", "tvWeatherMode1_3"];
+        var tuenMunWeather = getWeatherBadgeTextForSlot("LRT", "80");
+        for (var m = 0; m < m1Ids.length; m++) {
+          var el = document.getElementById(m1Ids[m]);
+          if (el) el.textContent = tuenMunWeather;
+        }
+        var activeMode = (currentUiMode === 3) ? 3 : 2;
+        for (var i = 0; i < MAX_SLOTS; i++) {
+          var wEl = tvSlotWeathers[i];
+          if (!wEl) continue;
+          var type = getSlotType(activeMode, i);
+          var idsCsv = getSlotIdsCsv(activeMode, i);
+          wEl.textContent = getWeatherBadgeTextForSlot(type, idsCsv);
+        }
+      }
+
+      function fetchHkoWeatherIfNeeded() {
+        var now = Date.now();
+        // 每 60 秒向香港天文台 API 更新一次各區即時氣溫及天氣圖示
+        if (now - lastWeatherFetchMillis < 60000 && hkoDefaultTemp !== null) {
+          updateAllWeatherBadges();
+          return;
+        }
+        lastWeatherFetchMillis = now;
+        fetch("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=tc")
+          .then(function (r) { return r.json(); })
+          .then(function (root) {
+            if (!root) return;
+            if (Array.isArray(root.icon) && root.icon.length > 0) {
+              hkoWeatherEmoji = mapHkoIconToEmoji(root.icon[0]);
+            }
+            if (root.temperature && Array.isArray(root.temperature.data)) {
+              var arr = root.temperature.data;
+              for (var i = 0; i < arr.length; i++) {
+                var p = arr[i].place;
+                var v = arr[i].value;
+                if (p && v !== undefined && v !== null) {
+                  hkoTempByPlace[p] = v;
+                  if (p === "香港天文台" || hkoDefaultTemp === null) {
+                    hkoDefaultTemp = v;
+                  }
+                }
+              }
+            }
+            updateAllWeatherBadges();
+          })
+          .catch(function () {});
+      }
+
+      // ==================== 輕觸時間階磚 15 秒臨時切換 (分鐘 <-> 時間) ====================
+      var tempFlipStateMap = {};
+
+      function toggleTimeTileTempFlip(tileKey, tileEl) {
+        var now = Date.now();
+        var existing = tempFlipStateMap[tileKey];
+        if (existing && existing.expireAt > now) {
+          // 再次輕觸：即時跳轉返本身嘅顯示方式
+          if (existing.timerId) clearTimeout(existing.timerId);
+          delete tempFlipStateMap[tileKey];
+          if (tileEl && tileEl.getAttribute("data-orig-html")) {
+            tileEl.innerHTML = tileEl.getAttribute("data-orig-html");
+          }
+        } else {
+          // 輕觸一下：跳轉為另一個顯示方式，維持 15 秒
+          if (existing && existing.timerId) clearTimeout(existing.timerId);
+          var timerId = setTimeout(function () {
+            delete tempFlipStateMap[tileKey];
+            var activeTiles = document.querySelectorAll('[data-tile-key]');
+            for (var i = 0; i < activeTiles.length; i++) {
+              if (activeTiles[i].getAttribute("data-tile-key") === tileKey) {
+                var orig = activeTiles[i].getAttribute("data-orig-html");
+                if (orig) activeTiles[i].innerHTML = orig;
+              }
+            }
+          }, 15000);
+          tempFlipStateMap[tileKey] = {
+            expireAt: now + 15000,
+            timerId: timerId
+          };
+          if (tileEl && tileEl.getAttribute("data-alt-html")) {
+            tileEl.innerHTML = tileEl.getAttribute("data-alt-html");
+          }
+        }
+      }
+
+      function isTileCurrentlyFlipped(tileKey) {
+        var entry = tempFlipStateMap[tileKey];
+        if (!entry) return false;
+        if (Date.now() >= entry.expireAt) {
+          delete tempFlipStateMap[tileKey];
+          return false;
+        }
+        return true;
       }
 
       var INBOUND_KEYWORDS = [
@@ -1438,7 +1747,7 @@
       var IDB_STORE = "user_prefs";
 
       var KEY_UI_MODE = "ui_mode";
-      var KEY_TIME_DISPLAY_STYLE = "time_display_style"; // 舊版相容
+      var KEY_TIME_DISPLAY_STYLE = "time_display_style";
       var KEY_TIME_STYLE_LRT = "time_style_lrt";
       var KEY_TIME_STYLE_BUS = "time_style_bus";
       var KEY_TIME_STYLE_MTR = "time_style_mtr";
@@ -1450,10 +1759,12 @@
 
       var currentUiMode = 2;
       var settingsEditingTargetMode = 2;
+      var savedMainScrollY = 0;
       var tuenMunBusStopOptions = [];
       var tmrBbiAllStopIds = [];
 
       // DOM 元素快取
+      var appRoot = document.getElementById("appRoot");
       var tvHeaderTitle = document.getElementById("tvHeaderTitle");
       var tvBigClock = document.getElementById("tvBigClock");
       var tvUpdateTime = document.getElementById("tvUpdateTime");
@@ -1485,11 +1796,12 @@
       var tvActiveSlotCountLabel = document.getElementById("tvActiveSlotCountLabel");
       var containerCountPills = document.getElementById("containerCountPills");
       var containerSetSlotButtons = document.getElementById("containerSetSlotButtons");
-      var taBackupCode = document.getElementById("taBackupCode");
+      var inputBackupCode = document.getElementById("inputBackupCode");
 
       var cardElements = [];
       var tvSlotTitles = [];
       var tvSlotNotes = [];
+      var tvSlotWeathers = [];
       var tvSlotBodies = [];
 
       var slotConfigRows = [];
@@ -1498,8 +1810,38 @@
       var slotEnableCheckboxes = [];
       var countPillButtons = [];
 
-      // ==================== 三重永久儲存機制 (LocalStorage + Cookie + IndexedDB) ====================
+      // ==================== 三重永久儲存機制 (非阻塞式，絕不凍結畫面) ====================
       var memoryFallbackStore = {};
+      var cachedIdbInstance = null;
+
+      function getIdbConnection(callback) {
+        if (cachedIdbInstance) {
+          callback(cachedIdbInstance);
+          return;
+        }
+        try {
+          if (!("indexedDB" in window)) {
+            callback(null);
+            return;
+          }
+          var req = window.indexedDB.open(IDB_NAME, 1);
+          req.onupgradeneeded = function (ev) {
+            var db = ev.target.result;
+            if (!db.objectStoreNames.contains(IDB_STORE)) {
+              db.createObjectStore(IDB_STORE);
+            }
+          };
+          req.onsuccess = function (ev) {
+            cachedIdbInstance = ev.target.result;
+            callback(cachedIdbInstance);
+          };
+          req.onerror = function () {
+            callback(null);
+          };
+        } catch (e) {
+          callback(null);
+        }
+      }
 
       function storageGet(key, fallback) {
         try {
@@ -1529,10 +1871,9 @@
         scheduleProfileMirrorBackup();
       }
 
-      // 收集所有個人設定 (不包含大型巴士站快取) 以供永久備份及匯出
       function exportUserSettingsObject() {
         var obj = {
-          v: 3,
+          v: 4,
           ui_mode: storageGet(KEY_UI_MODE, "2"),
           force_two_col: storageGet(KEY_FORCE_TWO_COL, "0"),
           time_style_lrt: storageGet(KEY_TIME_STYLE_LRT, storageGet(KEY_TIME_DISPLAY_STYLE, "2")),
@@ -1612,38 +1953,24 @@
       var mirrorTimer = null;
       function scheduleProfileMirrorBackup() {
         if (mirrorTimer) clearTimeout(mirrorTimer);
-        mirrorTimer = setTimeout(performProfileMirrorBackup, 150);
+        mirrorTimer = setTimeout(performProfileMirrorBackup, 200);
       }
 
       function performProfileMirrorBackup() {
         var b64 = encodeBackupString();
         if (!b64) return;
-        if (taBackupCode) {
-          taBackupCode.value = b64;
-        }
         // 1. 寫入 10 年期 Cookie 備份
         try {
           document.cookie = COOKIE_BACKUP_KEY + "=" + encodeURIComponent(b64) + "; max-age=315360000; path=/; SameSite=Lax";
         } catch (e) {}
-        // 2. 寫入 IndexedDB 備份
-        try {
-          if ("indexedDB" in window) {
-            var req = window.indexedDB.open(IDB_NAME, 1);
-            req.onupgradeneeded = function (ev) {
-              var db = ev.target.result;
-              if (!db.objectStoreNames.contains(IDB_STORE)) {
-                db.createObjectStore(IDB_STORE);
-              }
-            };
-            req.onsuccess = function (ev) {
-              try {
-                var db = ev.target.result;
-                var tx = db.transaction(IDB_STORE, "readwrite");
-                tx.objectStore(IDB_STORE).put(b64, "profile_b64");
-              } catch (e2) {}
-            };
-          }
-        } catch (e) {}
+        // 2. 非阻塞寫入 IndexedDB 備份
+        getIdbConnection(function (db) {
+          if (!db) return;
+          try {
+            var tx = db.transaction(IDB_STORE, "readwrite");
+            tx.objectStore(IDB_STORE).put(b64, "profile_b64");
+          } catch (e2) {}
+        });
       }
 
       function restoreProfileFromMirrorIfNeeded(onComplete) {
@@ -1659,7 +1986,6 @@
           return;
         }
 
-        // 嘗試從 Cookie 還原
         try {
           var cookies = document.cookie ? document.cookie.split(";") : [];
           for (var i = 0; i < cookies.length; i++) {
@@ -1673,38 +1999,25 @@
           }
         } catch (e) {}
 
-        // 嘗試從 IndexedDB 還原
-        try {
-          if ("indexedDB" in window) {
-            var req = window.indexedDB.open(IDB_NAME, 1);
-            req.onupgradeneeded = function (ev) {
-              var db = ev.target.result;
-              if (!db.objectStoreNames.contains(IDB_STORE)) {
-                db.createObjectStore(IDB_STORE);
-              }
-            };
-            req.onsuccess = function (ev) {
-              try {
-                var db = ev.target.result;
-                var tx = db.transaction(IDB_STORE, "readonly");
-                var getReq = tx.objectStore(IDB_STORE).get("profile_b64");
-                getReq.onsuccess = function () {
-                  if (getReq.result) {
-                    decodeAndImportBackupString(getReq.result);
-                  }
-                  onComplete();
-                };
-                getReq.onerror = function () { onComplete(); };
-              } catch (e2) {
-                onComplete();
-              }
-            };
-            req.onerror = function () { onComplete(); };
+        getIdbConnection(function (db) {
+          if (!db) {
+            onComplete();
             return;
           }
-        } catch (e) {}
-
-        onComplete();
+          try {
+            var tx = db.transaction(IDB_STORE, "readonly");
+            var getReq = tx.objectStore(IDB_STORE).get("profile_b64");
+            getReq.onsuccess = function () {
+              if (getReq.result) {
+                decodeAndImportBackupString(getReq.result);
+              }
+              onComplete();
+            };
+            getReq.onerror = function () { onComplete(); };
+          } catch (e2) {
+            onComplete();
+          }
+        });
       }
 
       // ==================== Toast 提示 ====================
@@ -1720,7 +2033,7 @@
         }, 2200);
       }
 
-      // ==================== 字串與括號半形化輔助函數 ====================
+      // ==================== 字串、括號半形化與站名 Emoji 樣式 ====================
       function formatParentheses(text) {
         if (!text) return "";
         var s = String(text).replace(/（/g, "(").replace(/）/g, ")").replace(/＊/g, "*");
@@ -1728,13 +2041,17 @@
         return s.replace(/\s+/g, " ").trim();
       }
 
+      // 新樣式：只保留單一前置 Emoji，移除後方 Emoji 及多餘路線括號
+      // 例子：【輕鐵站】🚋澤豐站，【港鐵站】🚇兆康站
       function formatStationDisplayWithEmoji(type, cleanName) {
         var norm = formatParentheses(cleanName);
         norm = norm.replace(/🚋|🚞|🚇|🚈/g, "").trim();
         if (type === "LRT") {
-          return "【輕鐵站】🚋🚞" + norm + "🚋🚞";
+          return "【輕鐵站】🚋" + norm;
         } else if (type === "MTR") {
-          return "【港鐵站】🚇🚈" + norm + "🚇🚈";
+          // 移除舊設定可能帶有的 "(屯馬綫)" 等後綴，保持 【港鐵站】🚇兆康站 簡潔樣式
+          var strippedMtr = norm.replace(/\s*\([^)]*綫\)\s*$/, "").trim();
+          return "【港鐵站】🚇" + strippedMtr;
         } else {
           return "【巴士站】" + norm;
         }
@@ -1820,8 +2137,8 @@
           case 5: return { type: "BUS", name: "屯門轉車站 (往屯門方向)", ids: SPECIAL_TMR_BBI_TUEN_MUN };
           case 6: return { type: "LRT", name: "市中心站", ids: "280" };
           case 7: return { type: "BUS", name: "大興體育館", ids: "629D4E7DD9EF1AC6,ADE15F24D2EE0B20" };
-          case 8: return { type: "MTR", name: "屯門站 (屯馬綫)", ids: "TML:TUM" };
-          case 9: return { type: "MTR", name: "兆康站 (屯馬綫)", ids: "TML:SIH" };
+          case 8: return { type: "MTR", name: "屯門站", ids: "TML:TUM" };
+          case 9: return { type: "MTR", name: "兆康站", ids: "TML:SIH" };
           case 10: return { type: "LRT", name: "大興 (北) 站", ids: "212" };
           case 11: return { type: "LRT", name: "大興 (南) 站", ids: "220" };
           case 12: return { type: "LRT", name: "蔡意橋站", ids: "75" };
@@ -1950,6 +2267,7 @@
         cardElements = [];
         tvSlotTitles = [];
         tvSlotNotes = [];
+        tvSlotWeathers = [];
         tvSlotBodies = [];
 
         for (var i = 0; i < MAX_SLOTS; i++) {
@@ -1971,16 +2289,28 @@
             });
             tvSlotTitles.push(titleBtn);
 
+            var rightWrap = document.createElement("div");
+            rightWrap.className = "card-header-right";
+
             var noteSpan = document.createElement("span");
             noteSpan.className = "card-note";
-            noteSpan.textContent = "(*為拖卡車)";
+            noteSpan.innerHTML = '(<span class="coupled-star">*</span>為拖卡車)';
             tvSlotNotes.push(noteSpan);
 
+            var weatherSpan = document.createElement("span");
+            weatherSpan.className = "card-weather";
+            weatherSpan.textContent = "--°C ⛅";
+            tvSlotWeathers.push(weatherSpan);
+
+            rightWrap.appendChild(noteSpan);
+            rightWrap.appendChild(weatherSpan);
+
             headerRow.appendChild(titleBtn);
-            headerRow.appendChild(noteSpan);
+            headerRow.appendChild(rightWrap);
 
             var bodyDiv = document.createElement("div");
             bodyDiv.className = "card-body-auto";
+            bodyDiv.id = "slotBody_" + slotIdx;
             bodyDiv.textContent = "載入中...";
             tvSlotBodies.push(bodyDiv);
 
@@ -2077,7 +2407,6 @@
         }
       }
 
-      // 更新卡片標題與顯示狀態 (高度完全由內容自動決定) 
       function updateMode23SlotHeadersAndLayout() {
         var activeMode = (currentUiMode === 3) ? 3 : 2;
         var enabledIndices = getEnabledSlotIndices(activeMode);
@@ -2086,6 +2415,7 @@
           var card = cardElements[i];
           var tvTitle = tvSlotTitles[i];
           var tvNote = tvSlotNotes[i];
+          var tvWeather = tvSlotWeathers[i];
           if (!card || !tvTitle) continue;
 
           var isShown = enabledIndices.indexOf(i) !== -1;
@@ -2099,12 +2429,17 @@
 
           var type = getSlotType(activeMode, i);
           var name = formatParentheses(getSlotName(activeMode, i));
+          var idsCsv = getSlotIdsCsv(activeMode, i);
           tvTitle.textContent = formatStationDisplayWithEmoji(type, name);
+
+          if (tvWeather) {
+            tvWeather.textContent = getWeatherBadgeTextForSlot(type, idsCsv);
+          }
 
           if (type === "LRT") {
             tvTitle.className = "card-title-btn card-title-lrt";
             if (tvNote) {
-              tvNote.textContent = "(*為拖卡車)";
+              tvNote.innerHTML = '(<span class="coupled-star">*</span>為拖卡車)';
               tvNote.style.display = "";
             }
           } else if (type === "MTR") {
@@ -2210,10 +2545,6 @@
           tSpan.textContent = "[界面" + settingsEditingTargetMode + " - 第 " + (i + 1) + " 格] " + fullLabel;
           sSpan.textContent = enabled ? "✅ 已在主畫面顯示 (點擊更改車站 ❯)" : "⚪ 未開啟・主畫面隱藏中 (拉動右邊開關顯示)";
         }
-
-        if (taBackupCode) {
-          taBackupCode.value = encodeBackupString();
-        }
       }
 
       function setUiMode(newMode) {
@@ -2227,21 +2558,32 @@
         refreshAllTransitData();
       }
 
-      // ==================== 彈窗 Modal 系統 ====================
+      // ==================== 彈窗 Modal 系統 (支援「⬅ 返回」上一頁) ====================
       var modalBackdrop = document.getElementById("modalBackdrop");
       var modalTitle = document.getElementById("modalTitle");
       var modalSearchWrap = document.getElementById("modalSearchWrap");
       var modalSearchInput = document.getElementById("modalSearchInput");
       var modalList = document.getElementById("modalList");
+      var btnModalBack = document.getElementById("btnModalBack");
       var currentModalSearchHandler = null;
+      var currentModalBackHandler = null;
 
       function closeModal() {
         modalBackdrop.classList.remove("open");
         modalBackdrop.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("modal-open");
         currentModalSearchHandler = null;
+        currentModalBackHandler = null;
       }
 
       document.getElementById("btnModalCancel").addEventListener("click", closeModal);
+      btnModalBack.addEventListener("click", function () {
+        if (typeof currentModalBackHandler === "function") {
+          var fn = currentModalBackHandler;
+          fn();
+        }
+      });
+
       modalBackdrop.addEventListener("click", function (e) {
         if (e.target === modalBackdrop) closeModal();
       });
@@ -2252,8 +2594,16 @@
         }
       });
 
-      function openListModal(title, items, searchPlaceholder) {
+      function openListModal(title, items, searchPlaceholder, onBackFn) {
         modalTitle.textContent = title;
+        if (typeof onBackFn === "function") {
+          currentModalBackHandler = onBackFn;
+          btnModalBack.style.display = "inline-block";
+        } else {
+          currentModalBackHandler = null;
+          btnModalBack.style.display = "none";
+        }
+
         if (searchPlaceholder) {
           modalSearchWrap.style.display = "block";
           modalSearchInput.value = "";
@@ -2281,8 +2631,12 @@
               }
               btn.textContent = it.label;
               btn.addEventListener("click", function () {
-                closeModal();
-                it.onSelect();
+                if (it.keepModalOpen) {
+                  it.onSelect();
+                } else {
+                  closeModal();
+                  it.onSelect();
+                }
               });
               modalList.appendChild(btn);
             })(item);
@@ -2299,8 +2653,10 @@
 
         currentModalSearchHandler = searchPlaceholder ? renderFiltered : null;
         renderFiltered("");
+        modalList.scrollTop = 0;
         modalBackdrop.classList.add("open");
         modalBackdrop.setAttribute("aria-hidden", "false");
+        document.body.classList.add("modal-open");
       }
 
       function showQuickOptionsPopup() {
@@ -2333,33 +2689,38 @@
               openSettingsPage();
             }
           }
-        ], null);
+        ], null, null);
       }
 
+      // 第一層：精簡版選擇車站類別 (只保留 emoji + 選擇 + 類別)
       function showSlotStationTypeDialog(targetMode, slotIndex) {
         var posName = "第 " + (slotIndex + 1) + " 格";
         openListModal("[界面" + targetMode + " - " + posName + "] 選擇車站類別", [
           {
-            label: "🚋🚞 選擇「輕鐵站」 (屯門區全齊 44 個輕鐵站 - 兩邊月台顯示下站站名)",
+            label: "🚋選擇「輕鐵站」",
+            keepModalOpen: true,
             onSelect: function () {
               showLrtStationPickerDialog(targetMode, slotIndex);
             }
           },
           {
-            label: "🚇🚈 選擇「港鐵站」 (全港所有重鐵路線車站 - 屯馬/東鐵/荃灣/觀塘/港島/東涌/將軍澳/南港島/機快)",
+            label: "🚇選擇「港鐵站」",
+            keepModalOpen: true,
             onSelect: function () {
-              showMtrStationPickerDialog(targetMode, slotIndex);
+              showMtrLinePickerDialog(targetMode, slotIndex);
             }
           },
           {
-            label: "🚌 選擇「巴士站」 (含屯門轉車站來回方向 + 屯門全區九巴及龍運站)",
+            label: "🚌選擇「巴士站」",
+            keepModalOpen: true,
             onSelect: function () {
               showBusStationPickerDialog(targetMode, slotIndex);
             }
           }
-        ], null);
+        ], null, null);
       }
 
+      // 輕鐵站選單 (連「⬅ 返回」鍵返回類別選單)
       function showLrtStationPickerDialog(targetMode, slotIndex) {
         var posName = "第 " + (slotIndex + 1) + " 格";
         var items = [];
@@ -2371,7 +2732,7 @@
             if (parenPos < 0) parenPos = rawName.indexOf(" (屯");
             var cleanName = (parenPos > 0) ? rawName.substring(0, parenPos).trim() : rawName.trim();
             var zonePart = (parenPos > 0) ? " " + rawName.substring(parenPos).trim() : "";
-            var label = "【輕鐵站】🚋🚞" + cleanName + "站🚋🚞" + zonePart;
+            var label = "【輕鐵站】🚋" + cleanName + "站" + zonePart;
             items.push({
               label: label,
               onSelect: function () {
@@ -2379,7 +2740,7 @@
                 updateMode23SlotHeadersAndLayout();
                 refreshSettingsPageUiState();
                 refreshAllTransitData();
-                showToast("[界面" + targetMode + " " + posName + "] 已設為：🚋🚞" + cleanName + "站🚋🚞");
+                showToast("[界面" + targetMode + " " + posName + "] 已設為：【輕鐵站】🚋" + cleanName + "站");
               }
             });
           })(i);
@@ -2387,34 +2748,70 @@
         openListModal(
           "[界面" + targetMode + " - " + posName + "] 選擇輕鐵站",
           items,
-          "輸入輕鐵站名搜尋 (例如：澤豐 / 銀圍 / 麒麟 / 兆康 / 市中心)"
+          "輸入輕鐵站名搜尋 (例如：澤豐 / 銀圍 / 麒麟 / 兆康 / 市中心)",
+          function () {
+            showSlotStationTypeDialog(targetMode, slotIndex);
+          }
         );
       }
 
-      function showMtrStationPickerDialog(targetMode, slotIndex) {
+      // 港鐵站第一層：先選擇「港鐵路線」 (連「⬅ 返回」鍵返回類別選單)
+      function showMtrLinePickerDialog(targetMode, slotIndex) {
         var posName = "第 " + (slotIndex + 1) + " 格";
         var items = [];
-        for (var i = 0; i < MTR_PICKER_OPTIONS.length; i++) {
-          (function (opt) {
+        for (var i = 0; i < MTR_LINES_DATA.length; i++) {
+          (function (lineObj) {
             items.push({
-              label: opt.displayTitle,
+              label: "🚇 " + lineObj.lineName,
+              keepModalOpen: true,
               onSelect: function () {
-                saveSlotConfig(targetMode, slotIndex, "MTR", opt.cleanName, opt.idsCsv);
+                showMtrStationInLinePickerDialog(targetMode, slotIndex, lineObj);
+              }
+            });
+          })(MTR_LINES_DATA[i]);
+        }
+        openListModal(
+          "[界面" + targetMode + " - " + posName + "] 選擇港鐵路線",
+          items,
+          null,
+          function () {
+            showSlotStationTypeDialog(targetMode, slotIndex);
+          }
+        );
+      }
+
+      // 港鐵站第二層：根據所選路線選擇「車站」 (連「⬅ 返回」鍵返回路線選單)
+      function showMtrStationInLinePickerDialog(targetMode, slotIndex, lineObj) {
+        var posName = "第 " + (slotIndex + 1) + " 格";
+        var items = [];
+        for (var i = 0; i < lineObj.stations.length; i++) {
+          (function (stPair) {
+            var stCode = stPair[0];
+            var stName = stPair[1];
+            items.push({
+              label: "【港鐵站】🚇" + stName + "站",
+              onSelect: function () {
+                var allPairsForStation = expandMtrStationPairsCsv(lineObj.lineCode + ":" + stCode).join(",");
+                saveSlotConfig(targetMode, slotIndex, "MTR", stName + "站", allPairsForStation || (lineObj.lineCode + ":" + stCode));
                 updateMode23SlotHeadersAndLayout();
                 refreshSettingsPageUiState();
                 refreshAllTransitData();
-                showToast("[界面" + targetMode + " " + posName + "] 已設為：🚇🚈" + opt.cleanName + "🚇🚈");
+                showToast("[界面" + targetMode + " " + posName + "] 已設為：【港鐵站】🚇" + stName + "站");
               }
             });
-          })(MTR_PICKER_OPTIONS[i]);
+          })(lineObj.stations[i]);
         }
         openListModal(
-          "[界面" + targetMode + " - " + posName + "] 選擇港鐵站 (全港各綫)",
+          "[界面" + targetMode + " - " + posName + "] " + lineObj.lineName + " － 選擇車站",
           items,
-          "輸入港鐵站名或路線搜尋 (例如：屯門 / 兆康 / 美孚 / 金鐘 / 紅磡 / 屯馬綫)"
+          "輸入" + lineObj.lineName + "站名搜尋...",
+          function () {
+            showMtrLinePickerDialog(targetMode, slotIndex);
+          }
         );
       }
 
+      // 巴士站選單 (連「⬅ 返回」鍵返回類別選單)
       function showBusStationPickerDialog(targetMode, slotIndex) {
         var posName = "第 " + (slotIndex + 1) + " 格";
         var items = [];
@@ -2435,7 +2832,10 @@
         openListModal(
           "[界面" + targetMode + " - " + posName + "] 選擇巴士站",
           items,
-          "輸入巴士站名搜尋 (例如：轉車站 / 市中心 / 紅橋 / 良景 / 和田)"
+          "輸入巴士站名搜尋 (例如：轉車站 / 市中心 / 紅橋 / 良景 / 和田)",
+          function () {
+            showSlotStationTypeDialog(targetMode, slotIndex);
+          }
         );
       }
 
@@ -2572,20 +2972,49 @@
         }
       }
 
-      // 輕鐵拖卡車半形 * 放在時間後邊：
-      // - 只顯示時間 (0): 12:34*
-      // - 只顯示分鐘 (1): 6分* / 即將*
-      // - 分鐘 + 時間 (2): 6分* (12:34) / 即將* (12:34)
-      function formatArrivalTimeToken(diffMin, actualClock, timeStyle, isCoupledCar) {
-        var star = isCoupledCar ? "*" : "";
+      function escapeHtmlStr(s) {
+        return String(s || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+
+      // 產生包含縮小 20% 星號 (<span class="coupled-star">*</span>) 嘅時間 HTML，並同時準備輕觸切換格式
+      function buildTimeTokenObject(diffMin, actualClock, timeStyle, isCoupledCar) {
+        var starHtml = isCoupledCar ? '<span class="coupled-star">*</span>' : '';
+        var starPlain = isCoupledCar ? '*' : '';
+        var minPartPlain = (diffMin <= 0) ? ("即將" + starPlain) : (diffMin + "分" + starPlain);
+        var minPartHtml = (diffMin <= 0) ? ("即將" + starHtml) : (diffMin + "分" + starHtml);
+        var clockPartPlain = actualClock + starPlain;
+        var clockPartHtml = actualClock + starHtml;
+        var bothPartPlain = (diffMin <= 0)
+          ? ("即將" + starPlain + " (" + actualClock + ")")
+          : (diffMin + "分" + starPlain + " (" + actualClock + ")");
+        var bothPartHtml = (diffMin <= 0)
+          ? ("即將" + starHtml + " (" + escapeHtmlStr(actualClock) + ")")
+          : (diffMin + "分" + starHtml + " (" + escapeHtmlStr(actualClock) + ")");
+
         if (timeStyle === 0) {
-          return actualClock + star;
+          return {
+            dedupKey: clockPartPlain,
+            origHtml: clockPartHtml,
+            altHtml: minPartHtml,
+            canFlip: true
+          };
         } else if (timeStyle === 1) {
-          if (diffMin <= 0) return "即將" + star;
-          return diffMin + "分" + star;
+          return {
+            dedupKey: minPartPlain,
+            origHtml: minPartHtml,
+            altHtml: clockPartHtml,
+            canFlip: true
+          };
         } else {
-          if (diffMin <= 0) return "即將" + star + " (" + actualClock + ")";
-          return diffMin + "分" + star + " (" + actualClock + ")";
+          return {
+            dedupKey: bothPartPlain,
+            origHtml: bothPartHtml,
+            altHtml: bothPartHtml,
+            canFlip: false
+          };
         }
       }
 
@@ -2611,6 +3040,8 @@
 
       // ==================== 半透明階磚 DOM 渲染 ====================
       function renderEtaRowsToContainer(targetEl, blocks) {
+        if (!targetEl) return;
+        var containerKey = targetEl.id || "card";
         targetEl.innerHTML = "";
         if (!blocks || blocks.length === 0) {
           var emptyDiv = document.createElement("div");
@@ -2619,9 +3050,11 @@
           targetEl.appendChild(emptyDiv);
           return;
         }
+        var currentPlatLabel = "";
         for (var i = 0; i < blocks.length; i++) {
           var b = blocks[i];
           if (b.type === "platform") {
+            currentPlatLabel = b.text || "";
             var pDiv = document.createElement("div");
             pDiv.className = "platform-header";
             pDiv.textContent = formatParentheses(b.text);
@@ -2643,10 +3076,28 @@
 
             var timesArr = Array.isArray(b.timesList) ? b.timesList : [];
             for (var t = 0; t < timesArr.length; t++) {
-              var tSpan = document.createElement("span");
-              tSpan.className = "tile-time";
-              tSpan.textContent = timesArr[t];
-              rDiv.appendChild(tSpan);
+              (function (tokObj, idx) {
+                var tSpan = document.createElement("span");
+                tSpan.className = "tile-time";
+                var tileKey = containerKey + "||" + currentPlatLabel + "||" + b.route + "||" + cleanDest + "||" + idx;
+                tSpan.setAttribute("data-tile-key", tileKey);
+                tSpan.setAttribute("data-orig-html", tokObj.origHtml);
+                tSpan.setAttribute("data-alt-html", tokObj.altHtml);
+
+                if (tokObj.canFlip && isTileCurrentlyFlipped(tileKey)) {
+                  tSpan.innerHTML = tokObj.altHtml;
+                } else {
+                  tSpan.innerHTML = tokObj.origHtml;
+                }
+
+                if (tokObj.canFlip) {
+                  tSpan.addEventListener("click", function (ev) {
+                    ev.stopPropagation();
+                    toggleTimeTileTempFlip(tileKey, tSpan);
+                  });
+                }
+                rDiv.appendChild(tSpan);
+              })(timesArr[t], t);
             }
 
             targetEl.appendChild(rDiv);
@@ -2703,7 +3154,7 @@
                     var diffMin = isArriving ? 0 : addMins;
                     var actualClock = formatHkTime(new Date(baseTimeMillis + addMins * 60000), false);
                     var isCoupled = (cars === 2);
-                    var timeToken = formatArrivalTimeToken(diffMin, actualClock, timeStyle, isCoupled);
+                    var tokObj = buildTimeTokenObject(diffMin, actualClock, timeStyle, isCoupled);
 
                     var key = routeNo + "||" + dest;
                     if (!groupedTimes[key]) {
@@ -2713,7 +3164,7 @@
                       destMap[key] = dest;
                     }
                     if (groupedTimes[key].length < maxCount) {
-                      groupedTimes[key].push(timeToken.trim());
+                      groupedTimes[key].push(tokObj);
                     }
                   }
                 }
@@ -2738,14 +3189,9 @@
           .catch(function () {});
       }
 
-      // 2. 抓取港鐵 (重鐵綫) 實時到站
+      // 2. 抓取港鐵 (重鐵綫) 實時到站 (月台標題統一加入「－下站XXX」)
       function fetchMtrStationUnified(idsCsv, timeStyle, maxCount, targetView) {
-        var pairs = String(idsCsv || "").split(",");
-        var validPairs = [];
-        for (var i = 0; i < pairs.length; i++) {
-          var p = pairs[i].trim();
-          if (p.indexOf(":") !== -1) validPairs.push(p);
-        }
+        var validPairs = expandMtrStationPairsCsv(idsCsv);
         if (validPairs.length === 0) {
           renderEtaRowsToContainer(targetView, []);
           return;
@@ -2786,10 +3232,18 @@
 
             var combinedTrains = [];
             if (Array.isArray(staData.UP)) {
-              for (var u = 0; u < staData.UP.length; u++) combinedTrains.push(staData.UP[u]);
+              for (var u = 0; u < staData.UP.length; u++) {
+                var upItem = staData.UP[u];
+                upItem._dirKey = "UP";
+                combinedTrains.push(upItem);
+              }
             }
             if (Array.isArray(staData.DOWN)) {
-              for (var d = 0; d < staData.DOWN.length; d++) combinedTrains.push(staData.DOWN[d]);
+              for (var d = 0; d < staData.DOWN.length; d++) {
+                var dnItem = staData.DOWN[d];
+                dnItem._dirKey = "DOWN";
+                combinedTrains.push(dnItem);
+              }
             }
 
             var platGroups = {};
@@ -2807,14 +3261,11 @@
 
             for (var pk = 0; pk < platOrder.length; pk++) {
               var pNo = platOrder[pk];
-              var pHeader = multiLine
-                ? ("【" + lineName + " - " + pNo + "號月台】")
-                : ("【" + pNo + "號月台】");
-              blocks.push({ type: "platform", text: pHeader });
-
               var trains = platGroups[pNo];
+              var nextStaList = [];
               var destGroups = {};
               var destOrder = [];
+
               for (var ti = 0; ti < trains.length; ti++) {
                 var item = trains[ti];
                 var destCode = String(item.dest || "").trim();
@@ -2822,6 +3273,12 @@
                 if (item.route === "RAC") {
                   destName = destName + " (經馬場)";
                 }
+
+                var nextSt = getMtrNextStationName(lineCode, staCode, destCode, item.route, item._dirKey);
+                if (nextSt && nextStaList.indexOf(nextSt) === -1) {
+                  nextStaList.push(nextSt);
+                }
+
                 var ttnt = parseInt(item.ttnt || "0", 10);
                 if (isNaN(ttnt) || ttnt < 0) ttnt = 0;
 
@@ -2831,16 +3288,36 @@
                   if (!isNaN(pTime)) trainMillis = pTime;
                 }
                 var actualClock = formatHkTime(new Date(trainMillis), false);
-                var token = formatArrivalTimeToken(ttnt, actualClock, timeStyle, false);
+                var tokObj = buildTimeTokenObject(ttnt, actualClock, timeStyle, false);
 
                 if (!destGroups[destName]) {
                   destGroups[destName] = [];
                   destOrder.push(destName);
                 }
                 if (destGroups[destName].length < maxCount) {
-                  destGroups[destName].push(token);
+                  destGroups[destName].push(tokObj);
                 }
               }
+
+              var nextHeaderSuffix = "";
+              if (nextStaList.length > 0) {
+                if (nextStaList[0] === "總站／落客月台" && nextStaList.length === 1) {
+                  nextHeaderSuffix = "－總站／落客月台";
+                } else {
+                  var filteredNext = [];
+                  for (var nx = 0; nx < nextStaList.length; nx++) {
+                    if (nextStaList[nx] !== "總站／落客月台") filteredNext.push(nextStaList[nx]);
+                  }
+                  if (filteredNext.length > 0) {
+                    nextHeaderSuffix = "－下站" + filteredNext.join("／");
+                  }
+                }
+              }
+
+              var pHeader = multiLine
+                ? ("【" + lineName + " " + pNo + "號月台】" + nextHeaderSuffix)
+                : ("【" + pNo + "號月台】" + nextHeaderSuffix);
+              blocks.push({ type: "platform", text: pHeader });
 
               for (var dk = 0; dk < destOrder.length; dk++) {
                 var dName = destOrder[dk];
@@ -2890,13 +3367,13 @@
                   if (diffSec < -45) continue;
                   var diffMin = Math.max(0, Math.round(diffSec / 60));
                   var actualClock = formatHkTime(new Date(etaMillis), false);
-                  var timeLabel = formatArrivalTimeToken(diffMin, actualClock, busTimeStyle, false);
+                  var tokObj = buildTimeTokenObject(diffMin, actualClock, busTimeStyle, false);
                   if (!routeEntries[route]) {
                     routeEntries[route] = [];
                     routeDestMap[route] = dest;
                     rawKeys.push(route);
                   }
-                  routeEntries[route].push({ etaMillis: etaMillis, label: timeLabel });
+                  routeEntries[route].push({ etaMillis: etaMillis, tokObj: tokObj });
                 }
               }
             }
@@ -2920,18 +3397,21 @@
             var rNo = orderedRoutes[idx];
             var entries = routeEntries[rNo] || [];
             entries.sort(function (a, b) { return a.etaMillis - b.etaMillis; });
-            var topLabels = [];
+            var topTokens = [];
+            var seenKeys = [];
             for (var e = 0; e < entries.length; e++) {
-              if (topLabels.indexOf(entries[e].label) === -1) {
-                topLabels.push(entries[e].label);
-                if (topLabels.length >= maxCount) break;
+              var dk = entries[e].tokObj.dedupKey;
+              if (seenKeys.indexOf(dk) === -1) {
+                seenKeys.push(dk);
+                topTokens.push(entries[e].tokObj);
+                if (topTokens.length >= maxCount) break;
               }
             }
             blocks.push({
               type: "route",
               route: rNo,
               dest: routeDestMap[rNo],
-              timesList: topLabels
+              timesList: topTokens
             });
           }
           renderEtaRowsToContainer(targetView, blocks);
@@ -3018,7 +3498,7 @@
                     if (diffSec < -45) continue;
                     var diffMin = Math.max(0, Math.round(diffSec / 60));
                     var actualClock = formatHkTime(new Date(etaMillis), false);
-                    var timeLabel = formatArrivalTimeToken(diffMin, actualClock, timeStyle, false);
+                    var tokObj = buildTimeTokenObject(diffMin, actualClock, timeStyle, false);
                     var key = route + "||" + dest;
                     if (!routeKeyEntries[key]) {
                       routeKeyEntries[key] = [];
@@ -3026,7 +3506,7 @@
                       destMap[key] = dest;
                       keysOrder.push(key);
                     }
-                    routeKeyEntries[key].push({ etaMillis: etaMillis, label: timeLabel });
+                    routeKeyEntries[key].push({ etaMillis: etaMillis, tokObj: tokObj });
                   }
                 }
               }
@@ -3037,18 +3517,21 @@
               var k = keysOrder[idx];
               var entries = routeKeyEntries[k] || [];
               entries.sort(function (a, b) { return a.etaMillis - b.etaMillis; });
-              var topLabels = [];
+              var topTokens = [];
+              var seenKeys = [];
               for (var e = 0; e < entries.length; e++) {
-                if (topLabels.indexOf(entries[e].label) === -1) {
-                  topLabels.push(entries[e].label);
-                  if (topLabels.length >= maxCount) break;
+                var dk = entries[e].tokObj.dedupKey;
+                if (seenKeys.indexOf(dk) === -1) {
+                  seenKeys.push(dk);
+                  topTokens.push(entries[e].tokObj);
+                  if (topTokens.length >= maxCount) break;
                 }
               }
               blocks.push({
                 type: "route",
                 route: routeNoMap[k],
                 dest: destMap[k],
-                timesList: topLabels
+                timesList: topTokens
               });
             }
             renderEtaRowsToContainer(targetView, blocks);
@@ -3059,6 +3542,8 @@
       function refreshAllTransitData() {
         var nowStr = formatHkTime(new Date(), true);
         tvUpdateTime.textContent = "最後更新：" + nowStr + " (每5秒刷新)";
+
+        fetchHkoWeatherIfNeeded();
 
         var lrtStyle = getLrtTimeStyle();
         var lrtMax = getLrtMaxCount();
@@ -3095,18 +3580,23 @@
         }
       }
 
-      // ==================== 設定頁面開關與事件綁定 ====================
+      // ==================== 設定頁面開關 (單一頁面流切換，徹底消除凍結與背景捲動 Bug) ====================
       function openSettingsPage() {
+        savedMainScrollY = window.scrollY || window.pageYOffset || 0;
         refreshSettingsPageUiState();
+        appRoot.style.display = "none";
         layoutSettingsPage.classList.add("open");
         layoutSettingsPage.setAttribute("aria-hidden", "false");
+        window.scrollTo(0, 0);
       }
 
       function closeSettingsPage() {
         layoutSettingsPage.classList.remove("open");
         layoutSettingsPage.setAttribute("aria-hidden", "true");
+        appRoot.style.display = "flex";
         applyUiModeView();
         refreshAllTransitData();
+        window.scrollTo(0, savedMainScrollY);
       }
 
       function bindMiniPillGroup(containerId, storageKey) {
@@ -3139,12 +3629,20 @@
 
       function fallbackCopy(text) {
         try {
-          taBackupCode.value = text;
-          taBackupCode.select();
+          var tempInput = document.createElement("textarea");
+          tempInput.value = text;
+          tempInput.style.position = "fixed";
+          tempInput.style.left = "-9999px";
+          document.body.appendChild(tempInput);
+          tempInput.select();
           document.execCommand("copy");
+          document.body.removeChild(tempInput);
           showToast("已複製個人設定備份碼！");
         } catch (e) {
-          showToast("請長按下方文字框全選複製");
+          if (inputBackupCode) {
+            inputBackupCode.value = text;
+          }
+          showToast("已將備份碼填入下方輸入框");
         }
       }
 
@@ -3250,7 +3748,7 @@
           showToast("已還原 [界面" + settingsEditingTargetMode + "] 為預設 8 個車站");
         });
 
-        // 個人設定儲存及備份碼按鈕
+        // 個人設定儲存及備份碼按鈕 (零阻塞、不觸發文字框捲動鎖死)
         document.getElementById("btnSaveLockProfile").addEventListener("click", function () {
           performProfileMirrorBackup();
           showToast("✅ 個人設定已永久鎖定並同步至三重資料庫！");
@@ -3262,9 +3760,9 @@
         });
 
         document.getElementById("btnImportBackupCode").addEventListener("click", function () {
-          var inputCode = taBackupCode ? taBackupCode.value.trim() : "";
+          var inputCode = inputBackupCode ? inputBackupCode.value.trim() : "";
           if (!inputCode) {
-            showToast("請先在下方文字框貼上備份碼");
+            showToast("請先在下方輸入框貼上備份碼");
             return;
           }
           if (decodeAndImportBackupString(inputCode)) {
@@ -3311,7 +3809,7 @@
         if ("caches" in window) {
           caches.keys().then(function (keys) {
             for (var i = 0; i < keys.length; i++) {
-              if (keys[i].indexOf("v1") !== -1 || keys[i].indexOf("v2") !== -1) {
+              if (keys[i].indexOf("v1") !== -1 || keys[i].indexOf("v2") !== -1 || keys[i].indexOf("v3") !== -1 || keys[i].indexOf("v4") !== -1) {
                 caches.delete(keys[i]);
               }
             }
