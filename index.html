@@ -1336,6 +1336,7 @@
       var SPECIAL_TLR_BBI_KOWLOON = "DYNAMIC_TLR_BBI_KOWLOON";
       var SPECIAL_TLR_BBI_YUEN_LONG = "DYNAMIC_TLR_BBI_YUEN_LONG";
       var SPECIAL_TLR_BBI_BOTH = "DYNAMIC_TLR_BBI_BOTH";
+      var SPECIAL_WTS_BBI_TUEN_MUN = "DYNAMIC_WTS_BBI_TUEN_MUN";
 
       // 屯門區全齊 44 個輕鐵站清單
       var TUEN_MUN_LRT_STATIONS = [
@@ -1669,6 +1670,7 @@
         "DYNAMIC_TLR_BBI_KOWLOON": [22.4207, 114.0642],
         "DYNAMIC_TLR_BBI_YUEN_LONG": [22.4210, 114.0638],
         "DYNAMIC_TLR_BBI_BOTH": [22.4208, 114.0640],
+        "DYNAMIC_WTS_BBI_TUEN_MUN": [22.3417, 114.1939],
         "DD56DC2336C878C1": [22.4021, 113.9774],
         "2FD7EBBD4AF78A93": [22.4021, 113.9774],
         "6FB7BC1E5BC1E4EE": [22.4021, 113.9774],
@@ -3265,10 +3267,13 @@
         );
       }
 
-      // 港鐵站第一層：先選擇「港鐵路線」 (連「⬅ 返回」鍵返回類別選單)
+      // 港鐵站第一層：先選擇「港鐵路線」，同時支援直接在搜尋欄跨線／跨區搜尋全港港鐵站 (連「⬅ 返回」鍵返回類別選單)
       function showMtrLinePickerDialog(targetMode, slotIndex) {
         var posName = "第 " + (slotIndex + 1) + " 格";
         var items = [];
+        var allMtrSearchItems = [];
+        var seenStaCodes = {};
+
         for (var i = 0; i < MTR_LINES_DATA.length; i++) {
           (function (lineObj) {
             items.push({
@@ -3278,15 +3283,46 @@
                 showMtrStationInLinePickerDialog(targetMode, slotIndex, lineObj);
               }
             });
+
+            for (var s = 0; s < lineObj.stations.length; s++) {
+              (function (stPair) {
+                var stCode = stPair[0];
+                var stName = stPair[1];
+                if (seenStaCodes[stCode]) return;
+                seenStaCodes[stCode] = true;
+
+                var allPairs = expandMtrStationPairsCsv(lineObj.lineCode + ":" + stCode);
+                var lineNames = [];
+                for (var p = 0; p < allPairs.length; p++) {
+                  var lCode = allPairs[p].split(":")[0];
+                  var lName = MTR_LINE_NAME_MAP[lCode] || lCode;
+                  if (lineNames.indexOf(lName) === -1) lineNames.push(lName);
+                }
+                var lineSuffix = lineNames.length > 0 ? " (" + lineNames.join(" / ") + ")" : "";
+
+                allMtrSearchItems.push({
+                  label: "【港鐵站】🚇" + stName + "站" + lineSuffix,
+                  onSelect: function () {
+                    var allPairsCsv = allPairs.join(",");
+                    saveSlotConfig(targetMode, slotIndex, "MTR", stName + "站", allPairsCsv || (lineObj.lineCode + ":" + stCode));
+                    updateMode23SlotHeadersAndLayout();
+                    refreshSettingsPageUiState();
+                    refreshAllTransitData();
+                    showToast("[界面" + targetMode + " " + posName + "] 已設為：【港鐵站】🚇" + stName + "站");
+                  }
+                });
+              })(lineObj.stations[s]);
+            }
           })(MTR_LINES_DATA[i]);
         }
         openListModal(
           "[界面" + targetMode + " - " + posName + "] 選擇港鐵路線",
           items,
-          null,
+          "直接輸入港鐵站名跨線搜尋 (如：兆康 / 旺角 / 金鐘 / 鑽石山)",
           function () {
             showSlotStationTypeDialog(targetMode, slotIndex);
-          }
+          },
+          allMtrSearchItems
         );
       }
 
@@ -3423,6 +3459,7 @@
           name: "黃大仙區",
           defaultCoords: [22.3417, 114.1950],
           presets: [
+            { cleanName: "黃大仙轉車站 (屯門方向)", stopIds: [SPECIAL_WTS_BBI_TUEN_MUN], coords: [22.3417, 114.1939], isStar: true },
             { cleanName: "黃大仙轉車站 / 黃大仙站", matchKw: "黃大仙轉車站|黃大仙站|黃大仙總站", coords: [22.3417, 114.1939], isStar: true },
             { cleanName: "鑽石山站", matchKw: "鑽石山站", coords: [22.3400, 114.2017], isStar: true },
             { cleanName: "彩虹轉車站 / 彩虹邨", matchKw: "彩虹轉車站|彩虹邨|彩虹總站|彩虹站", coords: [22.3347, 114.2089], isStar: true },
@@ -3478,6 +3515,7 @@
 
       var busDistrictOptionsMap = {};
       var tlrBbiAllStopIds = [];
+      var wtsBbiAllStopIds = [];
       var allKmbStopsRawCache = null;
       var kmbCatalogFetchPromise = null;
 
@@ -3604,10 +3642,11 @@
         if (cachedStr) {
           try {
             var parsed = JSON.parse(cachedStr);
-            if (parsed && parsed.v === 6 && parsed.districtOptionsMap) {
+            if (parsed && parsed.v === 7 && parsed.districtOptionsMap) {
               busDistrictOptionsMap = parsed.districtOptionsMap;
               if (Array.isArray(parsed.bbiIds)) tmrBbiAllStopIds = parsed.bbiIds;
               if (Array.isArray(parsed.tlrIds)) tlrBbiAllStopIds = parsed.tlrIds;
+              if (Array.isArray(parsed.wtsBbiIds)) wtsBbiAllStopIds = parsed.wtsBbiIds;
               if (parsed.coordsMap && typeof parsed.coordsMap === "object") {
                 for (var ck in parsed.coordsMap) {
                   if (Object.prototype.hasOwnProperty.call(parsed.coordsMap, ck)) {
@@ -3636,6 +3675,7 @@
 
             var bbiAll = [];
             var tlrAll = [];
+            var wtsBbiAll = [];
             var byDistGrouped = { TM: {}, TSW: {}, YL: {}, WTS: {}, KT: {} };
             var byDistOrder = { TM: [], TSW: [], YL: [], WTS: [], KT: [] };
 
@@ -3657,6 +3697,9 @@
               if (nameTc.indexOf("大欖隧道轉車站") !== -1 || nameTc.indexOf("大欖隧道") !== -1) {
                 tlrAll.push(stopId);
               }
+              if (nameTc.indexOf("黃大仙轉車站") !== -1 || nameTc.indexOf("黃大仙站") !== -1 || nameTc.indexOf("黃大仙廟") !== -1 || nameTc.indexOf("沙田坳道") !== -1) {
+                wtsBbiAll.push(stopId);
+              }
 
               var dCode = classifyKmbStopDistrict(nameTc, lat, lng);
               if (!dCode || !byDistGrouped[dCode]) continue;
@@ -3675,6 +3718,7 @@
 
             tmrBbiAllStopIds = bbiAll;
             tlrBbiAllStopIds = tlrAll;
+            wtsBbiAllStopIds = wtsBbiAll;
 
             var newDistrictMap = {};
             for (var d = 0; d < BUS_DISTRICTS_CONFIG.length; d++) {
@@ -3736,10 +3780,11 @@
 
             try {
               window.localStorage.setItem(STORAGE_PREFIX + KEY_CACHED_TM_BUS_STOPS, JSON.stringify({
-                v: 6,
+                v: 7,
                 districtOptionsMap: newDistrictMap,
                 bbiIds: bbiAll,
                 tlrIds: tlrAll,
+                wtsBbiIds: wtsBbiAll,
                 coordsMap: busStopCoordsMap
               }));
               updateAllWeatherBadges();
@@ -3920,6 +3965,56 @@
         for (var i = 0; i < INBOUND_KEYWORDS.length; i++) {
           if (dest.indexOf(INBOUND_KEYWORDS[i]) !== -1) return true;
         }
+        return false;
+      }
+
+      // 專用於「黃大仙轉車站 (屯門方向)」：嚴格篩選所有往屯門方向或途經屯門轉車站並路過黃大仙轉車站嘅路線 (包括日常及特別時段路線)
+      var TUEN_MUN_DEST_KEYWORDS = [
+        "屯門", "兆康", "寶田", "良景", "田景", "建生", "大興", "山景",
+        "富泰", "和田", "菁田", "欣田", "龍門居", "龍門", "蝴蝶", "湖景",
+        "悅湖", "美樂", "兆禧", "兆麟", "安定", "友愛", "豐景園", "三聖",
+        "顯發", "置樂", "黃金海岸", "掃管笏", "小欖", "大欖", "藍地",
+        "泥圍", "洪水橋", "洪福", "曾咀", "龍鼓灘"
+      ];
+
+      var WTS_VIA_TMR_BBI_ROUTES = [
+        "55", "61X", "62P", "62X",
+        "252X", "258A", "258D", "258P", "258S", "258X",
+        "259D", "259E", "259S", "259X",
+        "267X", "N252", "N260"
+      ];
+
+      var WTS_EASTBOUND_OR_NON_TM_DEST_KEYWORDS = [
+        "藍田", "油塘", "鯉魚門", "觀塘", "寶達", "安達", "安泰", "秀茂坪",
+        "順利", "順天", "九龍城", "紅磡", "尖沙咀", "九龍灣", "牛頭角",
+        "啟德", "鑽石山", "彩虹", "黃大仙", "新蒲崗", "慈雲山", "將軍澳",
+        "寶琳", "坑口", "康城", "清水灣", "西貢", "機場", "博覽館", "東涌"
+      ];
+
+      function isWongTaiSinToTuenMunOrTmrBbiRoute(route, dest) {
+        var r = String(route || "").trim().toUpperCase();
+        var d = String(dest || "").trim();
+        if (!r || !d) return false;
+
+        // 1. 排除任何往東行／九龍／將軍澳／機場方向嘅班次
+        for (var e = 0; e < WTS_EASTBOUND_OR_NON_TM_DEST_KEYWORDS.length; e++) {
+          if (d.indexOf(WTS_EASTBOUND_OR_NON_TM_DEST_KEYWORDS[e]) !== -1) {
+            return false;
+          }
+        }
+
+        // 2. 如目的地直接包含屯門區／屯門轉車站／洪水橋各地點，即屬往屯門方向
+        for (var i = 0; i < TUEN_MUN_DEST_KEYWORDS.length; i++) {
+          if (d.indexOf(TUEN_MUN_DEST_KEYWORDS[i]) !== -1) {
+            return true;
+          }
+        }
+
+        // 3. 如屬已知途經黃大仙轉車站並經屯門轉車站／往屯門方向嘅日常或特別路線 (且非往九龍東方向)，亦納入顯示
+        if (WTS_VIA_TMR_BBI_ROUTES.indexOf(r) !== -1) {
+          return true;
+        }
+
         return false;
       }
 
@@ -4351,6 +4446,10 @@
             needsCatalog = true;
             bbiType = "TLR";
             bbiDirectionFilter = 0;
+          } else if (s === SPECIAL_WTS_BBI_TUEN_MUN) {
+            needsCatalog = true;
+            bbiType = "WTS_TM";
+            bbiDirectionFilter = 3;
           } else if (s.indexOf("DYNAMIC_MATCH:") === 0) {
             needsCatalog = true;
             dynamicMatchSpecs.push(s);
@@ -4367,6 +4466,9 @@
             }
             if (bbiType === "TLR") {
               return tlrBbiAllStopIds;
+            }
+            if (bbiType === "WTS_TM") {
+              return wtsBbiAllStopIds;
             }
             var resolved = directStopIds.slice();
             for (var m = 0; m < dynamicMatchSpecs.length; m++) {
@@ -4438,6 +4540,7 @@
 
                 if (bbiDirectionFilter === 1 && isInboundTuenMunOrYuenLongDest(dest)) continue;
                 if (bbiDirectionFilter === 2 && !isInboundTuenMunOrYuenLongDest(dest)) continue;
+                if (bbiDirectionFilter === 3 && !isWongTaiSinToTuenMunOrTmrBbiRoute(route, dest)) continue;
 
                 if (etaStr && etaStr !== "null" && etaStr.length >= 19) {
                   var etaMillis = Date.parse(etaStr);
@@ -4449,7 +4552,7 @@
                     var routeDirKey = route + "||" + dest + "||" + dir;
                     if (!primaryStopForRouteDir[routeDirKey]) {
                       primaryStopForRouteDir[routeDirKey] = currentStopId;
-                    } else if (primaryStopForRouteDir[routeDirKey] !== currentStopId && bbiType === "") {
+                    } else if (primaryStopForRouteDir[routeDirKey] !== currentStopId && (bbiType === "" || bbiType === "WTS_TM")) {
                       continue;
                     }
 
