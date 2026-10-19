@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-time-pwa-v11";
+const CACHE_NAME = "arrival-time-pwa-v12";
 const ASSETS = ["./", "./index.html", "./manifest.json"];
 
 self.addEventListener("install", (event) => {
