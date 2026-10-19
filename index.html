@@ -57,10 +57,10 @@
       overflow: hidden;
     }
 
-    /* 專為 iPhone 主畫面 App 版 (Standalone Mode) 而設嘅頂部防模糊實體保護區 */
+    /* 專為 iPhone 主畫面 App 版 (Standalone Mode) 而設嘅頂部防模糊實體保護區 (v10 參照兩張截圖差值精準縮減頂部空間) */
     #standaloneTopGuard {
       width: 100%;
-      height: env(safe-area-inset-top, 0px);
+      height: 0px;
       background-color: var(--bg-root);
       display: none;
     }
@@ -68,13 +68,13 @@
     @media all and (display-mode: standalone) {
       #standaloneTopGuard {
         display: block;
-        height: max(54px, calc(env(safe-area-inset-top, 47px) + 8px));
+        height: max(12px, calc(env(safe-area-inset-top, 47px) - 35px));
       }
     }
 
     body.is-ios-standalone #standaloneTopGuard {
       display: block;
-      height: max(54px, calc(env(safe-area-inset-top, 47px) + 8px));
+      height: max(12px, calc(env(safe-area-inset-top, 47px) - 35px));
     }
 
     #appRoot {
@@ -83,7 +83,7 @@
       width: 100%;
       min-height: 100vh;
       min-height: 100dvh;
-      padding-top: 8px;
+      padding-top: 4px;
       padding-bottom: max(20px, calc(env(safe-area-inset-bottom, 0px) + 12px));
       padding-left: max(8px, env(safe-area-inset-left, 0px));
       padding-right: max(8px, env(safe-area-inset-right, 0px));
@@ -540,14 +540,49 @@
       gap: 14px;
     }
 
-    .btn-back {
-      background: none;
-      border: none;
-      color: var(--green-clock);
-      font-size: 16px;
-      font-weight: 700;
+    .btn-back,
+    .rs-back-circle-btn,
+    .btn-modal-back {
+      justify-self: start;
+      width: 50px;
+      height: 34px;
+      border-radius: 999px;
+      background: rgba(38, 38, 43, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+      color: #E5E5EA;
+      padding: 0;
       cursor: pointer;
-      padding: 4px 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: transform 0.12s ease, background 0.15s ease;
+    }
+
+    .btn-back:active,
+    .rs-back-circle-btn:active,
+    .btn-modal-back:active {
+      transform: scale(0.92);
+      background: rgba(62, 62, 70, 0.94);
+    }
+
+    .btn-back svg,
+    .rs-back-circle-btn svg,
+    .btn-modal-back svg {
+      width: 18px;
+      height: 18px;
+      stroke: #E5E5EA;
+      stroke-width: 2.35;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      pointer-events: none;
+      margin-right: 1px;
     }
 
     .settings-title {
@@ -948,14 +983,6 @@
     }
 
     .btn-modal-back {
-      background: #23342B;
-      color: #00E676;
-      border: 1px solid #2F523E;
-      border-radius: 7px;
-      padding: 8px 16px;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
       margin-right: auto;
     }
 
@@ -1005,11 +1032,11 @@
       width: 56px;
       height: 56px;
       border-radius: 50%;
-      background: rgba(44, 44, 48, 0.76);
-      backdrop-filter: blur(16px) saturate(180%);
-      -webkit-backdrop-filter: blur(16px) saturate(180%);
-      border: 1.2px solid rgba(255, 255, 255, 0.24);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.22);
+      background: rgba(44, 44, 48, 0.56);
+      backdrop-filter: blur(14px) saturate(160%);
+      -webkit-backdrop-filter: blur(14px) saturate(160%);
+      border: 1.2px solid rgba(255, 255, 255, 0.19);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.16);
       color: #FFFFFF;
       display: flex;
       align-items: center;
@@ -1026,7 +1053,7 @@
       transition: none !important;
       cursor: grabbing;
       transform: scale(1.08);
-      background: rgba(64, 64, 72, 0.88);
+      background: rgba(64, 64, 72, 0.68);
     }
 
     .fab-search-tile:active {
@@ -1063,7 +1090,7 @@
     body.is-ios-standalone .route-search-page,
     body.is-ios-standalone .route-detail-page,
     body.is-ios-standalone .db-guide-page {
-      padding-top: max(48px, env(safe-area-inset-top, 44px));
+      padding-top: max(12px, calc(env(safe-area-inset-top, 44px) - 34px));
     }
 
     .route-search-page.open {
@@ -1081,35 +1108,97 @@
       min-height: 50px;
     }
 
-    /* 參考截圖1：在「返回」底下加一個透明帶底色嘅圓形階磚，不用 emoji，大小根據同一欄字幕大細 */
-    .rs-back-circle-btn {
-      justify-self: start;
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: rgba(52, 52, 58, 0.78);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
-      color: #F5F5F7;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-      line-height: 1;
-      padding: 0;
-      cursor: pointer;
-      display: inline-flex;
+    /* 資料庫選單項目樣式 */
+    .db-item-row {
+      display: flex;
       align-items: center;
-      justify-content: center;
-      white-space: nowrap;
-      user-select: none;
-      transition: transform 0.12s ease, background 0.15s ease;
+      justify-content: space-between;
+      gap: 10px;
+      background: #23232A;
+      border: 1px solid #34343E;
+      border-radius: 9px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease;
     }
 
-    .rs-back-circle-btn:active {
-      transform: scale(0.92);
-      background: rgba(76, 76, 84, 0.9);
+    .db-item-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .db-item-row.active-db {
+      background: rgba(0, 230, 118, 0.12);
+      border-color: #00E676;
+    }
+
+    .db-item-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .db-item-name {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      word-break: break-word;
+    }
+
+    .db-item-sub {
+      font-size: 11.5px;
+      color: #9E9EAB;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .db-item-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .db-badge-active {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #00E676;
+      background: rgba(0, 230, 118, 0.16);
+      border: 1px solid rgba(0, 230, 118, 0.38);
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+
+    .db-badge-select {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #BDBDBD;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+
+    .db-btn-delete {
+      background: rgba(255, 110, 110, 0.14);
+      color: #FF6E6E;
+      border: 1px solid rgba(255, 110, 110, 0.32);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .db-btn-delete:active {
+      background: rgba(255, 110, 110, 0.28);
     }
 
     .rs-top-title {
@@ -1929,7 +2018,7 @@
   <!-- 獨立「設定」頁面 (開啟時自動隱藏 #appRoot，徹底杜絕背景捲動及凍結問題) -->
   <div id="layoutSettingsPage" class="settings-page" aria-hidden="true">
     <div class="settings-topbar">
-      <button type="button" id="btnCloseSettings" class="btn-back">⬅ 返回看板</button>
+      <button type="button" id="btnCloseSettings" class="btn-back" aria-label="返回"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="14.5 5.5 8 12 14.5 18.5"></polyline></svg></button>
       <div class="settings-title">⚙ 到站時間 － 看板設定</div>
     </div>
 
@@ -2143,7 +2232,7 @@
       </div>
       <div id="modalList" class="modal-list"></div>
       <div class="modal-footer">
-        <button type="button" id="btnModalBack" class="btn-modal-back" style="display:none;">⬅ 返回</button>
+        <button type="button" id="btnModalBack" class="btn-modal-back" style="display:none;" aria-label="返回"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="14.5 5.5 8 12 14.5 18.5"></polyline></svg></button>
         <button type="button" id="btnModalCancel" class="btn-modal-cancel">取消</button>
       </div>
     </div>
@@ -2162,9 +2251,9 @@
   <!-- v9 優化：「搜尋路線」獨立頁面 (頂欄只保留「搜尋路線」4隻字、「返回」採用透明帶底色圓形階磚、底部鎖定智能 Numpad) -->
   <div id="layoutRouteSearchPage" class="route-search-page" aria-hidden="true">
     <div class="rs-topbar">
-      <button type="button" id="btnRouteSearchBack" class="rs-back-circle-btn" aria-label="返回">返回</button>
+      <button type="button" id="btnRouteSearchBack" class="rs-back-circle-btn" aria-label="返回"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="14.5 5.5 8 12 14.5 18.5"></polyline></svg></button>
       <div class="rs-top-title">搜尋路線</div>
-      <button type="button" id="btnOpenDbGuideFromSearch" class="rs-guide-btn">資料庫教學</button>
+      <button type="button" id="btnOpenDbGuideFromSearch" class="rs-guide-btn">資料庫</button>
     </div>
 
     <div class="rs-header-area">
@@ -2206,7 +2295,7 @@
   <!-- v9 優化：「路線詳情頁」(只保留「巴士站/車站」與「車程」兩個簡潔分頁，移除教學分頁及冗長提示字句) -->
   <div id="layoutRouteDetailPage" class="route-detail-page" aria-hidden="true">
     <div class="rd-topbar">
-      <button type="button" id="btnRouteDetailBack" class="rs-back-circle-btn" aria-label="返回">返回</button>
+      <button type="button" id="btnRouteDetailBack" class="rs-back-circle-btn" aria-label="返回"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="14.5 5.5 8 12 14.5 18.5"></polyline></svg></button>
       <div class="rd-title-center">
         <span id="rdHeaderRouteNo" class="rd-route-no">A43P</span>
         <span id="rdHeaderDest" class="rd-dest-label">往機場 (地面運輸中心)</span>
@@ -2235,33 +2324,64 @@
     <div id="rdStopsScrollContainer" class="rd-stops-scroll"></div>
   </div>
 
-  <!-- 獨立「車程資料庫教學」頁面 (僅保留喺搜尋路線右上角按鈕進入) -->
+  <!-- 獨立「資料庫」管理頁面 (保密預設資料庫地址、提供連線測試、後備資料庫新增與命名選單、永久保存防更新還原) -->
   <div id="layoutDbGuidePage" class="db-guide-page" aria-hidden="true">
     <div class="rs-topbar">
-      <button type="button" id="btnCloseDbGuidePage" class="rs-back-circle-btn" aria-label="返回">返回</button>
-      <div class="rs-top-title">資料庫設定及教學</div>
-      <div style="width:38px;"></div>
+      <button type="button" id="btnCloseDbGuidePage" class="rs-back-circle-btn" aria-label="返回"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="14.5 5.5 8 12 14.5 18.5"></polyline></svg></button>
+      <div class="rs-top-title">資料庫</div>
+      <div style="width:50px;"></div>
     </div>
     <div id="rdDbGuideContainer" class="rd-guide-container">
+      <!-- 區塊 1：目前選用中資料庫狀態及測試連線 -->
       <div class="rd-guide-card" style="border-color:#00E676;">
-        <h3>⚡ 預設雲端車程資料庫 (已自動連接)</h3>
-        <div style="font-size:12.5px; color:#BDBDBD; margin-bottom:8px;">
-          本 App 已預設對所有人啟用雲端車程資料庫：<code>https://hk-bus-history.clear-octet53.workers.dev/</code>，所有需要車程資料庫運作嘅功能均自動從此資料庫提取過往一周同時段平均車程數據。
+        <h3>⚡ 現正使用資料庫狀態</h3>
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; background:#16161C; border:1px solid #2C2C36; border-radius:8px; padding:10px 12px; margin-bottom:10px;">
+          <div>
+            <div style="font-size:12px; color:#9E9EAB;">目前選用資料庫：</div>
+            <div id="tvCurrentActiveDbName" style="font-size:15.5px; font-weight:800; color:#00E676; margin-top:2px;">預設資料庫</div>
+          </div>
+          <span id="tvCurrentActiveDbSecurityTag" style="font-size:11.5px; color:#BDBDBD; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.12); padding:3px 8px; border-radius:6px;">🔒 地址已保密</span>
         </div>
-        <input type="text" id="inputCustomHistoryDbUrl" class="backup-input-box" value="https://hk-bus-history.clear-octet53.workers.dev/" placeholder="https://hk-bus-history.clear-octet53.workers.dev/" />
-        <div style="display:flex; gap:8px; margin-top:8px;">
-          <button type="button" id="btnSaveCustomHistoryDbUrl" class="action-btn" style="margin-top:0; background:#193829; border-color:#00E676; color:#00E676; font-weight:700;">💾 儲存資料庫網址</button>
-          <button type="button" id="btnTestCurrentRouteHistoryDb" class="action-btn" style="margin-top:0; color:#4FC3F7;">🔄 測試連線</button>
-        </div>
+        <button type="button" id="btnTestCurrentRouteHistoryDb" class="action-btn" style="margin-top:0; color:#4FC3F7; border-color:rgba(79,195,247,0.4); font-weight:700;">🔄 測試連線</button>
+        <div id="tvDbTestStatusResult" style="font-size:12.5px; color:#BDBDBD; margin-top:8px; display:none;"></div>
       </div>
 
+      <!-- 區塊 2：資料庫選單 (永遠保留「預設資料庫」) -->
       <div class="rd-guide-card">
-        <h3>🚀 Cloudflare Workers + D1 自動化收集架構</h3>
-        <ol style="margin:4px 0; padding-left:18px;">
-          <li><strong>預設資料庫網址</strong>：<code>https://hk-bus-history.clear-octet53.workers.dev/</code></li>
-          <li><strong>單一路線按需讀取端點</strong>：<code>/routes/{營運商}_{路線}.json</code>（例如 <code>/routes/LWB_A43P.json</code>）</li>
-          <li><strong>定時收集端點</strong>：<code>/collect</code>（由 Cron Trigger 每 10 分鐘自動抓取政府實時 API 並以 7 日滾動指數平均更新各站段秒數）。</li>
-        </ol>
+        <h3>🗂️ 資料庫選單 (點擊即可切換)</h3>
+        <div style="font-size:12.5px; color:#9E9EAB; margin-bottom:10px;">
+          系統永遠保留「預設資料庫」（地址已加密保護）。當現有資料庫突然故障時，可隨時喺下方新增或切換至後備資料庫，無需修改後台 HTML 即可即時使用。
+        </div>
+        <div id="containerSavedDbList"></div>
+      </div>
+
+      <!-- 區塊 3：新增後備資料庫 (可自由命名識別) -->
+      <div class="rd-guide-card">
+        <h3>➕ 新增後備資料庫</h3>
+        <div style="font-size:12.5px; color:#BDBDBD; margin-bottom:6px;">
+          輸入自訂識別名稱及後備資料庫地址，新增後會自動加入上方選單並切換使用：
+        </div>
+        <input type="text" id="inputNewDbName" class="backup-input-box" style="color:#FFFFFF;" placeholder="輸入資料庫名稱 (例如：後備資料庫 1)" autocomplete="off" />
+        <input type="url" id="inputNewDbUrl" class="backup-input-box" placeholder="輸入新資料庫地址 (例如：https://...)" autocomplete="off" />
+        <button type="button" id="btnAddCustomHistoryDb" class="action-btn" style="margin-top:10px; background:#193829; border-color:#00E676; color:#00E676; font-weight:700;">
+          ➕ 新增並切換至此資料庫
+        </button>
+      </div>
+
+      <!-- 區塊 4：保存資料庫設定 (三重永久儲存 + 備份碼，更新 App 絕不洗走) -->
+      <div class="rd-guide-card">
+        <h3>💾 保存資料庫設定 (防更新還原)</h3>
+        <div style="font-size:12.5px; color:#BDBDBD; line-height:1.45; margin-bottom:8px;">
+          你新增嘅後備資料庫名單及選用狀態已同步納入<strong>三重本機永久保存 (LocalStorage + IndexedDB + Cookie)</strong>，日後更新 App 都依然可以繼續用返。
+        </div>
+        <button type="button" id="btnSaveLockDbSettings" class="action-btn" style="background:#193829; border-color:#00E676; color:#00E676; font-weight:700;">
+          💾 立即保存並鎖定資料庫設定
+        </button>
+        <div class="backup-btn-grid">
+          <button type="button" id="btnCopyDbBackupCode" class="action-btn" style="margin-top:0;">📋 複製設定備份碼</button>
+          <button type="button" id="btnImportDbBackupCode" class="action-btn" style="margin-top:0; color:#4FC3F7;">📥 貼上並還原備份碼</button>
+        </div>
+        <input type="text" id="inputDbBackupCode" class="backup-input-box" placeholder="如需跨裝置還原資料庫及看板設定，請貼上備份碼" autocomplete="off" />
       </div>
     </div>
   </div>
@@ -3342,9 +3462,12 @@
         scheduleProfileMirrorBackup();
       }
 
+      var KEY_CUSTOM_DB_LIST = "custom_db_list_v1";
+      var KEY_ACTIVE_DB_ID = "active_db_id_v1";
+
       function exportUserSettingsObject() {
         var obj = {
-          v: 4,
+          v: 5,
           ui_mode: storageGet(KEY_UI_MODE, "2"),
           force_two_col: storageGet(KEY_FORCE_TWO_COL, "0"),
           time_style_lrt: storageGet(KEY_TIME_STYLE_LRT, storageGet(KEY_TIME_DISPLAY_STYLE, "2")),
@@ -3353,6 +3476,8 @@
           max_count_lrt: storageGet(KEY_MAX_COUNT_LRT, "3"),
           max_count_bus: storageGet(KEY_MAX_COUNT_BUS, "2"),
           max_count_mtr: storageGet(KEY_MAX_COUNT_MTR, "2"),
+          custom_db_list: storageGet(KEY_CUSTOM_DB_LIST, "[]"),
+          active_db_id: storageGet(KEY_ACTIVE_DB_ID, "default"),
           slots: {}
         };
         for (var m = 2; m <= 3; m++) {
@@ -3380,6 +3505,8 @@
           if (obj.max_count_lrt !== undefined) storageSet(KEY_MAX_COUNT_LRT, obj.max_count_lrt);
           if (obj.max_count_bus !== undefined) storageSet(KEY_MAX_COUNT_BUS, obj.max_count_bus);
           if (obj.max_count_mtr !== undefined) storageSet(KEY_MAX_COUNT_MTR, obj.max_count_mtr);
+          if (obj.custom_db_list !== undefined) storageSet(KEY_CUSTOM_DB_LIST, obj.custom_db_list);
+          if (obj.active_db_id !== undefined) storageSet(KEY_ACTIVE_DB_ID, obj.active_db_id);
           if (obj.slots && typeof obj.slots === "object") {
             for (var m = 2; m <= 3; m++) {
               for (var i = 0; i < MAX_SLOTS; i++) {
@@ -5866,7 +5993,7 @@
         if ("caches" in window) {
           caches.keys().then(function (keys) {
             for (var i = 0; i < keys.length; i++) {
-              if (keys[i].indexOf("v1") !== -1 || keys[i].indexOf("v2") !== -1 || keys[i].indexOf("v3") !== -1 || keys[i].indexOf("v4") !== -1 || keys[i].indexOf("v5") !== -1 || keys[i].indexOf("v6") !== -1 || keys[i].indexOf("v7") !== -1 || keys[i].indexOf("v8") !== -1) {
+              if (keys[i].indexOf("v10") !== -1 || keys[i].indexOf("v9") !== -1 || keys[i].indexOf("v8") !== -1 || keys[i].indexOf("v7") !== -1 || keys[i].indexOf("v6") !== -1 || keys[i].indexOf("v5") !== -1 || keys[i].indexOf("v4") !== -1 || keys[i].indexOf("v3") !== -1 || keys[i].indexOf("v2") !== -1 || (keys[i].indexOf("v1") !== -1 && keys[i].indexOf("v11") === -1)) {
                 caches.delete(keys[i]);
               }
             }
@@ -5987,6 +6114,28 @@
           { seq: 12, stopId: "0B12E34D5F6A7823", name: "粉嶺名都 (ND115)", lat: 22.49382, lng: 114.14022, fare: "$7.7" },
           { seq: 13, stopId: "1C23F45E6A7B8924", name: "粉嶺樓 (ND120)", lat: 22.49682, lng: 114.14082, fare: "$7.7" },
           { seq: 14, stopId: "FB7D2C7C9A6520B2", name: "粉嶺 (聯和墟) (ND961)", lat: 22.49752, lng: 114.14362, fare: "$0.0" }
+        ],
+        "GMB||N44B||O||1": [
+          { seq: 1, stopId: "20012418", name: "屯門碼頭 (湖翠路)", lat: 22.37285, lng: 113.96645, fare: "$19.9" },
+          { seq: 2, stopId: "20012419", name: "美樂花園", lat: 22.37525, lng: 113.96165, fare: "$19.9" },
+          { seq: 3, stopId: "20012420", name: "蝴蝶站 (龍門路)", lat: 22.37805, lng: 113.96295, fare: "$19.9" },
+          { seq: 4, stopId: "20012421", name: "新墟街市 (河傍街)", lat: 22.39825, lng: 113.97565, fare: "$19.9" },
+          { seq: 5, stopId: "20012422", name: "紅橋 (屯門公路)", lat: 22.40215, lng: 113.97745, fare: "$19.9" },
+          { seq: 6, stopId: "20012423", name: "兆康苑 (青山公路)", lat: 22.41185, lng: 113.97885, fare: "$19.9" },
+          { seq: 7, stopId: "20012424", name: "元朗同樂街 (青山公路)", lat: 22.44455, lng: 114.02785, fare: "$14.5" },
+          { seq: 8, stopId: "20012425", name: "形點 I (元朗站)", lat: 22.44615, lng: 114.03535, fare: "$14.5" },
+          { seq: 9, stopId: "20012426", name: "落馬洲轉車站 (新田運輸交匯處)", lat: 22.49955, lng: 114.07852, fare: "$0.0" }
+        ],
+        "GMB||N44B||I||1": [
+          { seq: 1, stopId: "20012426", name: "落馬洲轉車站 (新田運輸交匯處)", lat: 22.49955, lng: 114.07852, fare: "$19.9" },
+          { seq: 2, stopId: "20012427", name: "元朗又新街 (青山公路)", lat: 22.44425, lng: 114.03105, fare: "$14.5" },
+          { seq: 3, stopId: "20012428", name: "元朗康樂路", lat: 22.44445, lng: 114.02735, fare: "$14.5" },
+          { seq: 4, stopId: "20012429", name: "兆康苑 (青山公路)", lat: 22.41185, lng: 113.97885, fare: "$10.5" },
+          { seq: 5, stopId: "20012430", name: "紅橋 (井財街)", lat: 22.40215, lng: 113.97745, fare: "$10.5" },
+          { seq: 6, stopId: "20012431", name: "屯門站 (杯渡路)", lat: 22.39485, lng: 113.97315, fare: "$10.5" },
+          { seq: 7, stopId: "20012432", name: "蝴蝶站 (龍門路)", lat: 22.37805, lng: 113.96295, fare: "$10.5" },
+          { seq: 8, stopId: "20012433", name: "美樂花園", lat: 22.37525, lng: 113.96165, fare: "$10.5" },
+          { seq: 9, stopId: "20012418", name: "屯門碼頭 (湖翠路)", lat: 22.37285, lng: 113.96645, fare: "$0.0" }
         ]
       };
 
@@ -6010,7 +6159,7 @@
 
       // 全港所有預設種子路線（每一條路線均嚴格分開兩個方向，直接顯示「往 XXX」，絕不合併兩個方向）
       var SEED_ROUTES_LIST = [
-        // 機場 A 線 (全部雙向分開)
+        // 機場 A 線及大嶼山路線 (全部雙向分開)
         { route: "A10", co: "CTB", cat: "BUS", orig: "鴨脷洲 (利樂街)", dest: "機場 (地面運輸中心)", bound: "O", serviceType: "1" },
         { route: "A10", co: "CTB", cat: "BUS", orig: "機場 (地面運輸中心)", dest: "鴨脷洲 (利樂街)", bound: "I", serviceType: "1" },
         { route: "A11", co: "CTB", cat: "BUS", orig: "北角碼頭", dest: "機場 (地面運輸中心)", bound: "O", serviceType: "1" },
@@ -6047,6 +6196,8 @@
         { route: "A33X", co: "LWB", cat: "BUS", orig: "機場 (地面運輸中心)", dest: "屯門 (富泰)", bound: "I", serviceType: "1" },
         { route: "A34", co: "LWB", cat: "BUS", orig: "洪水橋 (洪元路)", dest: "機場 (地面運輸中心)", bound: "O", serviceType: "1" },
         { route: "A34", co: "LWB", cat: "BUS", orig: "機場 (地面運輸中心)", dest: "洪水橋 (洪元路)", bound: "I", serviceType: "1" },
+        { route: "A35", co: "NLB", cat: "BUS", orig: "梅窩碼頭", dest: "港珠澳大橋香港口岸", bound: "O", serviceType: "1" },
+        { route: "A35", co: "NLB", cat: "BUS", orig: "港珠澳大橋香港口岸", dest: "梅窩碼頭", bound: "I", serviceType: "1" },
         { route: "A36", co: "LWB", cat: "BUS", orig: "錦上路站", dest: "機場 (地面運輸中心)", bound: "O", serviceType: "1" },
         { route: "A36", co: "LWB", cat: "BUS", orig: "機場 (地面運輸中心)", dest: "錦上路站", bound: "I", serviceType: "1" },
         { route: "A37", co: "LWB", cat: "BUS", orig: "朗屏站", dest: "機場 (地面運輸中心)", bound: "O", serviceType: "1" },
@@ -6067,7 +6218,7 @@
         { route: "A46", co: "LWB", cat: "BUS", orig: "機場 (地面運輸中心)", dest: "火炭 (駿景園)", bound: "I", serviceType: "1" },
         { route: "A47X", co: "LWB", cat: "BUS", orig: "大埔 (太和)", dest: "機場 (地面運輸中心)", bound: "O", serviceType: "1" },
         { route: "A47X", co: "LWB", cat: "BUS", orig: "機場 (地面運輸中心)", dest: "大埔 (太和)", bound: "I", serviceType: "1" },
-        // 九巴、龍運、城巴、嶼巴、專線小巴雙向分開種子清單
+        // 九巴、龍運、城巴、嶼巴、港鐵接駁巴士常用路線雙向種子清單
         { route: "1", co: "KMB", cat: "BUS", orig: "竹園邨", dest: "尖沙咀碼頭", bound: "O", serviceType: "1" },
         { route: "1", co: "KMB", cat: "BUS", orig: "尖沙咀碼頭", dest: "竹園邨", bound: "I", serviceType: "1" },
         { route: "1", co: "CTB", cat: "BUS", orig: "中環 (港澳碼頭)", dest: "跑馬地 (上)", bound: "O", serviceType: "1" },
@@ -6106,28 +6257,124 @@
         { route: "961", co: "KMB", cat: "BUS", orig: "灣仔 (會展)", dest: "山景", bound: "I", serviceType: "1" },
         { route: "B1", co: "KMB", cat: "BUS", orig: "天慈", dest: "落馬洲站", bound: "O", serviceType: "1" },
         { route: "B1", co: "KMB", cat: "BUS", orig: "落馬洲站", dest: "天慈", bound: "I", serviceType: "1" },
+        { route: "B3", co: "CTB", cat: "BUS", orig: "屯門碼頭", dest: "深圳灣口岸", bound: "O", serviceType: "1" },
+        { route: "B3", co: "CTB", cat: "BUS", orig: "深圳灣口岸", dest: "屯門碼頭", bound: "I", serviceType: "1" },
+        { route: "B3A", co: "CTB", cat: "BUS", orig: "山景邨 (景樂樓)", dest: "深圳灣口岸", bound: "O", serviceType: "1" },
+        { route: "B3A", co: "CTB", cat: "BUS", orig: "深圳灣口岸", dest: "山景邨 (景樂樓)", bound: "I", serviceType: "1" },
         { route: "B3X", co: "CTB", cat: "BUS", orig: "屯門市中心", dest: "深圳灣口岸", bound: "O", serviceType: "1" },
         { route: "B3X", co: "CTB", cat: "BUS", orig: "深圳灣口岸", dest: "屯門市中心", bound: "I", serviceType: "1" },
         { route: "E33", co: "LWB", cat: "BUS", orig: "屯門市中心", dest: "機場 (地面運輸中心)", bound: "O", serviceType: "1" },
         { route: "E33", co: "LWB", cat: "BUS", orig: "機場 (地面運輸中心)", dest: "屯門市中心", bound: "I", serviceType: "1" },
+        { route: "E33P", co: "LWB", cat: "BUS", orig: "兆康站 (南)", dest: "機場 (地面運輸中心)", bound: "O", serviceType: "1" },
+        { route: "E33P", co: "LWB", cat: "BUS", orig: "機場 (地面運輸中心)", dest: "兆康站 (南)", bound: "I", serviceType: "1" },
         { route: "E36A", co: "LWB", cat: "BUS", orig: "東涌 (逸東邨)", dest: "元朗 (德業街)", bound: "O", serviceType: "1" },
         { route: "E36A", co: "LWB", cat: "BUS", orig: "元朗 (德業街)", dest: "東涌 (逸東邨)", bound: "I", serviceType: "1" },
+        { route: "506", co: "KMB", cat: "BUS", orig: "屯門碼頭", dest: "兆麟 (循環線)", bound: "O", serviceType: "1" },
         { route: "K51", co: "KMB", cat: "BUS", orig: "富泰", dest: "大欖", bound: "O", serviceType: "1" },
         { route: "K51", co: "KMB", cat: "BUS", orig: "大欖", dest: "富泰", bound: "I", serviceType: "1" },
+        { route: "K51A", co: "KMB", cat: "BUS", orig: "富泰", dest: "掃管笏", bound: "O", serviceType: "1" },
+        { route: "K51A", co: "KMB", cat: "BUS", orig: "掃管笏", dest: "富泰", bound: "I", serviceType: "1" },
+        { route: "K52", co: "KMB", cat: "BUS", orig: "悅湖山莊", dest: "龍鼓灘", bound: "O", serviceType: "1" },
+        { route: "K52", co: "KMB", cat: "BUS", orig: "龍鼓灘", dest: "悅湖山莊", bound: "I", serviceType: "1" },
+        { route: "K53", co: "KMB", cat: "BUS", orig: "屯門站", dest: "掃管笏 (循環線)", bound: "O", serviceType: "1" },
+        { route: "K54", co: "KMB", cat: "BUS", orig: "和田邨", dest: "屯門市中心 (循環線)", bound: "O", serviceType: "1" },
+        { route: "K58", co: "KMB", cat: "BUS", orig: "富泰", dest: "青山灣", bound: "O", serviceType: "1" },
+        { route: "K58", co: "KMB", cat: "BUS", orig: "青山灣", dest: "富泰", bound: "I", serviceType: "1" },
         { route: "N260", co: "KMB", cat: "BUS", orig: "屯門碼頭", dest: "美孚", bound: "O", serviceType: "1" },
         { route: "N260", co: "KMB", cat: "BUS", orig: "美孚", dest: "屯門碼頭", bound: "I", serviceType: "1" },
         { route: "NA33", co: "LWB", cat: "BUS", orig: "屯門 (富泰)", dest: "國泰城 (經機場)", bound: "O", serviceType: "1" },
         { route: "NA33", co: "LWB", cat: "BUS", orig: "國泰城 (經機場)", dest: "屯門 (富泰)", bound: "I", serviceType: "1" },
-        // 專線小巴亦嚴格分開兩個方向
+        // 專線小巴 (GMB) 雙向分開種子清單 (包含 N44B 及新界/九龍/港島各區重點及通宵小巴路線)
         { route: "40", co: "GMB", cat: "GMB", region: "NT", orig: "小坑村", dest: "屯門市中心", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
         { route: "40", co: "GMB", cat: "GMB", region: "NT", orig: "屯門市中心", dest: "小坑村", bound: "I", gmbRouteSeq: 2, serviceType: "1" },
+        { route: "41", co: "GMB", cat: "GMB", region: "NT", orig: "龍門居", dest: "置樂花園", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
+        { route: "41", co: "GMB", cat: "GMB", region: "NT", orig: "置樂花園", dest: "龍門居", bound: "I", gmbRouteSeq: 2, serviceType: "1" },
+        { route: "42", co: "GMB", cat: "GMB", region: "NT", orig: "青磚圍", dest: "屯門市中心", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
+        { route: "42", co: "GMB", cat: "GMB", region: "NT", orig: "屯門市中心", dest: "青磚圍", bound: "I", gmbRouteSeq: 2, serviceType: "1" },
         { route: "43", co: "GMB", cat: "GMB", region: "NT", orig: "屯門新墟", dest: "掃管笏", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
         { route: "43", co: "GMB", cat: "GMB", region: "NT", orig: "掃管笏", dest: "屯門新墟", bound: "I", gmbRouteSeq: 2, serviceType: "1" },
+        { route: "43A", co: "GMB", cat: "GMB", region: "NT", orig: "屯門新墟", dest: "青榕臺", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
+        { route: "43A", co: "GMB", cat: "GMB", region: "NT", orig: "青榕臺", dest: "屯門新墟", bound: "I", gmbRouteSeq: 2, serviceType: "1" },
+        { route: "43B", co: "GMB", cat: "GMB", region: "NT", orig: "屯門新墟", dest: "大欖涌", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
+        { route: "43B", co: "GMB", cat: "GMB", region: "NT", orig: "大欖涌", dest: "屯門新墟", bound: "I", gmbRouteSeq: 2, serviceType: "1" },
+        { route: "43C", co: "GMB", cat: "GMB", region: "NT", orig: "屯門新墟", dest: "兆麟苑", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
+        { route: "43C", co: "GMB", cat: "GMB", region: "NT", orig: "兆麟苑", dest: "屯門新墟", bound: "I", gmbRouteSeq: 2, serviceType: "1" },
+        { route: "43S", co: "GMB", cat: "GMB", region: "NT", orig: "屯門新墟", dest: "稔灣", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
+        { route: "43S", co: "GMB", cat: "GMB", region: "NT", orig: "稔灣", dest: "屯門新墟", bound: "I", gmbRouteSeq: 2, serviceType: "1" },
+        { route: "44", co: "GMB", cat: "GMB", region: "NT", orig: "屯門碼頭", dest: "上水站", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
+        { route: "44", co: "GMB", cat: "GMB", region: "NT", orig: "上水站", dest: "屯門碼頭", bound: "I", gmbRouteSeq: 2, serviceType: "1" },
         { route: "44A", co: "GMB", cat: "GMB", region: "NT", orig: "屯門站", dest: "上水站", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
         { route: "44A", co: "GMB", cat: "GMB", region: "NT", orig: "上水站", dest: "屯門站", bound: "I", gmbRouteSeq: 2, serviceType: "1" },
+        { route: "44A1", co: "GMB", cat: "GMB", region: "NT", orig: "寶田", dest: "上水站", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
         { route: "44B", co: "GMB", cat: "GMB", region: "NT", orig: "屯門站", dest: "落馬洲轉車站", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
-        { route: "44B", co: "GMB", cat: "GMB", region: "NT", orig: "落馬洲轉車站", dest: "屯門站", bound: "I", gmbRouteSeq: 2, serviceType: "1" }
+        { route: "44B", co: "GMB", cat: "GMB", region: "NT", orig: "落馬洲轉車站", dest: "屯門站", bound: "I", gmbRouteSeq: 2, serviceType: "1" },
+        { route: "44B1", co: "GMB", cat: "GMB", region: "NT", orig: "屯門碼頭", dest: "落馬洲轉車站", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
+        { route: "44B1", co: "GMB", cat: "GMB", region: "NT", orig: "落馬洲轉車站", dest: "屯門碼頭", bound: "I", gmbRouteSeq: 2, serviceType: "1" },
+        { route: "N44B", co: "GMB", cat: "GMB", region: "NT", gmbRouteId: "2004165", orig: "屯門碼頭", dest: "落馬洲轉車站 (皇崗口岸)", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
+        { route: "N44B", co: "GMB", cat: "GMB", region: "NT", gmbRouteId: "2004165", orig: "落馬洲轉車站 (皇崗口岸)", dest: "屯門碼頭", bound: "I", gmbRouteSeq: 2, serviceType: "1" },
+        { route: "45", co: "GMB", cat: "GMB", region: "NT", orig: "大興花園", dest: "屯門市中心", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
+        { route: "45", co: "GMB", cat: "GMB", region: "NT", orig: "屯門市中心", dest: "大興花園", bound: "I", gmbRouteSeq: 2, serviceType: "1" },
+        { route: "46", co: "GMB", cat: "GMB", region: "NT", orig: "富泰邨", dest: "屯門市中心", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
+        { route: "46", co: "GMB", cat: "GMB", region: "NT", orig: "屯門市中心", dest: "富泰邨", bound: "I", gmbRouteSeq: 2, serviceType: "1" },
+        { route: "46A", co: "GMB", cat: "GMB", region: "NT", orig: "景峰豪庭", dest: "屯門市中心", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
+        { route: "46X", co: "GMB", cat: "GMB", region: "NT", orig: "富泰邨", dest: "屯門市中心", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
+        { route: "47S", co: "GMB", cat: "GMB", region: "NT", orig: "屯門碼頭", dest: "旺角 (弼街)", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
+        { route: "47S", co: "GMB", cat: "GMB", region: "NT", orig: "旺角 (弼街)", dest: "屯門碼頭", bound: "I", gmbRouteSeq: 2, serviceType: "1" },
+        { route: "48S", co: "GMB", cat: "GMB", region: "NT", orig: "良景邨", dest: "旺角 (弼街)", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
+        { route: "48S", co: "GMB", cat: "GMB", region: "NT", orig: "旺角 (弼街)", dest: "良景邨", bound: "I", gmbRouteSeq: 2, serviceType: "1" },
+        { route: "49S", co: "GMB", cat: "GMB", region: "NT", orig: "兆康苑", dest: "灣仔 (分域街)", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
+        { route: "49S", co: "GMB", cat: "GMB", region: "NT", orig: "灣仔 (分域街)", dest: "兆康苑", bound: "I", gmbRouteSeq: 2, serviceType: "1" },
+        { route: "79S", co: "GMB", cat: "GMB", region: "NT", orig: "天水圍 (俊宏軒)", dest: "落馬洲管制站", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
+        { route: "79S", co: "GMB", cat: "GMB", region: "NT", orig: "落馬洲管制站", dest: "天水圍 (俊宏軒)", bound: "I", gmbRouteSeq: 2, serviceType: "1" },
+        { route: "140M", co: "GMB", cat: "GMB", region: "NT", orig: "屯門恆福花園", dest: "青衣站", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
+        { route: "140M", co: "GMB", cat: "GMB", region: "NT", orig: "青衣站", dest: "屯門恆福花園", bound: "I", gmbRouteSeq: 2, serviceType: "1" },
+        { route: "501S", co: "GMB", cat: "GMB", region: "NT", orig: "上水站", dest: "觀塘 (裕民坊)", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
+        { route: "501S", co: "GMB", cat: "GMB", region: "NT", orig: "觀塘 (裕民坊)", dest: "上水站", bound: "I", gmbRouteSeq: 2, serviceType: "1" },
+        { route: "610S", co: "GMB", cat: "GMB", region: "NT", orig: "天瑞邨", dest: "尖沙咀 (海防道)", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
+        { route: "610S", co: "GMB", cat: "GMB", region: "NT", orig: "尖沙咀 (海防道)", dest: "天瑞邨", bound: "I", gmbRouteSeq: 2, serviceType: "1" },
+        { route: "616S", co: "GMB", cat: "GMB", region: "NT", orig: "旺角", dest: "落馬洲管制站", bound: "O", gmbRouteSeq: 1, serviceType: "1" },
+        { route: "616S", co: "GMB", cat: "GMB", region: "NT", orig: "落馬洲管制站", dest: "旺角", bound: "I", gmbRouteSeq: 2, serviceType: "1" }
       ];
+
+      // 全港三區 (港島 HKI / 九龍 KLN / 新界 NT) 官方專線小巴完整路線編號表 (確保任何時候 Numpad 及字母鍵均 100% 啟用所有專線小巴路線)
+      var ALL_GMB_ROUTE_CODES_BY_REGION = {
+        "HKI": [
+          "1","1A","2","3","3A","4A","4B","4C","4M","4S","5","5M","8","8X","9",
+          "10","10P","11","12","13","14M","16A","16M","16X","18M","20","20M","21A","21M","22","22S","22X","23","23M","24A","24M","25","26","27","27A","28","28M","28S","29","29A",
+          "30","31","31X","32","32A","33","33M","35M","36X","37","37A","38","39C","39M","39S",
+          "40","40X","43M","44M","45A","45S","47E","47M","47S","48M","49M",
+          "50","51","51A","51S","52","54","54M","54S","55","56","56A","56B","58","58A","58M","59","59A","59B","59S","59X",
+          "61","62","62A","63","63A","65","65A","65X","66","66A","68","69","69A","69X","N4A","N4C","N4X","N27","N31","N40","N51","N51S","N69X"
+        ],
+        "KLN": [
+          "2","2A","3","5M","6","6A","6C","6X","8","8P","8S","9M",
+          "12","12A","12B","12S","13","13A","15","16","16A","16B","16S","17M","18M","19","19A","19M","19S",
+          "20","20M","22A","22M","23","23B","23C","23M","24","24M","25A","25B","25M","25MS","26","26A","26H","26M","26W","26X","27M","27MS","28M","28MS","29A","29B",
+          "30A","30B","32M","33A","33M","34M","34S","35","36A","37A","37M","38M","39M",
+          "41A","41M","42","43M","44","44A","44M","44S","45B","45M","46","47","48","49","49M",
+          "50","51M","52","53M","54","54M","54S","56","57M","59","59M",
+          "60","62S","63","68","69","69A","70","70A","71","72","73","74","74S","75","75A","75B","76A","76B","77M","78","78A","79K","79M","79S","79W",
+          "80M","81K","82","83A","83M","84","85","86","87","88","89A","89B","89C","90A","90B","91","92M"
+        ],
+        "NT": [
+          "1","1A","1S","2","3","3A","4","4A","5","5A","6","7","9","9A",
+          "11","11A","11B","11M","11S","12","12A","15","15A","15M","15P","16","17","17A","17K","17M","17T","18","19","20A","20B","20C","20E","20K","20M","20P","20R","20S","20T","20X",
+          "21A","21K","22K","23K","23S","25A","25B","25K","26","26A","27","27A","27B","28K","28S","29",
+          "31","31A","32","33","34","34A","35","36","37","38","39","39A",
+          "40","41","42","43","43A","43B","43C","43S","44","44A","44A1","44B","44B1","N44B","45","46","46A","46X","47S","48S","49S",
+          "50A","50K","51K","51P","52K","54A","54K","55K","56A","56B","56C","56K","57K","58K","58S","59A","59K","59S",
+          "60K","60P","60R","61M","61S","62K","63A","63B","63K","63S","64A","64K","65A","65K","65S","66K","67A","67B","67C","67K","68K","68R","68S","69K",
+          "71","71A","72","73","74","74A","75","76","78","78A","79S",
+          "80","81","81M","82","82M","83A","84","85","86","86A","86M","87","87A","87B","87K","87M","88","88A","88B","88C","88D","88E","88F","88G","88M","89","89A","89B","89M","89P","89S",
+          "90M","90P","91","91A","92M","93","93A","94","94A","94S","95","95A","95K","95M","96","96A","96B","96C","96M","96P","96S","97","97A","98","99",
+          "101M","102","102B","102S","103","103M","104","105","105S","106","107","108A","109M","110","110A","111","112M","112S","113","114A","114B","115","116","117A","117B",
+          "140M","141","205M","207M","301","301M","302","308A","308M","310M","313",
+          "401","402S","403","403A","403P","403X","404M","405","405A","406","407","407A","407B","409","409K","409S","410","411","412","413","481","481A","481B","482",
+          "501A","501C","501K","501S","502","503","503K","504","505","506","507",
+          "601","601B","601C","602","602C","603","604","605","606S","608","609","609B","610S","611","611A","611B","611P","616S","618","619","620","621","622","623",
+          "803","803K","804","805S","806A","806B","807A","807B","807C","807K","807P","807S","807X","808","808P","809K","810","810A","811","811A","811B","811P","811S","812","812A","813","813A","814","901"
+        ]
+      };
 
       // 將輕鐵及港鐵全部雙向路線加入種子清單
       for (var lrtIdx = 0; lrtIdx < LRT_ROUTES_DATA.length; lrtIdx++) {
@@ -6180,30 +6427,64 @@
       var ctbStopCacheMap = {};
       var gmbStopCacheMap = {};
       var hkbusStopMapCache = null;
-
-      var VALID_A_ROUTES_SET = {
-        "A10":1, "A11":1, "A12":1, "A17":1,
-        "A20":1, "A21":1, "A22":1, "A23":1, "A25":1, "A26":1, "A28":1, "A29":1,
-        "A30":1, "A31":1, "A32":1, "A33":1, "A33X":1, "A34":1, "A36":1, "A37":1, "A38":1,
-        "A41":1, "A41P":1, "A42":1, "A43":1, "A43P":1, "A46":1, "A47X":1
+      var etagmbRegionRoutesMap = {
+        HKI: ALL_GMB_ROUTE_CODES_BY_REGION.HKI.slice(),
+        KLN: ALL_GMB_ROUTE_CODES_BY_REGION.KLN.slice(),
+        NT: ALL_GMB_ROUTE_CODES_BY_REGION.NT.slice()
       };
 
       function isRouteCodeAllowedInCatalog(routeNo) {
         var r = String(routeNo || "").trim().toUpperCase();
-        if (!r) return false;
-        if (r.charAt(0) === "A") {
-          return !!VALID_A_ROUTES_SET[r];
-        }
-        return true;
+        return r.length > 0;
       }
 
       function inferLwbOrKmbOperator(routeNo) {
         var r = String(routeNo || "").trim().toUpperCase();
-        if (r.indexOf("A") === 0 || r.indexOf("E") === 0 || r.indexOf("NA") === 0 || r === "R8" || r === "R33" || r === "R42" || r.indexOf("S1") === 0 || r.indexOf("S64") === 0 || r.indexOf("N30") === 0 || r.indexOf("N31") === 0 || r.indexOf("N42") === 0 || r === "N64") {
+        if (r.indexOf("A") === 0 || r.indexOf("E") === 0 || r.indexOf("NA") === 0 || r === "R8" || r === "R33" || r === "R42" || r.indexOf("S1") === 0 || r.indexOf("S64") === 0 || r.indexOf("N30") === 0 || r.indexOf("N31") === 0 || r.indexOf("N42") === 0 || r === "N64" || r.indexOf("X33") === 0 || r.indexOf("X36") === 0 || r.indexOf("X40") === 0 || r.indexOf("X43") === 0 || r.indexOf("X47") === 0) {
           return "LWB";
         }
         return "KMB";
       }
+
+      function inferGmbRegionFromStopsOrCatalog(rNo, gmbStopIds, stopMap, origTc, destTc) {
+        // 1. 若有車站座標，根據香港三區地理範圍精準判斷 (HKI / KLN / NT)
+        if (Array.isArray(gmbStopIds) && gmbStopIds.length > 0 && stopMap) {
+          for (var i = 0; i < gmbStopIds.length; i++) {
+            var st = stopMap[gmbStopIds[i]];
+            if (st && st.location && st.location.lat && st.location.lng) {
+              var lat = parseFloat(st.location.lat);
+              var lng = parseFloat(st.location.lng);
+              if (lat < 22.293 && lng >= 114.11 && lng <= 114.265) return "HKI";
+              if (lat >= 22.293 && lat < 22.348 && lng >= 114.148 && lng <= 114.246) return "KLN";
+              if (lat >= 22.348 || lng < 114.148) return "NT";
+            }
+          }
+        }
+        // 2. 根據起訖點關鍵字輔助判斷
+        var text = String(origTc || "") + " " + String(destTc || "");
+        var hkiKws = ["中環","銅鑼灣","灣仔","香港仔","柴灣","筲箕灣","北角","鰂魚涌","堅尼地城","西營盤","瑪麗醫院","赤柱","淺水灣","鴨脷洲","小西灣","山頂","跑馬地","數碼港"];
+        var klnKws = ["尖沙咀","旺角","油麻地","佐敦","深水埗","長沙灣","紅磡","土瓜灣","九龍城","樂富","黃大仙","鑽石山","新蒲崗","慈雲山","觀塘","牛頭角","九龍灣","藍田","油塘","秀茂坪","順利","又一村","何文田","啟德"];
+        var ntKws = ["屯門","元朗","天水圍","上水","粉嶺","大埔","沙田","馬鞍山","大圍","火炭","荃灣","葵芳","葵興","青衣","將軍澳","寶琳","坑口","康城","西貢","落馬洲","皇崗","下白泥","流浮山","掃管笏"];
+        for (var n = 0; n < ntKws.length; n++) {
+          if (text.indexOf(ntKws[n]) !== -1) return "NT";
+        }
+        for (var h = 0; h < hkiKws.length; h++) {
+          if (text.indexOf(hkiKws[h]) !== -1) return "HKI";
+        }
+        for (var k = 0; k < klnKws.length; k++) {
+          if (text.indexOf(klnKws[k]) !== -1) return "KLN";
+        }
+        // 3. 若只屬單一地區路線編號則直接返回該區
+        var inNt = etagmbRegionRoutesMap.NT.indexOf(rNo) !== -1;
+        var inKln = etagmbRegionRoutesMap.KLN.indexOf(rNo) !== -1;
+        var inHki = etagmbRegionRoutesMap.HKI.indexOf(rNo) !== -1;
+        if (inNt && !inKln && !inHki) return "NT";
+        if (inKln && !inNt && !inHki) return "KLN";
+        if (inHki && !inNt && !inKln) return "HKI";
+        return "NT";
+      }
+
+      var globalRebuildMasterCatalogFn = null;
 
       // 載入全港所有路線資料，並確保每一條雙向路線（包括九巴、龍運、城巴、新大嶼山巴士、專線小巴、輕鐵、港鐵）都嚴格分開兩個方向顯示各自總站！
       function ensureAllHkRoutesLoaded(onUpdated) {
@@ -6216,16 +6497,25 @@
         var byKey = {};
         for (var i = 0; i < masterRoutesCatalog.length; i++) {
           var it = masterRoutesCatalog[i];
-          var k = it.co + "||" + it.route + "||" + it.bound + "||" + (it.serviceType || "1") + "||" + (it.region || "") + "||" + it.dest;
+          var k = it.co + "||" + it.route + "||" + it.bound + "||" + (it.region || "") + "||" + it.orig + "||" + it.dest;
           byKey[k] = it;
         }
 
         function mergeItem(newItem) {
           if (!newItem || !newItem.route || !newItem.dest) return;
-          if (newItem.dest.indexOf("點擊查閱") !== -1) return; // 絕不加入無方向總站嘅合併選項
+          if (newItem.dest.indexOf("點擊查閱") !== -1) return;
           if (!isRouteCodeAllowedInCatalog(newItem.route)) return;
-          var k = newItem.co + "||" + newItem.route + "||" + newItem.bound + "||" + (newItem.serviceType || "1") + "||" + (newItem.region || "") + "||" + newItem.dest;
-          byKey[k] = newItem;
+          var k = newItem.co + "||" + newItem.route + "||" + newItem.bound + "||" + (newItem.region || "") + "||" + (newItem.orig || "") + "||" + newItem.dest;
+          var existing = byKey[k];
+          if (!existing) {
+            byKey[k] = newItem;
+          } else {
+            // 若新項目帶有更完整資料 (例如 gmbRouteId 或 hkbusStops 或主服務類別 serviceType "1")，則升級保留
+            if (!existing.gmbRouteId && newItem.gmbRouteId) existing.gmbRouteId = newItem.gmbRouteId;
+            if (!existing.hkbusStops && newItem.hkbusStops) existing.hkbusStops = newItem.hkbusStops;
+            if (!existing.fares && newItem.fares) existing.fares = newItem.fares;
+            if (existing.serviceType !== "1" && newItem.serviceType === "1") existing.serviceType = "1";
+          }
         }
 
         function rebuildMasterList() {
@@ -6235,7 +6525,7 @@
             if (Object.prototype.hasOwnProperty.call(byKey, k)) {
               var item = byKey[k];
               if (!item.dest || item.dest.indexOf("點擊查閱") !== -1) continue;
-              var dedup = item.co + "||" + item.route + "||" + item.bound + "||" + (item.region || "") + "||" + item.dest;
+              var dedup = item.co + "||" + item.route + "||" + item.bound + "||" + (item.region || "") + "||" + (item.orig || "") + "||" + item.dest;
               if (seenSimple[dedup]) continue;
               seenSimple[dedup] = true;
               arr.push(item);
@@ -6253,20 +6543,53 @@
             if (aStartsAlpha !== bStartsAlpha) return aStartsAlpha ? 1 : -1;
             if (!isNaN(na) && !isNaN(nb) && na !== nb) return na - nb;
             if (ra !== rb) return ra.localeCompare(rb);
+            if (a.co !== b.co) return a.co.localeCompare(b.co);
+            if ((a.region || "") !== (b.region || "")) return String(a.region || "").localeCompare(String(b.region || ""));
             return String(a.bound).localeCompare(String(b.bound));
           });
           masterRoutesCatalog = arr;
           if (typeof onUpdated === "function") onUpdated();
         }
 
-        // 1. 優先讀取全港公共交通綜合資料庫 (hkbus routeFareList.min.json)，一次過包含全港九巴、龍運、城巴、嶼巴、專線小巴雙向分開總站及精準車站座標
+        globalRebuildMasterCatalogFn = function (extraItems) {
+          if (Array.isArray(extraItems)) {
+            for (var x = 0; x < extraItems.length; x++) {
+              mergeItem(extraItems[x]);
+            }
+          }
+          rebuildMasterList();
+        };
+
+        // 0. 抓取運輸署專線小巴官方總路線列表 API (https://data.etagmb.gov.hk/route)
+        fetch("https://data.etagmb.gov.hk/route")
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (root) {
+            if (root && root.data && root.data.routes) {
+              var rts = root.data.routes;
+              ["HKI", "KLN", "NT"].forEach(function (reg) {
+                if (Array.isArray(rts[reg])) {
+                  var existingList = etagmbRegionRoutesMap[reg] || [];
+                  for (var j = 0; j < rts[reg].length; j++) {
+                    var code = String(rts[reg][j] || "").trim().toUpperCase();
+                    if (code && existingList.indexOf(code) === -1) {
+                      existingList.push(code);
+                    }
+                  }
+                  etagmbRegionRoutesMap[reg] = existingList;
+                }
+              });
+              updateRouteSearchUi();
+            }
+          })
+          .catch(function () {});
+
+        // 1. 讀取全港公共交通綜合資料庫 (hkbus routeFareList.min.json)，包含全港九巴、龍運、城巴、嶼巴、港鐵巴士、專線小巴所有主線、特別線及通宵線 (不設 serviceType == 1 硬性過濾)
         fetch("https://data.hkbus.app/routeFareList.min.json")
           .then(function (r) { return r.ok ? r.json() : null; })
           .then(function (db) {
             if (!db || !db.routeList) return;
             if (db.stopMap) {
               hkbusStopMapCache = db.stopMap;
-              // 同步修正所有輕鐵站及港鐵站精準官方座標
               for (var sId in db.stopMap) {
                 if (!Object.prototype.hasOwnProperty.call(db.stopMap, sId)) continue;
                 var stMeta = db.stopMap[sId];
@@ -6290,7 +6613,6 @@
               if (!entry || !entry.route || !entry.co || !entry.orig || !entry.dest) continue;
               var rNo = String(entry.route).trim().toUpperCase();
               var serviceType = String(entry.serviceType || "1").trim();
-              if (serviceType !== "1") continue;
 
               var coArr = entry.co || [];
               var primaryCo = String(coArr[0] || "").toUpperCase();
@@ -6299,28 +6621,28 @@
               if (!origTc || !destTc) continue;
 
               var boundVal = "O";
-              if (rKey.indexOf("+I+") !== -1 || (entry.bound && (entry.bound[primaryCo.toLowerCase()] === "I" || entry.bound.kmb === "I" || entry.bound.ctb === "I" || entry.bound.gmb === "I"))) {
+              if (rKey.indexOf("+I+") !== -1 || (entry.bound && (entry.bound[primaryCo.toLowerCase()] === "I" || entry.bound.kmb === "I" || entry.bound.ctb === "I" || entry.bound.gmb === "I" || entry.bound.nlb === "I" || entry.bound.lwb === "I"))) {
                 boundVal = "I";
+              }
+
+              var stopIdsForCo = null;
+              if (entry.stops) {
+                stopIdsForCo = entry.stops[primaryCo.toLowerCase()] || entry.stops.kmb || entry.stops.lwb || entry.stops.ctb || entry.stops.gmb || entry.stops.nlb || entry.stops.mtrb || null;
               }
 
               var mappedCo = "KMB";
               var mappedCat = "BUS";
               var regionCode = "";
               if (primaryCo === "LWB") { mappedCo = "LWB"; mappedCat = "BUS"; }
-              else if (primaryCo === "KMB") { mappedCo = inferLwbOrKmbOperator(rNo); mappedCat = "BUS"; }
-              else if (primaryCo === "CTB") { mappedCo = "CTB"; mappedCat = "BUS"; }
+              else if (primaryCo === "KMB" || primaryCo === "MTRB") { mappedCo = inferLwbOrKmbOperator(rNo); mappedCat = "BUS"; }
+              else if (primaryCo === "CTB" || primaryCo === "NWFB") { mappedCo = "CTB"; mappedCat = "BUS"; }
               else if (primaryCo === "NLB") { mappedCo = "NLB"; mappedCat = "BUS"; }
               else if (primaryCo === "GMB") {
                 mappedCo = "GMB";
                 mappedCat = "GMB";
-                regionCode = entry.gtfsId ? "NT" : "NT";
+                regionCode = inferGmbRegionFromStopsOrCatalog(rNo, stopIdsForCo, db.stopMap, origTc, destTc);
               } else {
                 continue;
-              }
-
-              var stopIdsForCo = null;
-              if (entry.stops) {
-                stopIdsForCo = entry.stops[primaryCo.toLowerCase()] || entry.stops.kmb || entry.stops.ctb || entry.stops.gmb || entry.stops.nlb || null;
               }
 
               mergeItem({
@@ -6333,7 +6655,7 @@
                 orig: origTc,
                 dest: destTc,
                 bound: boundVal,
-                serviceType: "1",
+                serviceType: serviceType,
                 hkbusStops: Array.isArray(stopIdsForCo) ? stopIdsForCo : null,
                 fares: Array.isArray(entry.fares) ? entry.fares : null
               });
@@ -6342,7 +6664,7 @@
           })
           .catch(function () {});
 
-        // 2. 抓取九巴及龍運官方 API (雙向分開 bound: "O" 及 "I")
+        // 2. 抓取九巴及龍運官方 API (雙向分開 bound: "O" 及 "I"，涵蓋所有 service_type 分支)
         fetch("https://data.etabus.gov.hk/v1/transport/kmb/route/")
           .then(function (r) { return r.json(); })
           .then(function (root) {
@@ -6351,7 +6673,6 @@
                 var d = root.data[i];
                 var rNo = String(d.route || "").trim().toUpperCase();
                 var st = String(d.service_type || "1").trim();
-                if (st !== "1") continue;
                 var co = inferLwbOrKmbOperator(rNo);
                 mergeItem({
                   route: rNo,
@@ -6409,6 +6730,7 @@
           .then(function (r) { return r.json(); })
           .then(function (root) {
             if (root && Array.isArray(root.routes)) {
+              var nlbBoundCount = {};
               for (var i = 0; i < root.routes.length; i++) {
                 var rt = root.routes[i];
                 var rNo = String(rt.routeNo || "").trim().toUpperCase();
@@ -6416,6 +6738,8 @@
                 var parts = nameCh.split(">");
                 var orig = formatParentheses(parts[0] || "");
                 var dest = formatParentheses(parts.length > 1 ? parts[parts.length - 1] : nameCh);
+                nlbBoundCount[rNo] = (nlbBoundCount[rNo] || 0) + 1;
+                var bnd = (nlbBoundCount[rNo] % 2 === 1) ? "O" : "I";
                 mergeItem({
                   route: rNo,
                   co: "NLB",
@@ -6423,7 +6747,7 @@
                   nlbRouteId: rt.routeId,
                   orig: orig,
                   dest: dest,
-                  bound: (i % 2 === 0) ? "O" : "I",
+                  bound: bnd,
                   serviceType: "1"
                 });
               }
@@ -6433,47 +6757,76 @@
           .catch(function () {});
       }
 
-      // 當用家喺小巴分類輸入號碼時，如該專線小巴路線尚未從 hkbus 展開雙向，即時從 etagmb API 抓取並展開兩個方向到搜尋結果列表
+      // 當用家輸入路線或揀選專線小巴時，自動向運輸署 etagmb API 抓取並展開該專線小巴嘅雙向總站資料
       var fetchedGmbDetailRoutes = {};
+      function fetchAndExpandGmbRouteForRegion(reg, routeCode) {
+        var key = reg + ":" + routeCode;
+        if (fetchedGmbDetailRoutes[key]) return;
+        fetchedGmbDetailRoutes[key] = true;
+        fetch("https://data.etagmb.gov.hk/route/" + encodeURIComponent(reg) + "/" + encodeURIComponent(routeCode))
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (root) {
+            if (!root || !Array.isArray(root.data) || root.data.length === 0) return;
+            var newItems = [];
+            for (var v = 0; v < root.data.length; v++) {
+              var variant = root.data[v];
+              var dirs = variant.directions || [];
+              for (var d = 0; d < dirs.length; d++) {
+                var dirObj = dirs[d];
+                var origTc = formatParentheses(dirObj.orig_tc || "");
+                var destTc = formatParentheses(dirObj.dest_tc || "");
+                if (!origTc || !destTc) continue;
+                var bnd = (dirObj.route_seq === 2) ? "I" : "O";
+                newItems.push({
+                  route: routeCode,
+                  co: "GMB",
+                  cat: "GMB",
+                  region: reg,
+                  gmbRouteId: String(variant.route_id || ""),
+                  gmbRouteSeq: dirObj.route_seq || 1,
+                  orig: origTc,
+                  dest: destTc,
+                  bound: bnd,
+                  serviceType: "1"
+                });
+              }
+            }
+            if (newItems.length > 0 && typeof globalRebuildMasterCatalogFn === "function") {
+              globalRebuildMasterCatalogFn(newItems);
+            }
+          })
+          .catch(function () {});
+      }
+
       function ensureGmbRouteDirectionsExpanded(prefixStr) {
         var clean = String(prefixStr || "").trim().toUpperCase();
-        if (!clean || fetchedGmbDetailRoutes[clean]) return;
+        if (!clean) return;
         var regions = ["NT", "KLN", "HKI"];
-        fetchedGmbDetailRoutes[clean] = true;
+        // 1. 直接嘗試將輸入字串作為路線編號查詢
         regions.forEach(function (reg) {
-          fetch("https://data.etagmb.gov.hk/route/" + reg + "/" + encodeURIComponent(clean))
-            .then(function (r) { return r.ok ? r.json() : null; })
-            .then(function (root) {
-              if (!root || !Array.isArray(root.data) || root.data.length === 0) return;
-              var addedAny = false;
-              for (var v = 0; v < root.data.length; v++) {
-                var variant = root.data[v];
-                var dirs = variant.directions || [];
-                for (var d = 0; d < dirs.length; d++) {
-                  var dirObj = dirs[d];
-                  var origTc = formatParentheses(dirObj.orig_tc || "");
-                  var destTc = formatParentheses(dirObj.dest_tc || "");
-                  if (!origTc || !destTc) continue;
-                  var bnd = (dirObj.route_seq === 2) ? "I" : "O";
-                  masterRoutesCatalog.push({
-                    route: clean,
-                    co: "GMB",
-                    cat: "GMB",
-                    region: reg,
-                    gmbRouteId: variant.route_id,
-                    gmbRouteSeq: dirObj.route_seq || 1,
-                    orig: origTc,
-                    dest: destTc,
-                    bound: bnd,
-                    serviceType: "1"
-                  });
-                  addedAny = true;
-                }
-              }
-              if (addedAny) updateRouteSearchUi();
-            })
-            .catch(function () {});
+          var regList = etagmbRegionRoutesMap[reg] || [];
+          if (regList.indexOf(clean) !== -1 || clean.length >= 1) {
+            fetchAndExpandGmbRouteForRegion(reg, clean);
+          }
         });
+        // 2. 同時匹配官方小巴路線編號表內以 clean 開頭或數字核心以 clean 開頭嘅小巴路線 (例如輸入 "44" 或 "44B" 或 "N" 時自動展開 N44B、44A1、44B1 等)
+        var expandedCount = 0;
+        for (var rIdx = 0; rIdx < regions.length; rIdx++) {
+          var regCode = regions[rIdx];
+          var codes = etagmbRegionRoutesMap[regCode] || [];
+          for (var c = 0; c < codes.length; c++) {
+            var rCode = codes[c];
+            var numCore = rCode.replace(/^[A-Z]+/, "");
+            if (rCode.indexOf(clean) === 0 || (numCore && numCore.indexOf(clean) === 0)) {
+              if (!fetchedGmbDetailRoutes[regCode + ":" + rCode]) {
+                fetchAndExpandGmbRouteForRegion(regCode, rCode);
+                expandedCount++;
+                if (expandedCount >= 14) break;
+              }
+            }
+          }
+          if (expandedCount >= 14) break;
+        }
       }
 
       // ==================== 1. 右下角/左下角可左右拖拉圓形浮動放大鏡 (Cookie 記憶位置) ====================
@@ -6563,7 +6916,6 @@
             var targetSide = (centerX < winW / 2) ? "left" : "right";
             applyFabDockedPosition(targetSide);
             saveFabSideToCookie(targetSide);
-            showToast(targetSide === "left" ? "已停靠左邊" : "已停靠右邊");
           } else {
             openRouteSearchPage();
           }
@@ -6650,6 +7002,28 @@
         storageSet(KEY_ROUTE_SEARCH_HISTORY, JSON.stringify(filtered.slice(0, 20)));
       }
 
+      function resetRouteSearchStateToDefault() {
+        currentSearchPrefix = "";
+        currentSearchCat = "ALL";
+        isShowingHistoryOnly = false;
+        if (btnRouteHistoryToggle) {
+          btnRouteHistoryToggle.classList.remove("active");
+        }
+        var catBtns = document.querySelectorAll("#routeSearchCatTabs .rs-cat-btn");
+        for (var i = 0; i < catBtns.length; i++) {
+          var c = catBtns[i].getAttribute("data-cat") || "ALL";
+          if (c === "ALL") {
+            catBtns[i].classList.add("active");
+          } else {
+            catBtns[i].classList.remove("active");
+          }
+        }
+        if (routeSearchList) {
+          routeSearchList.scrollTop = 0;
+        }
+        updateRouteSearchUi();
+      }
+
       function openRouteSearchPage() {
         savedScrollBeforeRouteSearch = window.scrollY || window.pageYOffset || 0;
         layoutSettingsPage.classList.remove("open");
@@ -6670,6 +7044,8 @@
       function closeRouteSearchPage() {
         layoutRouteSearchPage.classList.remove("open");
         layoutRouteSearchPage.setAttribute("aria-hidden", "true");
+        // 用家自己返回主畫面看板後，自動復原搜尋路線原始畫面 (處於「全部」及 Numpad 清空未輸入狀態)
+        resetRouteSearchStateToDefault();
         appRoot.style.display = "flex";
         if (fabRouteSearch) fabRouteSearch.style.display = "flex";
         window.scrollTo(0, savedScrollBeforeRouteSearch);
@@ -6687,6 +7063,115 @@
         if (co === "LRT") return { label: "輕鐵", cls: "rs-co-lrt" };
         if (co === "MTR") return { label: "港鐵", cls: "rs-co-mtr" };
         return { label: co, cls: "rs-co-kmb" };
+      }
+
+      var currentFilteredRoutesPool = [];
+      var currentRenderedRouteCount = 0;
+      var ROUTE_LIST_BATCH_SIZE = 250;
+
+      function createRouteRowElement(rItem) {
+        var rowBtn = document.createElement("button");
+        rowBtn.type = "button";
+        rowBtn.className = "rs-route-item";
+
+        var leftDiv = document.createElement("div");
+        leftDiv.className = "rs-route-left";
+
+        var noSpan = document.createElement("div");
+        noSpan.className = "rs-route-no";
+        noSpan.textContent = rItem.route;
+        if (rItem.cat === "MTR") {
+          noSpan.style.fontSize = "16px";
+        }
+
+        var badgeInfo = getOperatorBadgeInfo(rItem.co, rItem.region);
+        var coSpan = document.createElement("span");
+        coSpan.className = "rs-co-badge " + badgeInfo.cls;
+        coSpan.textContent = badgeInfo.label;
+
+        leftDiv.appendChild(noSpan);
+        leftDiv.appendChild(coSpan);
+
+        var rightDiv = document.createElement("div");
+        rightDiv.className = "rs-route-right";
+
+        var destDiv = document.createElement("div");
+        destDiv.className = "rs-dest-line";
+        destDiv.innerHTML = "往 <strong>" + escapeHtmlStr(rItem.dest) + "</strong>";
+
+        var origDiv = document.createElement("div");
+        origDiv.className = "rs-orig-line";
+        origDiv.textContent = rItem.orig ? (rItem.orig + " 開出") : "";
+
+        rightDiv.appendChild(destDiv);
+        if (rItem.orig) rightDiv.appendChild(origDiv);
+
+        rowBtn.appendChild(leftDiv);
+        rowBtn.appendChild(rightDiv);
+
+        rowBtn.addEventListener("click", function () {
+          onSelectRouteFromSearch(rItem);
+        });
+
+        return rowBtn;
+      }
+
+      function appendNextRouteListBatch() {
+        if (!routeSearchList) return;
+        if (currentRenderedRouteCount >= currentFilteredRoutesPool.length) return;
+        var nextLimit = Math.min(currentFilteredRoutesPool.length, currentRenderedRouteCount + ROUTE_LIST_BATCH_SIZE);
+        var frag = document.createDocumentFragment();
+        for (var m = currentRenderedRouteCount; m < nextLimit; m++) {
+          frag.appendChild(createRouteRowElement(currentFilteredRoutesPool[m]));
+        }
+        routeSearchList.appendChild(frag);
+        currentRenderedRouteCount = nextLimit;
+      }
+
+      if (routeSearchList) {
+        routeSearchList.addEventListener("scroll", function () {
+          if (routeSearchList.scrollTop + routeSearchList.clientHeight >= routeSearchList.scrollHeight - 320) {
+            appendNextRouteListBatch();
+          }
+        });
+      }
+
+      function registerNextValidCharsForRouteCode(rCode, prefix, validNextDigits, validNextLetters) {
+        if (!rCode || !/^[0-9A-Z]+$/.test(rCode)) return false;
+        var pLen = prefix.length;
+        if (pLen === 0) {
+          var firstCh = rCode.charAt(0);
+          if (firstCh >= "0" && firstCh <= "9") validNextDigits[firstCh] = true;
+          else if (firstCh >= "A" && firstCh <= "Z") validNextLetters[firstCh] = true;
+          var numCore0 = rCode.replace(/^[A-Z]+/, "");
+          if (numCore0 && numCore0.length > 0 && numCore0 !== rCode) {
+            var fcNum = numCore0.charAt(0);
+            if (fcNum >= "0" && fcNum <= "9") validNextDigits[fcNum] = true;
+          }
+          return true;
+        }
+
+        var matched = false;
+        // A. 直接前綴匹配 (例如輸入 "N44" 匹配 "N44B")
+        if (rCode.indexOf(prefix) === 0) {
+          matched = true;
+          if (rCode.length > pLen) {
+            var nextCh = rCode.charAt(pLen);
+            if (nextCh >= "0" && nextCh <= "9") validNextDigits[nextCh] = true;
+            else if (nextCh >= "A" && nextCh <= "Z") validNextLetters[nextCh] = true;
+          }
+        }
+        // B. 去除前置英文字母後之數字核心前綴匹配 (例如輸入 "44" 或 "44B" 亦同時匹配 "N44B"、"A43P" 等)
+        var numCore = rCode.replace(/^[A-Z]+/, "");
+        if (numCore && numCore !== rCode && numCore.indexOf(prefix) === 0) {
+          matched = true;
+          if (numCore.length > pLen) {
+            var nextCoreCh = numCore.charAt(pLen);
+            if (nextCoreCh >= "0" && nextCoreCh <= "9") validNextDigits[nextCoreCh] = true;
+            else if (nextCoreCh >= "A" && nextCoreCh <= "Z") validNextLetters[nextCoreCh] = true;
+          }
+        }
+        return matched;
       }
 
       function updateRouteSearchUi() {
@@ -6722,21 +7207,41 @@
 
           if (pLen === 0) {
             matchedRoutes.push(item);
-            if (isAlphanumericRoute && rCode.length > 0) {
-              var firstCh = rCode.charAt(0);
-              if (firstCh >= "0" && firstCh <= "9") validNextDigits[firstCh] = true;
-              else if (firstCh >= "A" && firstCh <= "Z") validNextLetters[firstCh] = true;
+            if (isAlphanumericRoute) {
+              registerNextValidCharsForRouteCode(rCode, "", validNextDigits, validNextLetters);
             }
           } else {
-            if (isAlphanumericRoute && rCode.indexOf(prefix) === 0) {
+            if (isAlphanumericRoute && registerNextValidCharsForRouteCode(rCode, prefix, validNextDigits, validNextLetters)) {
               matchedRoutes.push(item);
-              if (rCode.length > pLen) {
-                var nextCh = rCode.charAt(pLen);
-                if (nextCh >= "0" && nextCh <= "9") validNextDigits[nextCh] = true;
-                else if (nextCh >= "A" && nextCh <= "Z") validNextLetters[nextCh] = true;
-              }
             }
           }
+        }
+
+        // 同步將官方三區專線小巴總表 (etagmbRegionRoutesMap) 納入鍵盤啟用判斷，確保即使某條小巴路線尚在背景載入方向，其數字及字母鍵依然 100% 可以點按！
+        if (!isShowingHistoryOnly && (currentSearchCat === "ALL" || currentSearchCat === "GMB")) {
+          var gmbRegs = ["NT", "KLN", "HKI"];
+          for (var gr = 0; gr < gmbRegs.length; gr++) {
+            var gCodes = etagmbRegionRoutesMap[gmbRegs[gr]] || [];
+            for (var gc = 0; gc < gCodes.length; gc++) {
+              registerNextValidCharsForRouteCode(gCodes[gc], prefix, validNextDigits, validNextLetters);
+            }
+          }
+        }
+
+        // 當有輸入 prefix 時，將完全匹配與直接前綴匹配排先，數字核心匹配 (如輸入 44B 顯示 N44B) 緊隨其後
+        if (pLen > 0 && !isShowingHistoryOnly) {
+          matchedRoutes.sort(function (a, b) {
+            var ra = String(a.route || "").toUpperCase();
+            var rb = String(b.route || "").toUpperCase();
+            var aExact = (ra === prefix) ? 0 : (ra.indexOf(prefix) === 0 ? 1 : 2);
+            var bExact = (rb === prefix) ? 0 : (rb.indexOf(prefix) === 0 ? 1 : 2);
+            if (aExact !== bExact) return aExact - bExact;
+            var na = parseInt(ra.replace(/[^0-9]/g, ""), 10);
+            var nb = parseInt(rb.replace(/[^0-9]/g, ""), 10);
+            if (!isNaN(na) && !isNaN(nb) && na !== nb) return na - nb;
+            if (ra !== rb) return ra.localeCompare(rb);
+            return String(a.bound).localeCompare(String(b.bound));
+          });
         }
 
         var digitBtns = document.querySelectorAll("#routeKeypadArea [data-digit]");
@@ -6774,8 +7279,9 @@
 
         if (routeSearchList) {
           routeSearchList.innerHTML = "";
-          var displayLimit = Math.min(matchedRoutes.length, 140);
-          if (displayLimit === 0) {
+          currentFilteredRoutesPool = matchedRoutes;
+          currentRenderedRouteCount = 0;
+          if (matchedRoutes.length === 0) {
             var emptyDiv = document.createElement("div");
             emptyDiv.style.padding = "28px 16px";
             emptyDiv.style.textAlign = "center";
@@ -6783,54 +7289,7 @@
             emptyDiv.textContent = isShowingHistoryOnly ? "暫無最近搜尋紀錄" : "找不到符合「" + prefix + "」的路線";
             routeSearchList.appendChild(emptyDiv);
           } else {
-            for (var m = 0; m < displayLimit; m++) {
-              (function (rItem) {
-                var rowBtn = document.createElement("button");
-                rowBtn.type = "button";
-                rowBtn.className = "rs-route-item";
-
-                var leftDiv = document.createElement("div");
-                leftDiv.className = "rs-route-left";
-
-                var noSpan = document.createElement("div");
-                noSpan.className = "rs-route-no";
-                noSpan.textContent = rItem.route;
-                if (rItem.cat === "MTR") {
-                  noSpan.style.fontSize = "16px";
-                }
-
-                var badgeInfo = getOperatorBadgeInfo(rItem.co, rItem.region);
-                var coSpan = document.createElement("span");
-                coSpan.className = "rs-co-badge " + badgeInfo.cls;
-                coSpan.textContent = badgeInfo.label;
-
-                leftDiv.appendChild(noSpan);
-                leftDiv.appendChild(coSpan);
-
-                var rightDiv = document.createElement("div");
-                rightDiv.className = "rs-route-right";
-
-                var destDiv = document.createElement("div");
-                destDiv.className = "rs-dest-line";
-                destDiv.innerHTML = "往 <strong>" + escapeHtmlStr(rItem.dest) + "</strong>";
-
-                var origDiv = document.createElement("div");
-                origDiv.className = "rs-orig-line";
-                origDiv.textContent = rItem.orig ? (rItem.orig + " 開出") : "";
-
-                rightDiv.appendChild(destDiv);
-                if (rItem.orig) rightDiv.appendChild(origDiv);
-
-                rowBtn.appendChild(leftDiv);
-                rowBtn.appendChild(rightDiv);
-
-                rowBtn.addEventListener("click", function () {
-                  onSelectRouteFromSearch(rItem);
-                });
-
-                routeSearchList.appendChild(rowBtn);
-              })(matchedRoutes[m]);
-            }
+            appendNextRouteListBatch();
           }
         }
       }
@@ -7623,15 +8082,113 @@
           return;
         }
 
-        // 5. 專線小巴 (GMB)
-        if (routeItem.co === "GMB") {
-          var loadGmbStopsById = function (gRouteId, rSeq) {
-            var gmbUrl = "https://data.etagmb.gov.hk/route-stop/" + encodeURIComponent(gRouteId) + "/" + encodeURIComponent(rSeq);
-            fetch(gmbUrl)
+        // 5. 新大嶼山巴士 (NLB)
+        if (routeItem.co === "NLB") {
+          var loadNlbStopsByRouteId = function (nlbId) {
+            fetch("https://rt.data.gov.hk/v2/transport/nlb/stop.php?action=list&routeId=" + encodeURIComponent(nlbId))
               .then(function (r) { return r.json(); })
               .then(function (root) {
+                if (!root || !Array.isArray(root.stops) || root.stops.length === 0) return;
+                var builtNlb = [];
+                for (var n = 0; n < root.stops.length; n++) {
+                  var st = root.stops[n];
+                  builtNlb.push({
+                    seq: n + 1,
+                    stopId: String(st.stopId || ""),
+                    name: formatParentheses(st.stopName_c || ("第 " + (n + 1) + " 站")),
+                    lat: parseFloat(st.latitude || 0),
+                    lng: parseFloat(st.longitude || 0),
+                    fare: st.fare ? ("$" + st.fare) : ""
+                  });
+                }
+                if (builtNlb.length > 0) {
+                  currentDetailStops = builtNlb;
+                  renderRouteOnCsdiMap(true);
+                  renderRouteStopTimelineList();
+                  fetchAndRenderSingleStopEtaInDetail(selectedStopSeqInStopsTab);
+                }
+              })
+              .catch(function () {});
+          };
+          if (routeItem.nlbRouteId) {
+            loadNlbStopsByRouteId(routeItem.nlbRouteId);
+          } else {
+            fetch("https://rt.data.gov.hk/v2/transport/nlb/route.php?action=list")
+              .then(function (r) { return r.json(); })
+              .then(function (root) {
+                if (root && Array.isArray(root.routes)) {
+                  for (var i = 0; i < root.routes.length; i++) {
+                    var rt = root.routes[i];
+                    if (String(rt.routeNo || "").trim().toUpperCase() === routeItem.route) {
+                      routeItem.nlbRouteId = rt.routeId;
+                      loadNlbStopsByRouteId(rt.routeId);
+                      break;
+                    }
+                  }
+                }
+              })
+              .catch(function () {});
+          }
+          return;
+        }
+
+        // 6. 專線小巴 (GMB)
+        if (routeItem.co === "GMB") {
+          var resolveGmbRouteIdAndLoadStops = function () {
+            var tryRegions = routeItem.region ? [routeItem.region, "NT", "KLN", "HKI"] : ["NT", "KLN", "HKI"];
+            var uniqueRegs = [];
+            for (var r = 0; r < tryRegions.length; r++) {
+              if (uniqueRegs.indexOf(tryRegions[r]) === -1) uniqueRegs.push(tryRegions[r]);
+            }
+            var attemptIdx = 0;
+            var tryNextRegion = function () {
+              if (attemptIdx >= uniqueRegs.length) return;
+              var reg = uniqueRegs[attemptIdx++];
+              fetch("https://data.etagmb.gov.hk/route/" + encodeURIComponent(reg) + "/" + encodeURIComponent(routeItem.route))
+                .then(function (res) { return res.ok ? res.json() : null; })
+                .then(function (root) {
+                  if (!root || !Array.isArray(root.data) || root.data.length === 0) {
+                    tryNextRegion();
+                    return;
+                  }
+                  var chosenVariant = root.data[0];
+                  var chosenSeq = routeItem.gmbRouteSeq || (routeItem.bound === "I" ? 2 : 1);
+                  for (var v = 0; v < root.data.length; v++) {
+                    var vr = root.data[v];
+                    var dirs = vr.directions || [];
+                    for (var d = 0; d < dirs.length; d++) {
+                      var dDest = formatParentheses(dirs[d].dest_tc || "");
+                      if (dDest && routeItem.dest && (dDest.indexOf(routeItem.dest) !== -1 || routeItem.dest.indexOf(dDest) !== -1)) {
+                        chosenVariant = vr;
+                        chosenSeq = dirs[d].route_seq || chosenSeq;
+                        break;
+                      }
+                    }
+                  }
+                  routeItem.region = reg;
+                  routeItem.gmbRouteId = String(chosenVariant.route_id || "");
+                  routeItem.gmbRouteSeq = chosenSeq;
+                  if (routeItem.gmbRouteId) {
+                    loadGmbStopsById(routeItem.gmbRouteId, chosenSeq, true);
+                  }
+                })
+                .catch(function () {
+                  tryNextRegion();
+                });
+            };
+            tryNextRegion();
+          };
+
+          var loadGmbStopsById = function (gRouteId, rSeq, isRetry) {
+            var gmbUrl = "https://data.etagmb.gov.hk/route-stop/" + encodeURIComponent(gRouteId) + "/" + encodeURIComponent(rSeq);
+            fetch(gmbUrl)
+              .then(function (r) { return r.ok ? r.json() : null; })
+              .then(function (root) {
                 var rStops = (root && root.data && Array.isArray(root.data.route_stops)) ? root.data.route_stops : [];
-                if (rStops.length === 0) return;
+                if (rStops.length === 0) {
+                  if (!isRetry) resolveGmbRouteIdAndLoadStops();
+                  return;
+                }
                 var gPromises = rStops.map(function (row, idx) {
                   var sid = String(row.stop_id || "");
                   var sq = parseInt(row.stop_seq || (idx + 1), 10);
@@ -7667,21 +8224,15 @@
                   fetchAndRenderSingleStopEtaInDetail(selectedStopSeqInStopsTab);
                 });
               })
-              .catch(function () {});
+              .catch(function () {
+                if (!isRetry) resolveGmbRouteIdAndLoadStops();
+              });
           };
 
           if (routeItem.gmbRouteId) {
-            loadGmbStopsById(routeItem.gmbRouteId, routeItem.gmbRouteSeq || (routeItem.bound === "I" ? 2 : 1));
-          } else if (routeItem.region) {
-            fetch("https://data.etagmb.gov.hk/route/" + encodeURIComponent(routeItem.region) + "/" + encodeURIComponent(routeItem.route))
-              .then(function (r) { return r.json(); })
-              .then(function (root) {
-                if (root && Array.isArray(root.data) && root.data.length > 0) {
-                  routeItem.gmbRouteId = root.data[0].route_id;
-                  loadGmbStopsById(routeItem.gmbRouteId, routeItem.gmbRouteSeq || (routeItem.bound === "I" ? 2 : 1));
-                }
-              })
-              .catch(function () {});
+            loadGmbStopsById(routeItem.gmbRouteId, routeItem.gmbRouteSeq || (routeItem.bound === "I" ? 2 : 1), false);
+          } else {
+            resolveGmbRouteIdAndLoadStops();
           }
         }
       }
@@ -7901,27 +8452,25 @@
           return;
         }
 
-        if (rItem.co === "GMB" && rItem.gmbRouteId) {
-          var rSeq = rItem.gmbRouteSeq || (rItem.bound === "I" ? 2 : 1);
-          var gUrl = "https://data.etagmb.gov.hk/eta/route-stop/" +
-                     encodeURIComponent(rItem.gmbRouteId) + "/" +
-                     encodeURIComponent(rSeq) + "/" + encodeURIComponent(stObj.seq);
-          fetch(gUrl)
+        if (rItem.co === "NLB" && rItem.nlbRouteId && stObj.stopId) {
+          var nlbEtaUrl = "https://rt.data.gov.hk/v2/transport/nlb/stop.php?action=estimatedArrivals&routeId=" +
+                          encodeURIComponent(rItem.nlbRouteId) + "&stopId=" + encodeURIComponent(stObj.stopId) + "&language=zh";
+          fetch(nlbEtaUrl)
             .then(function (r) { return r.json(); })
             .then(function (root) {
               var list = [];
-              var etas = (root && root.data && Array.isArray(root.data.eta)) ? root.data.eta : [];
-              for (var i = 0; i < etas.length; i++) {
-                var d = etas[i];
-                if (d.timestamp) {
-                  var ms = Date.parse(d.timestamp);
-                  if (!isNaN(ms)) {
+              var arr = (root && Array.isArray(root.estimatedArrivals)) ? root.estimatedArrivals : [];
+              for (var i = 0; i < arr.length; i++) {
+                var d = arr[i];
+                if (d.estimatedArrivalTime) {
+                  var ms = Date.parse(String(d.estimatedArrivalTime).trim().replace(" ", "T") + "+08:00");
+                  if (!isNaN(ms) && (ms - nowMillis) >= -45000) {
                     list.push({
-                      etaSeq: parseInt(d.eta_seq || (i + 1), 10),
+                      etaSeq: i + 1,
                       etaMillis: ms,
-                      diffMin: Math.max(0, parseInt(d.diff !== undefined ? d.diff : Math.round((ms - nowMillis) / 60000), 10)),
+                      diffMin: Math.max(0, Math.round((ms - nowMillis) / 60000)),
                       clock: formatHkTime(new Date(ms), false),
-                      rmk: formatParentheses(d.remarks_tc || "")
+                      rmk: ""
                     });
                   }
                 }
@@ -7929,6 +8478,55 @@
               callback(list);
             })
             .catch(function () { callback([]); });
+          return;
+        }
+
+        if (rItem.co === "GMB") {
+          var fetchGmbEtaWithRouteId = function (gId, rSeq) {
+            var gUrl = "https://data.etagmb.gov.hk/eta/route-stop/" +
+                       encodeURIComponent(gId) + "/" +
+                       encodeURIComponent(rSeq) + "/" + encodeURIComponent(stObj.seq);
+            fetch(gUrl)
+              .then(function (r) { return r.json(); })
+              .then(function (root) {
+                var list = [];
+                var etas = (root && root.data && Array.isArray(root.data.eta)) ? root.data.eta : [];
+                for (var i = 0; i < etas.length; i++) {
+                  var d = etas[i];
+                  if (d.timestamp) {
+                    var ms = Date.parse(d.timestamp);
+                    if (!isNaN(ms)) {
+                      list.push({
+                        etaSeq: parseInt(d.eta_seq || (i + 1), 10),
+                        etaMillis: ms,
+                        diffMin: Math.max(0, parseInt(d.diff !== undefined ? d.diff : Math.round((ms - nowMillis) / 60000), 10)),
+                        clock: formatHkTime(new Date(ms), false),
+                        rmk: formatParentheses(d.remarks_tc || "")
+                      });
+                    }
+                  }
+                }
+                callback(list);
+              })
+              .catch(function () { callback([]); });
+          };
+
+          if (rItem.gmbRouteId) {
+            fetchGmbEtaWithRouteId(rItem.gmbRouteId, rItem.gmbRouteSeq || (rItem.bound === "I" ? 2 : 1));
+          } else {
+            var reg = rItem.region || "NT";
+            fetch("https://data.etagmb.gov.hk/route/" + encodeURIComponent(reg) + "/" + encodeURIComponent(rItem.route))
+              .then(function (r) { return r.ok ? r.json() : null; })
+              .then(function (root) {
+                if (root && Array.isArray(root.data) && root.data.length > 0) {
+                  rItem.gmbRouteId = String(root.data[0].route_id || "");
+                  fetchGmbEtaWithRouteId(rItem.gmbRouteId, rItem.gmbRouteSeq || (rItem.bound === "I" ? 2 : 1));
+                } else {
+                  callback([]);
+                }
+              })
+              .catch(function () { callback([]); });
+          }
           return;
         }
 
@@ -8039,10 +8637,166 @@
       // ==================== 4. 「車程」功能：預設連接 https://hk-bus-history.clear-octet53.workers.dev/ 雲端資料庫 + 極簡顯示 ====================
       var lazyLoadedRouteHistoryCache = {};
 
+      function getSavedCustomDbList() {
+        try {
+          var raw = storageGet(KEY_CUSTOM_DB_LIST, "[]");
+          var parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) return parsed;
+        } catch (e) {}
+        return [];
+      }
+
+      function saveCustomDbList(list) {
+        storageSet(KEY_CUSTOM_DB_LIST, JSON.stringify(Array.isArray(list) ? list : []));
+      }
+
+      function getActiveDbId() {
+        return storageGet(KEY_ACTIVE_DB_ID, "default") || "default";
+      }
+
+      function setActiveDbId(dbId) {
+        storageSet(KEY_ACTIVE_DB_ID, dbId || "default");
+      }
+
+      function getActiveDbEntryInfo() {
+        var activeId = getActiveDbId();
+        var list = getSavedCustomDbList();
+        for (var i = 0; i < list.length; i++) {
+          if (list[i] && list[i].id === activeId && list[i].url) {
+            return {
+              id: list[i].id,
+              name: list[i].name || "自訂資料庫",
+              url: String(list[i].url).trim().replace(/\/+$/, ""),
+              isDefault: false
+            };
+          }
+        }
+        return {
+          id: "default",
+          name: "預設資料庫",
+          url: DEFAULT_CLOUD_HISTORY_DB_URL.replace(/\/+$/, ""),
+          isDefault: true
+        };
+      }
+
       function getActiveHistoryDbBaseUrl() {
-        var saved = storageGet(KEY_CUSTOM_HISTORY_DB_URL, "").trim();
-        var base = saved || DEFAULT_CLOUD_HISTORY_DB_URL;
-        return base.replace(/\/+$/, "");
+        return getActiveDbEntryInfo().url;
+      }
+
+      function maskCustomDbUrlForDisplay(urlStr) {
+        var s = String(urlStr || "").trim();
+        if (!s) return "";
+        try {
+          var u = new URL(s);
+          var host = u.hostname || "";
+          if (host.length > 14) {
+            return u.protocol + "//" + host.slice(0, 6) + "•••" + host.slice(-6);
+          }
+          return u.protocol + "//" + host;
+        } catch (e) {
+          if (s.length > 18) return s.slice(0, 10) + "•••" + s.slice(-5);
+          return s;
+        }
+      }
+
+      function renderDatabaseManagerUi() {
+        var activeInfo = getActiveDbEntryInfo();
+        var tvName = document.getElementById("tvCurrentActiveDbName");
+        var tvTag = document.getElementById("tvCurrentActiveDbSecurityTag");
+        var listContainer = document.getElementById("containerSavedDbList");
+
+        if (tvName) tvName.textContent = activeInfo.name;
+        if (tvTag) {
+          tvTag.textContent = activeInfo.isDefault ? "🔒 地址已保密" : "🌐 後備資料庫";
+        }
+        if (!listContainer) return;
+
+        listContainer.innerHTML = "";
+        var customList = getSavedCustomDbList();
+        var allEntries = [
+          { id: "default", name: "預設資料庫", sub: "🔒 官方預設雲端資料庫 (地址已保密)", isDefault: true }
+        ];
+        for (var i = 0; i < customList.length; i++) {
+          var c = customList[i];
+          if (!c || !c.id || !c.url) continue;
+          allEntries.push({
+            id: c.id,
+            name: c.name || ("後備資料庫 " + (i + 1)),
+            sub: "🔗 " + maskCustomDbUrlForDisplay(c.url),
+            isDefault: false
+          });
+        }
+
+        for (var j = 0; j < allEntries.length; j++) {
+          (function (entry) {
+            var isSelected = (entry.id === activeInfo.id);
+            var row = document.createElement("div");
+            row.className = "db-item-row" + (isSelected ? " active-db" : "");
+
+            var infoDiv = document.createElement("div");
+            infoDiv.className = "db-item-info";
+
+            var nameDiv = document.createElement("div");
+            nameDiv.className = "db-item-name";
+            nameDiv.textContent = (entry.isDefault ? "🛡️ " : "🗄️ ") + entry.name;
+
+            var subDiv = document.createElement("div");
+            subDiv.className = "db-item-sub";
+            subDiv.textContent = entry.sub;
+
+            infoDiv.appendChild(nameDiv);
+            infoDiv.appendChild(subDiv);
+
+            var actDiv = document.createElement("div");
+            actDiv.className = "db-item-actions";
+
+            var statusBadge = document.createElement("span");
+            statusBadge.className = isSelected ? "db-badge-active" : "db-badge-select";
+            statusBadge.textContent = isSelected ? "✅ 使用中" : "切換";
+            actDiv.appendChild(statusBadge);
+
+            if (!entry.isDefault) {
+              var delBtn = document.createElement("button");
+              delBtn.type = "button";
+              delBtn.className = "db-btn-delete";
+              delBtn.textContent = "刪除";
+              delBtn.addEventListener("click", function (ev) {
+                ev.stopPropagation();
+                var curList = getSavedCustomDbList();
+                var nextList = [];
+                for (var k = 0; k < curList.length; k++) {
+                  if (curList[k] && curList[k].id !== entry.id) {
+                    nextList.push(curList[k]);
+                  }
+                }
+                saveCustomDbList(nextList);
+                if (getActiveDbId() === entry.id) {
+                  setActiveDbId("default");
+                }
+                lazyLoadedRouteHistoryCache = {};
+                performProfileMirrorBackup();
+                renderDatabaseManagerUi();
+                showToast("已刪除「" + entry.name + "」");
+              });
+              actDiv.appendChild(delBtn);
+            }
+
+            row.appendChild(infoDiv);
+            row.appendChild(actDiv);
+
+            row.addEventListener("click", function () {
+              setActiveDbId(entry.id);
+              lazyLoadedRouteHistoryCache = {};
+              performProfileMirrorBackup();
+              renderDatabaseManagerUi();
+              var resBox = document.getElementById("tvDbTestStatusResult");
+              if (resBox) resBox.style.display = "none";
+              showToast("已切換至：" + entry.name);
+            });
+
+            listContainer.appendChild(row);
+          })(allEntries[j]);
+        }
       }
 
       function getRouteHistoryKey(rItem) {
@@ -8312,8 +9066,9 @@
             layoutRouteSearchPage.classList.remove("open");
             layoutDbGuidePage.classList.add("open");
             layoutDbGuidePage.setAttribute("aria-hidden", "false");
-            var inputDb = document.getElementById("inputCustomHistoryDbUrl");
-            if (inputDb) inputDb.value = getActiveHistoryDbBaseUrl();
+            var resBox = document.getElementById("tvDbTestStatusResult");
+            if (resBox) resBox.style.display = "none";
+            renderDatabaseManagerUi();
           });
         }
 
@@ -8425,32 +9180,121 @@
           });
         }
 
-        var btnSaveDbUrl = document.getElementById("btnSaveCustomHistoryDbUrl");
-        if (btnSaveDbUrl) {
-          btnSaveDbUrl.addEventListener("click", function () {
-            var inputEl = document.getElementById("inputCustomHistoryDbUrl");
-            var val = inputEl ? inputEl.value.trim() : "";
-            storageSet(KEY_CUSTOM_HISTORY_DB_URL, val || DEFAULT_CLOUD_HISTORY_DB_URL);
+        var btnAddCustomDb = document.getElementById("btnAddCustomHistoryDb");
+        if (btnAddCustomDb) {
+          btnAddCustomDb.addEventListener("click", function () {
+            var nameEl = document.getElementById("inputNewDbName");
+            var urlEl = document.getElementById("inputNewDbUrl");
+            var nameVal = nameEl ? nameEl.value.trim() : "";
+            var urlVal = urlEl ? urlEl.value.trim() : "";
+            if (!urlVal) {
+              showToast("請輸入新資料庫地址");
+              return;
+            }
+            if (urlVal.indexOf("http://") !== 0 && urlVal.indexOf("https://") !== 0) {
+              urlVal = "https://" + urlVal;
+            }
+            var curList = getSavedCustomDbList();
+            if (!nameVal) {
+              nameVal = "後備資料庫 " + (curList.length + 1);
+            }
+            var newId = "db_" + Date.now();
+            curList.push({
+              id: newId,
+              name: nameVal,
+              url: urlVal.replace(/\/+$/, "")
+            });
+            saveCustomDbList(curList);
+            setActiveDbId(newId);
             lazyLoadedRouteHistoryCache = {};
-            showToast("已儲存資料庫網址");
+            performProfileMirrorBackup();
+            if (nameEl) nameEl.value = "";
+            if (urlEl) urlEl.value = "";
+            renderDatabaseManagerUi();
+            showToast("✅ 已新增並切換至「" + nameVal + "」");
           });
         }
 
         var btnTestDb = document.getElementById("btnTestCurrentRouteHistoryDb");
         if (btnTestDb) {
           btnTestDb.addEventListener("click", function () {
-            var testUrl = getActiveHistoryDbBaseUrl() + "/routes/LWB_A43P.json";
+            var activeEntry = getActiveDbEntryInfo();
+            var resBox = document.getElementById("tvDbTestStatusResult");
+            if (resBox) {
+              resBox.style.display = "block";
+              resBox.style.color = "#FFD54F";
+              resBox.textContent = "⏳ 正在測試連線至「" + activeEntry.name + "」...";
+            }
+            var baseUrl = activeEntry.url;
+            var testUrl = (baseUrl.indexOf("/routes") !== -1)
+              ? (baseUrl + "/LWB_A43P.json")
+              : (baseUrl + "/routes/LWB_A43P.json");
             fetch(testUrl)
               .then(function (r) { return r.ok ? r.json() : null; })
               .then(function (d) {
-                if (d) showToast("✅ 成功連接資料庫：" + getActiveHistoryDbBaseUrl());
-                else showToast("已設定預設資料庫：" + getActiveHistoryDbBaseUrl());
+                if (d) {
+                  if (resBox) {
+                    resBox.style.color = "#00E676";
+                    resBox.textContent = "✅ 連線正常！「" + activeEntry.name + "」運作良好。";
+                  }
+                  showToast("✅ 連線成功 (" + activeEntry.name + ")");
+                } else {
+                  if (resBox) {
+                    resBox.style.color = "#FFB74D";
+                    resBox.textContent = "⚠️ 無法從「" + activeEntry.name + "」讀取數據，如有需要可切換後備資料庫。";
+                  }
+                  showToast("⚠️ 測試未有回應 (" + activeEntry.name + ")");
+                }
               })
               .catch(function () {
-                showToast("已設定預設資料庫：" + getActiveHistoryDbBaseUrl());
+                if (resBox) {
+                  resBox.style.color = "#FF6E6E";
+                  resBox.textContent = "❌ 連線失敗（「" + activeEntry.name + "」暫時無法連線），可於下方輸入後備資料庫頂替。";
+                }
+                showToast("❌ 連線失敗 (" + activeEntry.name + ")");
               });
           });
         }
+
+        var btnSaveLockDb = document.getElementById("btnSaveLockDbSettings");
+        if (btnSaveLockDb) {
+          btnSaveLockDb.addEventListener("click", function () {
+            performProfileMirrorBackup();
+            showToast("✅ 資料庫設定已永久鎖定並同步至三重儲存！");
+          });
+        }
+
+        var btnCopyDbBackup = document.getElementById("btnCopyDbBackupCode");
+        if (btnCopyDbBackup) {
+          btnCopyDbBackup.addEventListener("click", function () {
+            var code = encodeBackupString();
+            copyTextToClipboard(code);
+          });
+        }
+
+        var btnImportDbBackup = document.getElementById("btnImportDbBackupCode");
+        if (btnImportDbBackup) {
+          btnImportDbBackup.addEventListener("click", function () {
+            var inputDbBackup = document.getElementById("inputDbBackupCode");
+            var codeStr = inputDbBackup ? inputDbBackup.value.trim() : "";
+            if (!codeStr) {
+              showToast("請先在下方輸入框貼上備份碼");
+              return;
+            }
+            if (decodeAndImportBackupString(codeStr)) {
+              performProfileMirrorBackup();
+              renderDatabaseManagerUi();
+              applyUiModeView();
+              refreshSettingsPageUiState();
+              refreshAllTransitData();
+              showToast("✅ 已成功還原資料庫及個人看板設定！");
+            } else {
+              showToast("備份碼格式不正確，請檢查後重試");
+            }
+          });
+        }
+
+        renderDatabaseManagerUi();
       }
 
       initApp();
