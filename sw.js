@@ -1,5 +1,9 @@
-const CACHE_NAME = "arrival-time-pwa-v13";
-const ASSETS = ["./", "./index.html", "./manifest.json"];
+const CACHE_NAME = "arrival-time-pwa-v14";
+const ASSETS = [
+  "./",
+  "./index.html",
+  "./manifest.json"
+];
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
@@ -12,7 +16,11 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(
-        keys.map((k) => (k !== CACHE_NAME ? caches.delete(k) : Promise.resolve()))
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
+        })
       )
     ).then(() => self.clients.claim())
   );
@@ -20,23 +28,27 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   const req = event.request;
-  const url = req.url || "";
+  const url = new URL(req.url);
+
+  // 實時 API 永遠直接聯網抓取最新數據
   if (
-    url.includes("data.etabus.gov.hk") ||
-    url.includes("rt.data.gov.hk") ||
-    url.includes("data.etagmb.gov.hk") ||
-    url.includes("data.weather.gov.hk") ||
-    url.includes("api.open-meteo.com") ||
-    url.includes("mapapi.geodata.gov.hk") ||
-    url.includes("router.project-osrm.org") ||
-    url.includes("routing.openstreetmap.de") ||
-    url.includes("overpass-api.de") ||
-    url.includes("data.hkbus.app") ||
-    url.includes("workers.dev")
+    url.hostname.includes("data.gov.hk") ||
+    url.hostname.includes("etabus.gov.hk") ||
+    url.hostname.includes("etagmb.gov.hk") ||
+    url.hostname.includes("weather.gov.hk") ||
+    url.hostname.includes("geodata.gov.hk") ||
+    url.hostname.includes("open-meteo.com") ||
+    url.hostname.includes("workers.dev") ||
+    url.hostname.includes("project-osrm.org") ||
+    url.hostname.includes("openstreetmap.de") ||
+    url.hostname.includes("overpass-api.de") ||
+    url.hostname.includes("hkbus.app")
   ) {
     return;
   }
-  if (req.mode === "navigate" || url.endsWith("index.html") || url.endsWith("/")) {
+
+  // HTML 主頁採用 Network-First 策略，確保更新後即時生效
+  if (req.mode === "navigate" || url.pathname.endsWith(".html") || url.pathname.endsWith("/")) {
     event.respondWith(
       fetch(req)
         .then((networkRes) => {
@@ -48,6 +60,7 @@ self.addEventListener("fetch", (event) => {
     );
     return;
   }
+
   event.respondWith(
     caches.match(req).then((cached) => cached || fetch(req))
   );
