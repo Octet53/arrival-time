@@ -1,4 +1,4 @@
-const CACHE_NAME = "arrival-time-pwa-v14";
+const CACHE_NAME = "arrival-time-pwa-v15";
 const ASSETS = [
   "./",
   "./index.html",
@@ -42,7 +42,8 @@ self.addEventListener("fetch", (event) => {
     url.hostname.includes("project-osrm.org") ||
     url.hostname.includes("openstreetmap.de") ||
     url.hostname.includes("overpass-api.de") ||
-    url.hostname.includes("hkbus.app")
+    url.hostname.includes("hkbus.app") ||
+    url.hostname.includes("mtr.com.hk")
   ) {
     return;
   }
