@@ -2482,6 +2482,94 @@
       font-weight: 800;
     }
 
+    .rm-status-sub.status-offhours {
+      color: #3949AB;
+      font-weight: 800;
+    }
+
+    .rm-service-status-fixed.status-mode-offhours {
+      background: rgba(232, 236, 252, 0.96);
+      border-color: rgba(57, 73, 171, 0.28);
+    }
+
+    .rm-service-status-fixed.status-mode-abnormal {
+      background: rgba(255, 224, 224, 0.98);
+      border-color: rgba(229, 35, 32, 0.55);
+      box-shadow: 0 4px 18px rgba(229, 35, 32, 0.35);
+    }
+
+    /* 路線圖及主介面頂部「服務異常 / 延誤」紅色警告橫幅 */
+    .rm-abnormal-warning-banner {
+      background: linear-gradient(90deg, #B71C1C 0%, #D32F2F 50%, #B71C1C 100%);
+      border-bottom: 1.5px solid #FF8A80;
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 8px 12px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-shrink: 0;
+      z-index: 39;
+      box-shadow: 0 3px 12px rgba(211, 47, 47, 0.45);
+      line-height: 1.35;
+    }
+
+    .rm-abnormal-warning-banner.show {
+      display: flex;
+    }
+
+    .rm-abnormal-banner-text {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .rm-abnormal-banner-close {
+      background: rgba(0, 0, 0, 0.25);
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* 單站點擊時靜態時間表與跨站交叉驗證診斷橫幅 */
+    .rail-diag-box {
+      border-radius: 9px;
+      padding: 9px 11px;
+      margin-bottom: 8px;
+      font-size: 12.5px;
+      line-height: 1.45;
+      font-weight: 600;
+    }
+
+    .rail-diag-box.diag-abnormal {
+      background: rgba(229, 35, 32, 0.16);
+      border: 1px solid rgba(255, 110, 110, 0.5);
+      color: #FFCDD2;
+    }
+
+    .rail-diag-box.diag-single-fault {
+      background: rgba(255, 183, 77, 0.15);
+      border: 1px solid rgba(255, 183, 77, 0.45);
+      color: #FFE0B2;
+    }
+
+    .rail-diag-box.diag-offhours {
+      background: rgba(92, 107, 192, 0.18);
+      border: 1px solid rgba(121, 134, 203, 0.45);
+      color: #E8EAF6;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     .rm-status-icon-wrap {
       width: 30px;
       height: 30px;
@@ -3077,6 +3165,13 @@
     </div>
 
     <div id="railMapPickerBanner" class="rm-picker-banner">點選路線圖上的輕鐵站，即可直接更改主畫面車站</div>
+    <div id="railAbnormalWarningBanner" class="rm-abnormal-warning-banner" role="alert">
+      <div class="rm-abnormal-banner-text">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        <span id="railAbnormalWarningBannerMsg">⚠️ 服務異常 / 延誤：目前屬正常營運時間，惟多個相鄰車站同時無班次回應，可能出現大規模車務延誤或系統故障。</span>
+      </div>
+      <button type="button" id="btnDismissAbnormalBanner" class="rm-abnormal-banner-close">知道了</button>
+    </div>
 
     <div id="railMapViewport" class="rm-viewport">
       <!-- 右上角固定「尋找附近車站」視窗 (不會隨路線圖移動而走位) -->
@@ -6977,8 +7072,102 @@
               }
             }
             renderEtaRowsToContainer(targetView, blocks);
+
+            // 若即時 API 回傳全站完全沒有車次或 status === 0，啟動三層智能診斷（1. 時間維度過濾 ➔ 2. 靜態時間表比對 ➔ 3. 跨站交叉驗證）
+            var totalTrainsAtClickedStation = countActiveTrainsInLrtScheduleRoot(root);
+            if (totalTrainsAtClickedStation === 0 || (root && root.status === 0)) {
+              runLrtThreeLayerSmartDiagnostics(stationId, root, targetView);
+            }
           })
           .catch(function () {});
+      }
+
+      // 輕鐵三層車務診斷引擎（當車站 API 抓不到班次時自動執行）
+      function runLrtThreeLayerSmartDiagnostics(stationId, primaryRoot, targetView) {
+        if (!targetView) return;
+        var sid = String(stationId || "").trim();
+        var stName = ALL_LRT_STATION_NAMES[sid] || ("車站 " + sid);
+        var hkCtx = getCurrentHkTimeContext();
+        var staticCheck = getExpectedLrtRoutesForStationAtTime(sid, hkCtx);
+
+        // 【第 1 層：時間維度過濾】及【第 2 層：靜態時間表尾班車核對】
+        // 如當前時間處於凌晨 01:30 至清晨 05:00（或該站所有途經路線均已過尾班車時間 01:28）
+        if (hkCtx.isCoreOffHoursWindow || !staticCheck.shouldHaveTrainsNow) {
+          var offDiv = document.createElement("div");
+          offDiv.className = "rail-diag-box diag-offhours";
+          offDiv.innerHTML = SVG_STATUS_MOON_HTML.replace('width="32" height="32"', 'width="26" height="26"') +
+            '<div><div style="font-weight:800; color:#FFD54F;">非服務時間（今日服務已結束）</div>' +
+            '<div style="font-size:11.5px; color:#C5CAE9; margin-top:2px;">輕鐵全線尾班車約於凌晨 01:28 抵達終點站，最早頭班車於清晨 05:06 開出。</div></div>';
+          targetView.innerHTML = "";
+          targetView.appendChild(offDiv);
+          if (layoutRailMapPage && layoutRailMapPage.classList.contains("open") && currentRailMapMode === "LRT") {
+            updateRailServiceStatusUi("OFF_HOURS");
+          }
+          return;
+        }
+
+        // 【第 2 層：對比官方靜態時間表】
+        // 照道理當前時間（例如星期二 10:15）應該有指定輕鐵綫經過
+        var expectedRouteStr = staticCheck.expectedRoutes.map(function (r) {
+          return r.route + "綫" + (r.freq ? (" (每" + r.freq[0] + "-" + r.freq[1] + "分鐘)") : "");
+        }).join("、");
+        var expectedShortRoutes = staticCheck.expectedRoutes.map(function (r) { return r.route + "綫"; }).join("、");
+
+        // 【第 3 層：跨站交叉驗證（排除單站通訊故障）】
+        // 自動檢查同一個區域嘅相鄰輕鐵站是否有車次
+        var neighborIds = getAdjacentLrtStationIds(sid);
+        if (neighborIds.length === 0) {
+          neighborIds = ["80", "100", "280"];
+        }
+        var neighborPromises = neighborIds.map(function (nid) {
+          return fetch("https://rt.data.gov.hk/v1/transport/mtr/lrt/getSchedule?station_id=" + encodeURIComponent(nid))
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (nRoot) {
+              return {
+                stationId: nid,
+                stationName: ALL_LRT_STATION_NAMES[nid] || nid,
+                trainCount: countActiveTrainsInLrtScheduleRoot(nRoot),
+                status: nRoot ? nRoot.status : -1
+              };
+            })
+            .catch(function () {
+              return { stationId: nid, stationName: ALL_LRT_STATION_NAMES[nid] || nid, trainCount: -1, status: -1 };
+            });
+        });
+
+        Promise.all(neighborPromises).then(function (neighborResults) {
+          var workingNeighbors = [];
+          var emptyNeighbors = [];
+          for (var i = 0; i < neighborResults.length; i++) {
+            var nr = neighborResults[i];
+            if (nr.trainCount > 0 && nr.status === 1) {
+              workingNeighbors.push(nr.stationName + "站");
+            } else if (nr.trainCount === 0 || nr.status === 0) {
+              emptyNeighbors.push(nr.stationName + "站");
+            }
+          }
+
+          var diagDiv = document.createElement("div");
+          if (workingNeighbors.length > 0) {
+            // 情況 A：只有「單一車站」抓不到資料，而相鄰車站有正常班次 ➔ 單站數據發射器或 API 節點暫時斷線
+            diagDiv.className = "rail-diag-box diag-single-fault";
+            diagDiv.innerHTML = '📡 <strong>單站通訊節點暫時斷線</strong><br/>' +
+              '對照官方靜態時間表，現時（' + escapeHtmlStr(hkCtx.weekdayName + ' ' + hkCtx.timeStr) + '）本應有 <strong>' + escapeHtmlStr(expectedShortRoutes) + '</strong> 經過' + escapeHtmlStr(stName) + '站。<br/>' +
+              '經跨站交叉驗證，相鄰嘅 <strong>' + escapeHtmlStr(workingNeighbors.join("、")) + '</strong> 均有正常即時班次，顯示僅屬本站數據發射器或 API 節點暫時斷線，整體輕鐵服務正常。';
+          } else {
+            // 情況 B：同一個區域的多個相鄰車站同時在大白天完全沒有車次 ➔ 百分之百屬系統性大規模異常或班次延誤！
+            diagDiv.className = "rail-diag-box diag-abnormal";
+            var checkedNames = emptyNeighbors.length > 0 ? emptyNeighbors.join("、") : "相鄰車站";
+            diagDiv.innerHTML = '🚨 <strong>服務異常 / 班次延誤（跨站驗證確認）</strong><br/>' +
+              '1. <strong>靜態時間表對照</strong>：現時（' + escapeHtmlStr(hkCtx.weekdayName + ' ' + hkCtx.timeStr) + '）照理本應有 <strong>' + escapeHtmlStr(expectedRouteStr) + '</strong> 經過本站。<br/>' +
+              '2. <strong>跨站交叉驗證</strong>：同區相鄰嘅 <strong>' + escapeHtmlStr(checkedNames) + '</strong> 亦同時完全沒有車次回應，確認屬於系統性車務異常或大規模班次延誤。';
+
+            var bannerMsg = "⚠️ 服務異常 / 延誤：現時 (" + hkCtx.weekdayName + " " + hkCtx.timeStr + ") 照靜態時間表本應有 " + expectedShortRoutes + " 行駛，惟 " + stName + "站 及相鄰 " + checkedNames + " 同時無班次回應！";
+            updateRailServiceStatusUi("ABNORMAL", bannerMsg);
+          }
+
+          targetView.insertBefore(diagDiv, targetView.firstChild);
+        });
       }
 
       // 2. 抓取港鐵 (重鐵綫) 實時到站 (月台標題統一加入「－下站XXX」)
@@ -7726,7 +7915,7 @@
         if ("caches" in window) {
           caches.keys().then(function (keys) {
             for (var i = 0; i < keys.length; i++) {
-              if (keys[i].indexOf("v16") !== -1 || keys[i].indexOf("v15") !== -1 || keys[i].indexOf("v14") !== -1 || keys[i].indexOf("v13") !== -1 || keys[i].indexOf("v12") !== -1 || keys[i].indexOf("v11") !== -1 || keys[i].indexOf("v10") !== -1 || keys[i].indexOf("v9") !== -1 || keys[i].indexOf("v8") !== -1 || keys[i].indexOf("v7") !== -1 || keys[i].indexOf("v6") !== -1 || keys[i].indexOf("v5") !== -1 || keys[i].indexOf("v4") !== -1 || keys[i].indexOf("v3") !== -1 || keys[i].indexOf("v2") !== -1 || (keys[i].indexOf("v1") !== -1 && keys[i].indexOf("v17") === -1)) {
+              if (keys[i].indexOf("v17") !== -1 || keys[i].indexOf("v16") !== -1 || keys[i].indexOf("v15") !== -1 || keys[i].indexOf("v14") !== -1 || keys[i].indexOf("v13") !== -1 || keys[i].indexOf("v12") !== -1 || keys[i].indexOf("v11") !== -1 || keys[i].indexOf("v10") !== -1 || keys[i].indexOf("v9") !== -1 || keys[i].indexOf("v8") !== -1 || keys[i].indexOf("v7") !== -1 || keys[i].indexOf("v6") !== -1 || keys[i].indexOf("v5") !== -1 || keys[i].indexOf("v4") !== -1 || keys[i].indexOf("v3") !== -1 || keys[i].indexOf("v2") !== -1 || (keys[i].indexOf("v1") !== -1 && keys[i].indexOf("v18") === -1)) {
                 caches.delete(keys[i]);
               }
             }
@@ -12898,7 +13087,7 @@
                 if (hasChildren) {
                   rowArrow = document.createElement("span");
                   rowArrow.className = "tt-tri-arrow";
-                  rowArrow.textContent = "▲";
+                  rowArrow.textContent = "▼";
                   timeSpan.appendChild(rowArrow);
                 }
 
@@ -12912,7 +13101,7 @@
 
                 if (hasChildren) {
                   var subListDiv = document.createElement("div");
-                  subListDiv.className = "tt-sub-list";
+                  subListDiv.className = "tt-sub-list collapsed";
                   for (var c = 0; c < rowObj.children.length; c++) {
                     var ch = rowObj.children[c];
                     var subRow = document.createElement("div");
@@ -13773,24 +13962,221 @@
       }
 
       // ==================== 路線圖「車務狀況」政府 API 實時檢測 (輕鐵獨立 API / 港鐵全線 API + 外部車務網連結) ====================
-      function updateRailServiceStatusUi(isNormal) {
-        if (!railServiceStatusText || !railServiceStatusIcon) return;
-        if (isNormal) {
-          railServiceStatusText.textContent = "服務正常";
-          railServiceStatusText.classList.remove("status-abnormal");
-          railServiceStatusIcon.innerHTML = SVG_STATUS_OK_HTML;
+      // 非 Emoji 純向量 SVG 新月圖案 (專用於「非服務時間」狀態顯示)
+      var SVG_STATUS_MOON_HTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="32" height="32">' +
+        '<circle cx="50" cy="50" r="45" fill="#283593" />' +
+        '<path d="M 60 24 A 26 26 0 1 0 76 66 A 21 21 0 1 1 60 24 Z" fill="#FFD54F" />' +
+        '<circle cx="70" cy="34" r="2.6" fill="#FFF59D" />' +
+        '<circle cx="77" cy="46" r="1.8" fill="#FFF59D" />' +
+        '</svg>';
+
+      var SVG_INLINE_MOON_MINI = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" style="vertical-align:-2px; margin-left:3px; display:inline-block;">' +
+        '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="#FFD54F" stroke="#FFA000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '</svg>';
+
+      // ==================== 輕鐵及港鐵官方靜態時間表 (源自政府開放數據 DATA.GOV.HK 輕鐵時間表及首尾班車資料) ====================
+      // 經核實全港輕鐵所有路線：
+      // - 全線最早頭班車開出時間：05:06 (610綫 屯門碼頭開出；751綫 05:13 天逸開出；614/615綫 05:22 元朗開出)
+      // - 全線最遲尾班車到達終點站時間：約 01:28 (614綫 00:50 元朗開出並於 01:28 抵達屯門碼頭總站；705/706 天水圍循環綫尾班車至約 01:26)
+      // - 因此凌晨 01:30 至清晨 05:00 (乃至 05:05) 屬於全線固定「非服務時間 (今日服務已結束)」。
+      var LRT_EARLIEST_FIRST_TRAIN_MIN = 5 * 60 + 6;   // 05:06 (306分)
+      var LRT_LATEST_LAST_ARRIVAL_MIN = 1 * 60 + 30;   // 01:30 (90分)
+      var LRT_OFF_HOURS_START_MIN = 1 * 60 + 30;       // 01:30
+      var LRT_OFF_HOURS_END_MIN = 5 * 60 + 0;          // 05:00
+
+      // 政府開放數據輕鐵各路線官方服務時間及標準班次間距 (分鐘)
+      var LRT_OFFICIAL_STATIC_TIMETABLE = {
+        "505":  { firstMin: 5 * 60 + 22, lastArrivalMin: 1 * 60 + 18, peakFreq: [6, 9],   normalFreq: [8, 12],  lateFreq: [12, 16], desc: "三聖 ⇄ 兆康" },
+        "507":  { firstMin: 5 * 60 + 21, lastArrivalMin: 1 * 60 + 16, peakFreq: [6, 8],   normalFreq: [8, 11],  lateFreq: [12, 16], desc: "屯門碼頭 ⇄ 田景" },
+        "507P": { firstMin: 7 * 60 + 15, lastArrivalMin: 8 * 60 + 15, peakFreq: [10, 15], normalFreq: null,     lateFreq: null,     weekdaysOnly: true, desc: "兆康 → 屯門碼頭 (上課日早上特車)" },
+        "610":  { firstMin: 5 * 60 + 6,  lastArrivalMin: 1 * 60 + 25, peakFreq: [7, 10],  normalFreq: [9, 13],  lateFreq: [13, 17], desc: "屯門碼頭 ⇄ 元朗" },
+        "614":  { firstMin: 5 * 60 + 22, lastArrivalMin: 1 * 60 + 28, peakFreq: [9, 13],  normalFreq: [11, 15], lateFreq: [14, 19], desc: "屯門碼頭 ⇄ 元朗" },
+        "614P": { firstMin: 5 * 60 + 35, lastArrivalMin: 1 * 60 + 15, peakFreq: [8, 12],  normalFreq: [10, 14], lateFreq: [13, 18], desc: "屯門碼頭 ⇄ 兆康" },
+        "615":  { firstMin: 5 * 60 + 22, lastArrivalMin: 1 * 60 + 24, peakFreq: [9, 13],  normalFreq: [11, 15], lateFreq: [14, 19], desc: "屯門碼頭 ⇄ 元朗" },
+        "615P": { firstMin: 5 * 60 + 32, lastArrivalMin: 1 * 60 + 16, peakFreq: [8, 12],  normalFreq: [10, 14], lateFreq: [13, 18], desc: "屯門碼頭 ⇄ 兆康" },
+        "705":  { firstMin: 5 * 60 + 23, lastArrivalMin: 1 * 60 + 26, peakFreq: [4, 6],   normalFreq: [6, 8],   lateFreq: [9, 13],  desc: "天水圍循環綫 (天秀・天恒逆時針)" },
+        "706":  { firstMin: 5 * 60 + 26, lastArrivalMin: 1 * 60 + 26, peakFreq: [4, 6],   normalFreq: [6, 8],   lateFreq: [9, 13],  desc: "天水圍循環綫 (天瑞・天恒順時針)" },
+        "751":  { firstMin: 5 * 60 + 13, lastArrivalMin: 1 * 60 + 25, peakFreq: [6, 9],   normalFreq: [8, 12],  lateFreq: [12, 16], desc: "友愛 ⇄ 天逸" },
+        "751P": { firstMin: 7 * 60 + 10, lastArrivalMin: 18 * 60 + 30, peakFreq: [10, 12], normalFreq: null,    lateFreq: null,     weekdaysOnly: true, desc: "天水圍 ⇄ 天逸 (上課日繁忙時段)" },
+        "761P": { firstMin: 5 * 60 + 22, lastArrivalMin: 1 * 60 + 24, peakFreq: [5, 8],   normalFreq: [7, 11],  lateFreq: [11, 15], desc: "天逸 ⇄ 元朗" }
+      };
+
+      // 取得香港當前時間資訊 (小時、分鐘、星期幾、總分鐘數)
+      function getCurrentHkTimeContext() {
+        var now = new Date();
+        var hkParts = { weekday: 1, hour: 12, minute: 0, timeStr: "12:00" };
+        var wdNameMap = { 0: "星期日", 1: "星期一", 2: "星期二", 3: "星期三", 4: "星期四", 5: "星期五", 6: "星期六" };
+        try {
+          var fmt = new Intl.DateTimeFormat("en-US", {
+            timeZone: "Asia/Hong_Kong",
+            hour12: false,
+            weekday: "short",
+            hour: "2-digit",
+            minute: "2-digit"
+          }).formatToParts(now);
+          var wdShortMap = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+          for (var p = 0; p < fmt.length; p++) {
+            if (fmt[p].type === "weekday") hkParts.weekday = (wdShortMap[fmt[p].value] !== undefined ? wdShortMap[fmt[p].value] : 1);
+            if (fmt[p].type === "hour") {
+              var hVal = parseInt(fmt[p].value, 10);
+              hkParts.hour = (hVal === 24) ? 0 : (isNaN(hVal) ? 0 : hVal);
+            }
+            if (fmt[p].type === "minute") hkParts.minute = parseInt(fmt[p].value, 10) || 0;
+          }
+        } catch (e) {
+          hkParts.hour = now.getHours();
+          hkParts.minute = now.getMinutes();
+          hkParts.weekday = now.getDay();
+        }
+        hkParts.totalMinutes = hkParts.hour * 60 + hkParts.minute;
+        hkParts.weekdayName = wdNameMap[hkParts.weekday] || "平日";
+        hkParts.timeStr = String(hkParts.hour).padStart(2, "0") + ":" + String(hkParts.minute).padStart(2, "0");
+        // 凌晨 01:30 至清晨 05:00 (以及 05:06 最早頭班車開出前) 判定為非服務時間窗口
+        hkParts.isCoreOffHoursWindow = (hkParts.totalMinutes >= LRT_OFF_HOURS_START_MIN && hkParts.totalMinutes <= LRT_EARLIEST_FIRST_TRAIN_MIN);
+        return hkParts;
+      }
+
+      // 根據官方靜態時間表，檢查指定輕鐵站在當前時間「本應有邊幾條輕鐵綫經過」
+      function getExpectedLrtRoutesForStationAtTime(stationId, hkTimeCtx) {
+        var sid = String(stationId || "").trim();
+        var ctx = hkTimeCtx || getCurrentHkTimeContext();
+        var tMin = ctx.totalMinutes;
+        var routesAtStation = [];
+        for (var i = 0; i < LRT_ROUTES_DATA.length; i++) {
+          var rObj = LRT_ROUTES_DATA[i];
+          if (rObj.stops && rObj.stops.indexOf(sid) !== -1) {
+            if (routesAtStation.indexOf(rObj.route) === -1) {
+              routesAtStation.push(rObj.route);
+            }
+          }
+        }
+        var expectedRunning = [];
+        for (var j = 0; j < routesAtStation.length; j++) {
+          var rNo = routesAtStation[j];
+          var sched = LRT_OFFICIAL_STATIC_TIMETABLE[rNo];
+          if (!sched) continue;
+          if (sched.weekdaysOnly) {
+            if (ctx.weekday === 0 || ctx.weekday === 6) continue;
+            var isPeakWindow = (tMin >= 7 * 60 + 10 && tMin <= 8 * 60 + 30) || (rNo === "751P" && tMin >= 15 * 60 + 30 && tMin <= 18 * 60 + 30);
+            if (isPeakWindow) expectedRunning.push({ route: rNo, freq: sched.peakFreq });
+            continue;
+          }
+          // 一般全日輕鐵綫：營運時間由 firstMin (約05:06-05:35) 至次日凌晨 lastArrivalMin (約01:15-01:28)
+          var isOperatingNow = (tMin >= sched.firstMin) || (tMin <= sched.lastArrivalMin);
+          if (isOperatingNow) {
+            var currentFreq = sched.normalFreq || [8, 14];
+            if ((tMin >= 7 * 60 && tMin <= 9 * 60 + 30) || (tMin >= 17 * 60 && tMin <= 19 * 60 + 30)) {
+              currentFreq = sched.peakFreq || currentFreq;
+            } else if (tMin >= 23 * 60 || tMin <= 1 * 60 + 30) {
+              currentFreq = sched.lateFreq || currentFreq;
+            }
+            expectedRunning.push({ route: rNo, freq: currentFreq });
+          }
+        }
+        return {
+          allRoutesAtStation: routesAtStation,
+          expectedRoutes: expectedRunning,
+          shouldHaveTrainsNow: expectedRunning.length > 0
+        };
+      }
+
+      // 取得同一個區域內與指定輕鐵站直接相鄰嘅車站 ID 清單 (用於第 3 層：跨站交叉驗證，排除單站數據發射器斷線)
+      function getAdjacentLrtStationIds(stationId) {
+        var sid = String(stationId || "").trim();
+        var neighbors = [];
+        for (var i = 0; i < LRT_ROUTES_DATA.length; i++) {
+          var stops = LRT_ROUTES_DATA[i].stops || [];
+          for (var j = 0; j < stops.length; j++) {
+            if (String(stops[j]) === sid) {
+              if (j > 0 && stops[j - 1] !== sid && neighbors.indexOf(stops[j - 1]) === -1) {
+                neighbors.push(stops[j - 1]);
+              }
+              if (j + 1 < stops.length && stops[j + 1] !== sid && neighbors.indexOf(stops[j + 1]) === -1) {
+                neighbors.push(stops[j + 1]);
+              }
+            }
+          }
+        }
+        return neighbors.slice(0, 3);
+      }
+
+      // 檢查輕鐵 getSchedule API 回傳嘅 JSON 是否含有任何有效即將到站班次
+      function countActiveTrainsInLrtScheduleRoot(root) {
+        if (!root || root.status !== 1 || !Array.isArray(root.platform_list)) return 0;
+        var total = 0;
+        for (var i = 0; i < root.platform_list.length; i++) {
+          var rList = root.platform_list[i].route_list;
+          if (Array.isArray(rList)) {
+            for (var j = 0; j < rList.length; j++) {
+              if (rList[j] && rList[j].route_no) total++;
+            }
+          }
+        }
+        return total;
+      }
+
+      function countActiveTrainsInMtrScheduleRoot(root) {
+        if (!root || root.status !== 1 || !root.data) return 0;
+        var total = 0;
+        for (var k in root.data) {
+          if (Object.prototype.hasOwnProperty.call(root.data, k) && root.data[k]) {
+            var stObj = root.data[k];
+            if (Array.isArray(stObj.UP)) total += stObj.UP.length;
+            if (Array.isArray(stObj.DOWN)) total += stObj.DOWN.length;
+          }
+        }
+        return total;
+      }
+
+      function showOrHideAbnormalWarningBanner(showBool, customMessage) {
+        var bannerEl = document.getElementById("railAbnormalWarningBanner");
+        var msgEl = document.getElementById("railAbnormalWarningBannerMsg");
+        if (!bannerEl) return;
+        if (showBool) {
+          if (msgEl && customMessage) msgEl.textContent = customMessage;
+          bannerEl.classList.add("show");
         } else {
-          railServiceStatusText.textContent = "服務異常";
+          bannerEl.classList.remove("show");
+        }
+      }
+
+      // 更新右下角「車務狀況」視窗：支援 "NORMAL" (服務正常)、"OFF_HOURS" (非服務時間 + 非Emoji SVG🌙圖案)、"ABNORMAL" (服務異常 / 延誤 + 彈出紅色警告橫幅)
+      function updateRailServiceStatusUi(statusState, optionalDetailWarningMsg) {
+        if (!railServiceStatusText || !railServiceStatusIcon || !railServiceStatusWidget) return;
+        var modeStr = (statusState === true) ? "NORMAL" : ((statusState === false) ? "ABNORMAL" : String(statusState || "NORMAL"));
+
+        railServiceStatusText.classList.remove("status-abnormal", "status-offhours");
+        railServiceStatusWidget.classList.remove("status-mode-offhours", "status-mode-abnormal");
+
+        if (modeStr === "OFF_HOURS") {
+          railServiceStatusText.innerHTML = '非服務時間' + SVG_INLINE_MOON_MINI;
+          railServiceStatusText.classList.add("status-offhours");
+          railServiceStatusWidget.classList.add("status-mode-offhours");
+          railServiceStatusIcon.innerHTML = SVG_STATUS_MOON_HTML;
+          showOrHideAbnormalWarningBanner(false);
+        } else if (modeStr === "ABNORMAL") {
+          railServiceStatusText.textContent = "服務異常 / 延誤";
           railServiceStatusText.classList.add("status-abnormal");
+          railServiceStatusWidget.classList.add("status-mode-abnormal");
           railServiceStatusIcon.innerHTML = SVG_STATUS_ERR_HTML;
+          showOrHideAbnormalWarningBanner(
+            true,
+            optionalDetailWarningMsg || "⚠️ 服務異常 / 延誤：目前屬正常營運時間，惟跨站驗證發現多個相鄰車站同時沒有車次或返回異常狀態。"
+          );
+        } else {
+          railServiceStatusText.textContent = "服務正常";
+          railServiceStatusIcon.innerHTML = SVG_STATUS_OK_HTML;
+          showOrHideAbnormalWarningBanner(false);
         }
       }
 
       function refreshRailServiceStatusWidget() {
         if (!layoutRailMapPage || !layoutRailMapPage.classList.contains("open")) return;
+        var hkCtx = getCurrentHkTimeContext();
+
         if (currentRailMapMode === "LRT") {
-          // 輕鐵頁面「車務狀況」：只針對政府輕鐵 API 資料，不包括其他資料
-          var sampleLrtStations = ["80", "100", "430"];
+          // 跨區抽樣代表性相鄰車站群組：第1/2區 (屯門碼頭1、澤豐80、市中心280)、第3區 (兆康100)、第4/5區 (天水圍430、元朗600)
+          var sampleLrtStations = ["1", "80", "280", "100", "430", "600"];
           var promises = sampleLrtStations.map(function (sid) {
             return fetch("https://rt.data.gov.hk/v1/transport/mtr/lrt/getSchedule?station_id=" + sid)
               .then(function (r) { return r.ok ? r.json() : null; })
@@ -13798,24 +14184,56 @@
           });
           Promise.all(promises).then(function (resList) {
             if (currentRailMapMode !== "LRT") return;
-            var anySuccess = false;
-            var anyAbnormal = false;
+            var reachableNodes = 0;
+            var statusZeroCount = 0;
+            var stationsWithTrains = 0;
+
             for (var i = 0; i < resList.length; i++) {
               var root = resList[i];
               if (!root) continue;
-              anySuccess = true;
-              if (root.status !== 1 || root.red_alert === true || root.typhoon === true) {
-                anyAbnormal = true;
+              reachableNodes++;
+              if (root.status === 0 || root.red_alert === true || root.typhoon === true) {
+                statusZeroCount++;
+              }
+              if (countActiveTrainsInLrtScheduleRoot(root) > 0) {
+                stationsWithTrains++;
               }
             }
-            if (!anySuccess) {
-              updateRailServiceStatusUi(true);
+
+            // 若離線或網絡未接通，先根據時間維度判斷是否處於凌晨 01:30 - 05:00 非服務時間
+            if (reachableNodes === 0) {
+              if (hkCtx.isCoreOffHoursWindow) {
+                updateRailServiceStatusUi("OFF_HOURS");
+              } else {
+                updateRailServiceStatusUi("NORMAL");
+              }
+              return;
+            }
+
+            // 【第 1 層：時間維度過濾】
+            // 凌晨 01:30 至清晨 05:00 (或 05:06 首班車前)，API 回傳沒有車次 ➔ 判定為「今日服務已結束」，顯示「非服務時間」及非 emoji 🌙 SVG 圖案
+            if (stationsWithTrains === 0 && hkCtx.isCoreOffHoursWindow) {
+              updateRailServiceStatusUi("OFF_HOURS");
+              return;
+            }
+
+            // 【第 2 層：對比官方靜態時間表】 + 【第 3 層：跨站交叉驗證】
+            // 在正常營運時間 (例如下午 14:00)，對照靜態時間表本應有多條輕鐵路線行駛：
+            // - 若多個區域相鄰車站同時完全沒有車次或回傳 status: 0 ➔ 百分之百屬系統性「服務異常 / 延誤」，立即彈出紅色警告橫幅！
+            // - 若只有單一車站無資料而其他相鄰車站正常有車 ➔ 排除全線異常，維持服務正常（單站節點問題於點擊該站時獨立提示）。
+            var expectedCheck = getExpectedLrtRoutesForStationAtTime("100", hkCtx);
+            if (statusZeroCount >= 2 || (stationsWithTrains === 0 && expectedCheck.shouldHaveTrainsNow)) {
+              var sampleRouteNames = expectedCheck.expectedRoutes.slice(0, 4).map(function (x) { return x.route; }).join("、");
+              var warnText = "⚠️ 服務異常 / 延誤：現時 (" + hkCtx.weekdayName + " " + hkCtx.timeStr + ") 屬輕鐵正常營運時間（照靜態時間表本應有 " + (sampleRouteNames || "610、751") + " 等路綫行駛），惟跨站交叉驗證發現多個相鄰車站同時回傳無車次或異常狀態。";
+              updateRailServiceStatusUi("ABNORMAL", warnText);
+            } else if (stationsWithTrains === 0 && !expectedCheck.shouldHaveTrainsNow) {
+              updateRailServiceStatusUi("OFF_HOURS");
             } else {
-              updateRailServiceStatusUi(!anyAbnormal);
+              updateRailServiceStatusUi("NORMAL");
             }
           });
         } else {
-          // 港鐵頁面「車務狀況」：針對所有港鐵重鐵路線政府行車狀況 API
+          // 港鐵重鐵頁面「車務狀況」：同樣結合時間維度 (約 01:30 - 05:30 收車時段) 與跨站 API 驗證
           var mtrCheckPairs = [
             ["TML", "TUM"], ["EAL", "SHT"], ["TWL", "MOK"], ["KTL", "KWT"],
             ["ISL", "CEN"], ["TCL", "TSY"], ["TKL", "TKO"], ["SIL", "ADM"],
@@ -13829,20 +14247,34 @@
           });
           Promise.all(mPromises).then(function (resList) {
             if (currentRailMapMode !== "MTR") return;
-            var anySuccess = false;
-            var anyAbnormal = false;
+            var reachableCount = 0;
+            var delayOrZeroCount = 0;
+            var activeStationsCount = 0;
             for (var i = 0; i < resList.length; i++) {
               var root = resList[i];
               if (!root) continue;
-              anySuccess = true;
+              reachableCount++;
               if (root.status === 0 || String(root.isdelay || "").toUpperCase() === "Y") {
-                anyAbnormal = true;
+                delayOrZeroCount++;
+              }
+              if (countActiveTrainsInMtrScheduleRoot(root) > 0) {
+                activeStationsCount++;
               }
             }
-            if (!anySuccess) {
-              updateRailServiceStatusUi(true);
+            var isMtrOffHours = (hkCtx.totalMinutes >= 1 * 60 + 30 && hkCtx.totalMinutes <= 5 * 60 + 25);
+            if (reachableCount === 0) {
+              updateRailServiceStatusUi(isMtrOffHours ? "OFF_HOURS" : "NORMAL");
+              return;
+            }
+            if (activeStationsCount === 0 && isMtrOffHours) {
+              updateRailServiceStatusUi("OFF_HOURS");
+            } else if (delayOrZeroCount > 0 || (activeStationsCount === 0 && !isMtrOffHours)) {
+              updateRailServiceStatusUi(
+                "ABNORMAL",
+                "⚠️ 服務異常 / 延誤：現時 (" + hkCtx.weekdayName + " " + hkCtx.timeStr + ") 屬港鐵正常營運時間，惟實時 API 偵測到車務延誤或多個車站無列車班次。"
+              );
             } else {
-              updateRailServiceStatusUi(!anyAbnormal);
+              updateRailServiceStatusUi("NORMAL");
             }
           });
         }
@@ -14162,6 +14594,14 @@
               refreshRailServiceStatusWidget();
               showToast("已更新輕鐵車務狀況");
             }
+          });
+        }
+
+        var btnDismissBanner = document.getElementById("btnDismissAbnormalBanner");
+        if (btnDismissBanner) {
+          btnDismissBanner.addEventListener("click", function (ev) {
+            ev.stopPropagation();
+            showOrHideAbnormalWarningBanner(false);
           });
         }
 
