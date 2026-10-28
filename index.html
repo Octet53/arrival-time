@@ -176,6 +176,34 @@
       color: var(--blue-mtr);
     }
 
+    .btn-tg-tile {
+      background: #1F1F23;
+      color: #81D4FA;
+      border: 1px solid #2D3E4E;
+      border-radius: 6px;
+      padding: 5px 9px;
+      font-size: 12.5px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      cursor: pointer;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    }
+
+    .btn-tg-tile:hover {
+      background: #252B33;
+      border-color: #4FC3F7;
+    }
+
+    .btn-tg-tile:active {
+      background: #2C3540;
+      transform: scale(0.96);
+    }
+
     .mode-pill.active-mode1 {
       background: rgba(129, 199, 132, 0.18);
       color: var(--green-accent);
@@ -2698,6 +2726,7 @@
           <button type="button" id="pillMode3" class="mode-pill">界面3</button>
           <button type="button" id="pillSettings" class="mode-pill" style="color:#00E676;">設定</button>
         </div>
+        <button type="button" id="btnTgChannel" class="btn-tg-tile" title="打開 TG Channel">TG</button>
       </div>
 
       <div id="tvBigClock" class="big-clock">00:00:00</div>
@@ -2974,11 +3003,24 @@
         </button>
       </div>
 
-      <!-- 區塊 4：合併「儲存個人及資料庫設定」永久保存及跨更新備份 -->
+      <!-- 區塊 4：TG Channel 設定 -->
       <div class="settings-section">
-        <div class="settings-section-title" style="color:var(--green-clock);">💾 四、儲存個人及資料庫設定 (後台更新 App 絕不還原)</div>
+        <div class="settings-section-title" style="color:#81D4FA;">📢 四、TG Channel</div>
+        <div style="font-size:12.5px; color:#BDBDBD; line-height:1.45; margin-bottom:6px;">
+          設定頂部獨立 <strong style="color:#81D4FA;">[TG]</strong> 階磚按鈕所打開嘅 Telegram Channel 連結（預設為 <code>https://t.me/NWemptyR</code>）。你可自行更改連結並儲存設定，或隨時還原預設。
+        </div>
+        <input type="url" id="inputTgChannelUrl" class="backup-input-box" style="margin-top:4px; color:#81D4FA; font-weight:700;" placeholder="https://t.me/NWemptyR" value="https://t.me/NWemptyR" autocomplete="off" />
+        <div class="backup-btn-grid" style="margin-top:8px;">
+          <button type="button" id="btnSaveTgChannelUrl" class="action-btn" style="margin-top:0; background:#162936; border-color:#81D4FA; color:#81D4FA; font-weight:700;">💾 儲存設定</button>
+          <button type="button" id="btnResetTgChannelUrl" class="action-btn" style="margin-top:0; color:#FF8A65;">↺ 還原預設</button>
+        </div>
+      </div>
+
+      <!-- 區塊 5：合併「儲存個人及資料庫設定」永久保存及跨更新備份 -->
+      <div class="settings-section">
+        <div class="settings-section-title" style="color:var(--green-clock);">💾 五、儲存個人及資料庫設定 (後台更新 App 絕不還原)</div>
         <div style="font-size:12.5px; color:#BDBDBD; line-height:1.45; margin-bottom:8px;">
-          已將「儲存個人設定」與「保存資料庫設定」二合一整合！系統啟用<strong>三重本機永久保存 (LocalStorage + IndexedDB + Cookie)</strong>，一鍵同時鎖定你嘅自訂車站看板、預設打開介面、到站時間顯示方式以及後備資料庫清單，日後更新 App 絕不會被洗走。
+          已將「儲存個人設定」與「保存資料庫設定」二合一整合！系統啟用<strong>三重本機永久保存 (LocalStorage + IndexedDB + Cookie)</strong>，一鍵同時鎖定成個 App 嘅所有設定（包括自訂車站看板、預設打開介面、到站時間顯示方式、TG Channel 連結以及後備資料庫清單），日後更新 App 絕不會被洗走。
         </div>
         <button type="button" id="btnSaveLockProfile" class="action-btn" style="background:#193829; border-color:#00E676; color:#00E676; font-weight:700;">
           💾 儲存個人及資料庫設定 (防還原保護)
@@ -4132,7 +4174,7 @@
       try {
         nativeWindowOpenFn = window.open ? window.open.bind(window) : null;
         window.open = function (url, target, features) {
-          if (url && String(url).indexOf("tnews.mtr.com.hk") !== -1 && nativeWindowOpenFn) {
+          if (url && (String(url).indexOf("tnews.mtr.com.hk") !== -1 || String(url).indexOf("t.me") !== -1) && nativeWindowOpenFn) {
             return nativeWindowOpenFn(url, target || "_blank", features || "noopener,noreferrer");
           }
           return null;
@@ -5239,9 +5281,53 @@
         storageSet(KEY_DEFAULT_STARTUP_MODE, v);
       }
 
+      var KEY_TG_CHANNEL_URL = "tg_channel_url_v1";
+      var DEFAULT_TG_CHANNEL_URL = "https://t.me/NWemptyR";
+
+      function normalizeTgChannelUrl(raw) {
+        var s = String(raw || "").trim();
+        if (!s) return DEFAULT_TG_CHANNEL_URL;
+        if (!/^https?:\/\//i.test(s) && !/^tg:\/\//i.test(s)) {
+          s = "https://" + s;
+        }
+        return s;
+      }
+
+      function getTgChannelUrl() {
+        var saved = storageGet(KEY_TG_CHANNEL_URL, DEFAULT_TG_CHANNEL_URL);
+        return normalizeTgChannelUrl(saved);
+      }
+
+      function setTgChannelUrl(url) {
+        var norm = normalizeTgChannelUrl(url);
+        storageSet(KEY_TG_CHANNEL_URL, norm);
+        return norm;
+      }
+
+      function openTgChannelLink() {
+        var targetUrl = getTgChannelUrl();
+        try {
+          var a = document.createElement("a");
+          a.href = targetUrl;
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+          a.setAttribute("data-allow-external", "1");
+          a.style.display = "none";
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(function () {
+            if (a.parentNode) a.parentNode.removeChild(a);
+          }, 150);
+        } catch (e) {
+          if (nativeWindowOpenFn) {
+            nativeWindowOpenFn(targetUrl, "_blank", "noopener,noreferrer");
+          }
+        }
+      }
+
       function exportUserSettingsObject() {
         var obj = {
-          v: 6,
+          v: 7,
           ui_mode: storageGet(KEY_UI_MODE, "2"),
           default_startup_mode: getDefaultStartupMode(),
           force_two_col: storageGet(KEY_FORCE_TWO_COL, "0"),
@@ -5251,6 +5337,7 @@
           max_count_lrt: storageGet(KEY_MAX_COUNT_LRT, "3"),
           max_count_bus: storageGet(KEY_MAX_COUNT_BUS, "2"),
           max_count_mtr: storageGet(KEY_MAX_COUNT_MTR, "2"),
+          tg_channel_url: getTgChannelUrl(),
           custom_db_list: storageGet(KEY_CUSTOM_DB_LIST, "[]"),
           active_db_id: storageGet(KEY_ACTIVE_DB_ID, "default"),
           slots: {}
@@ -5281,6 +5368,7 @@
           if (obj.max_count_lrt !== undefined) storageSet(KEY_MAX_COUNT_LRT, obj.max_count_lrt);
           if (obj.max_count_bus !== undefined) storageSet(KEY_MAX_COUNT_BUS, obj.max_count_bus);
           if (obj.max_count_mtr !== undefined) storageSet(KEY_MAX_COUNT_MTR, obj.max_count_mtr);
+          if (obj.tg_channel_url !== undefined) setTgChannelUrl(obj.tg_channel_url);
           if (obj.custom_db_list !== undefined) storageSet(KEY_CUSTOM_DB_LIST, obj.custom_db_list);
           if (obj.active_db_id !== undefined) storageSet(KEY_ACTIVE_DB_ID, obj.active_db_id);
           if (obj.slots && typeof obj.slots === "object") {
@@ -5876,6 +5964,11 @@
         swMode2.checked = (currentUiMode === 2);
         swMode3.checked = (currentUiMode === 3);
         swForceTwoCol.checked = isForceTwoCol();
+
+        var inputTgEl = document.getElementById("inputTgChannelUrl");
+        if (inputTgEl) {
+          inputTgEl.value = getTgChannelUrl();
+        }
 
         var startupPref = getDefaultStartupMode();
         var startupWrap = document.getElementById("groupDefaultStartupMode");
@@ -7842,10 +7935,49 @@
           }
         }
 
-        // 合併後「儲存個人及資料庫設定」按鈕及備份碼按鈕
+        // 頂部 [TG] 階磚按鈕及「四、TG Channel」設定按鈕
+        var btnTgEl = document.getElementById("btnTgChannel");
+        if (btnTgEl) {
+          btnTgEl.addEventListener("click", function () {
+            openTgChannelLink();
+          });
+        }
+
+        var btnSaveTgEl = document.getElementById("btnSaveTgChannelUrl");
+        if (btnSaveTgEl) {
+          btnSaveTgEl.addEventListener("click", function () {
+            var inputTgEl = document.getElementById("inputTgChannelUrl");
+            var rawVal = inputTgEl ? inputTgEl.value.trim() : "";
+            if (!rawVal) {
+              showToast("請輸入有效嘅 TG Channel 連結，或按「還原預設」");
+              return;
+            }
+            var savedUrl = setTgChannelUrl(rawVal);
+            if (inputTgEl) inputTgEl.value = savedUrl;
+            performProfileMirrorBackup();
+            showToast("✅ 已儲存 TG Channel 設定：" + savedUrl);
+          });
+        }
+
+        var btnResetTgEl = document.getElementById("btnResetTgChannelUrl");
+        if (btnResetTgEl) {
+          btnResetTgEl.addEventListener("click", function () {
+            var defUrl = setTgChannelUrl(DEFAULT_TG_CHANNEL_URL);
+            var inputTgEl = document.getElementById("inputTgChannelUrl");
+            if (inputTgEl) inputTgEl.value = defUrl;
+            performProfileMirrorBackup();
+            showToast("↺ 已還原預設 TG Channel (" + defUrl + ")");
+          });
+        }
+
+        // 合併後「五、儲存個人及資料庫設定」按鈕及備份碼按鈕
         document.getElementById("btnSaveLockProfile").addEventListener("click", function () {
+          var inputTgEl = document.getElementById("inputTgChannelUrl");
+          if (inputTgEl && inputTgEl.value.trim()) {
+            inputTgEl.value = setTgChannelUrl(inputTgEl.value.trim());
+          }
           performProfileMirrorBackup();
-          showToast("✅ 個人及資料庫設定已永久鎖定並同步至三重儲存！");
+          showToast("✅ 成個 App 嘅所有個人、TG Channel 及資料庫設定已永久鎖定並同步至三重儲存！");
         });
 
         document.getElementById("btnCopyBackupCode").addEventListener("click", function () {
